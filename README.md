@@ -17,7 +17,7 @@
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/yourusername/webmonitor.git
+git clone https://github.com/Dineshsoni02/WebmonitorV2.git
 cd webmonitor
 ```
 
@@ -40,6 +40,7 @@ npm run dev
 * [Tailwind CSS 4](https://tailwindcss.com/)
 * [PostCSS](https://postcss.org/)
 * [ESLint](https://eslint.org/)
+* [MongoDB](https://mongodb.com/)
 
 ## 📦 Project Structure
 
