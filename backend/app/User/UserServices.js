@@ -62,7 +62,7 @@ export const loginUser = async (req, res) => {
     return;
   }
 
-  const user = UserSchema.findOne({ email });
+  const user = await UserSchema.findOne({ email });
   if (!user) {
     res.status(422).json({
       status: false,
@@ -72,7 +72,7 @@ export const loginUser = async (req, res) => {
   }
 
   const dbPassword = user.password;
-  const matched = await bcrypt.compare(password, dbPassword);
+  const matched = bcrypt.compare(password, dbPassword);
   if (!matched) {
     res.status(422).json({
       status: false,
