@@ -1,5 +1,6 @@
 import bcrypt from "bcrypt";
 import UserSchema from "./UserSchema.js";
+import jwt from "jsonwebtoken";
 
 const validateEmail = (email) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
