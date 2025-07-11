@@ -2,9 +2,31 @@ import bcrypt from "bcrypt";
 import UserSchema from "./UserSchema.js";
 import jwt from "jsonwebtoken";
 
+const secretKey = "MY_SECRET_KEY";
+
 const validateEmail = (email) => {
   const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
   return emailRegex.test(email);
+};
+
+const aTokenExp = Math.floor(Date.now() / 1000 + 1 * 24 * 60 * 60);
+const rTokenExp = Math.floor(Date.now() / 1000 + 30 * 24 * 60 * 60);
+
+const generateToken = (data, exp) => {
+  if (!exp) exp = aTokenExp;
+
+  const token = jwt.sign({ data, exp }, secretKey);
+  return token;
+};
+
+const decodeToken = (token) => {
+  let data;
+  try {
+    data = jwt.verify(token, secretKey);
+  } catch (_e) {
+    console.log("Error verifying token");
+  }
+  return data;
 };
 
 export const signupUser = async (req, res) => {
@@ -28,11 +50,26 @@ export const signupUser = async (req, res) => {
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
+  const aToken = generateToken({ email, name }, aTokenExp);
+  const rToken = generateToken({ email, name }, rTokenExp);
+
   const newUser = new UserSchema({
     name,
     email,
     password: hashedPassword,
+    tokens: {
+      accessToken: {
+        token: aToken,
+        expireAt: new Date(aToken * 1000),
+      },
+      refreshToken: {
+        token: rToken,
+        expireAt: new Date(rToken * 1000),
+      },
+    },
   });
+
+  console.log("Saving user:", JSON.stringify(newUser, null, 2));
 
   newUser
     .save()
@@ -71,8 +108,8 @@ export const loginUser = async (req, res) => {
     });
     return;
   }
-
   const dbPassword = user.password;
+
   const matched = bcrypt.compare(password, dbPassword);
   if (!matched) {
     res.status(422).json({

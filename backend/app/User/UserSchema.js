@@ -15,13 +15,13 @@ const userSchema = new Schema(
       type: String,
       require: true,
     },
-    token: {
+    tokens: {
       accessToken: {
-        type: String,
+        token: String,
         expireAt: Date,
       },
       refreshToken: {
-        type: String,
+        token: String,
         expireAt: Date,
       },
     },
