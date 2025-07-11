@@ -47,7 +47,13 @@ export const signupUser = async (req, res) => {
     });
     return;
   }
-
+  const existingUser = await UserSchema.findOne({ email });
+  if (existingUser) {
+    return res.status(400).json({
+      status: false,
+      message: "User already exists with this email",
+    });
+  }
   const hashedPassword = await bcrypt.hash(password, 10);
 
   const aToken = generateToken({ email, name }, aTokenExp);
