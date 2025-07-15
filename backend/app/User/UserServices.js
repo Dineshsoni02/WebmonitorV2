@@ -1,61 +1,30 @@
 import bcrypt from "bcrypt";
 import UserSchema from "./UserSchema.js";
-import jwt from "jsonwebtoken";
-
-const secretKey = "MY_SECRET_KEY";
-
-const validateEmail = (email) => {
-  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-  return emailRegex.test(email);
-};
-
-const aTokenExp = Math.floor(Date.now() / 1000 + 1 * 24 * 60 * 60);
-const rTokenExp = Math.floor(Date.now() / 1000 + 30 * 24 * 60 * 60);
-
-const generateToken = (data, exp) => {
-  if (!exp) exp = aTokenExp;
-
-  const token = jwt.sign({ data, exp }, secretKey);
-  return token;
-};
-
-const decodeToken = (token) => {
-  let data;
-  try {
-    data = jwt.verify(token, secretKey);
-  } catch (_e) {
-    console.log("Error verifying token");
-  }
-  return data;
-};
+import { validateEmail } from "../utils/validation.js";
+import { generateToken, getExpiry } from "../utils/token.js";
+import { messages } from "../constants/responseMessages.js";
 
 export const signupUser = async (req, res) => {
   const { name, email, password } = req.body;
+  if (!name || !email || !password)
+    return res
+      .status(400)
+      .json({ status: false, message: messages.FIELDS_REQUIRED });
 
-  if (!name || !email || !password) {
-    res.status(400).json({
-      status: false,
-      message: "All fields are mandatory!!!",
-    });
-    return;
-  }
+  if (!validateEmail(email))
+    return res
+      .status(400)
+      .json({ status: false, message: messages.EMAIL_INVALID });
 
-  if (!validateEmail(email)) {
-    res.status(400).json({
-      status: false,
-      message: "E-mail is invalid",
-    });
-    return;
-  }
   const existingUser = await UserSchema.findOne({ email });
-  if (existingUser) {
-    return res.status(400).json({
-      status: false,
-      message: "User already exists with this email",
-    });
-  }
-  const hashedPassword = await bcrypt.hash(password, 10);
+  if (existingUser)
+    return res
+      .status(400)
+      .json({ status: false, message: messages.USER_EXISTS });
 
+  const hashedPassword = await bcrypt.hash(password, 10);
+  const aTokenExp = getExpiry(1);
+  const rTokenExp = getExpiry(30);
   const aToken = generateToken({ email, name }, aTokenExp);
   const rToken = generateToken({ email, name }, rTokenExp);
 
@@ -64,70 +33,48 @@ export const signupUser = async (req, res) => {
     email,
     password: hashedPassword,
     tokens: {
-      accessToken: {
-        token: aToken,
-        expireAt: new Date(aToken * 1000),
-      },
-      refreshToken: {
-        token: rToken,
-        expireAt: new Date(rToken * 1000),
-      },
+      accessToken: { token: aToken, expireAt: new Date(aTokenExp * 1000) },
+      refreshToken: { token: rToken, expireAt: new Date(rTokenExp * 1000) },
     },
   });
 
-  console.log("Saving user:", JSON.stringify(newUser, null, 2));
-
-  newUser
-    .save()
-    .then((user) => {
-      res.status(201).json({
-        status: true,
-        message: "User Successfully created!",
-        data: user,
-      });
-    })
-    .catch((err) => {
-      res.status(400).json({
-        status: false,
-        message: "Error in user signup",
-        error: err,
-      });
-    });
+  try {
+    const user = await newUser.save();
+    const userObj = user.toObject();
+    delete userObj.password;
+    res
+      .status(201)
+      .json({ status: true, message: messages.SIGNUP_SUCCESS, data: userObj });
+  } catch (err) {
+    res
+      .status(400)
+      .json({ status: false, message: messages.SIGNUP_ERROR, error: err });
+  }
 };
 
 export const loginUser = async (req, res) => {
   const { email, password } = req.body;
-
-  if (!email || !password) {
-    res.status(400).json({
-      status: false,
-      message: "All fields are required",
-    });
-    return;
-  }
+  if (!email || !password)
+    return res
+      .status(400)
+      .json({ status: false, message: messages.FIELDS_REQUIRED });
 
   const user = await UserSchema.findOne({ email });
-  if (!user) {
-    res.status(422).json({
-      status: false,
-      message: "User not found",
-    });
-    return;
-  }
-  const dbPassword = user.password;
+  if (!user)
+    return res
+      .status(422)
+      .json({ status: false, message: messages.USER_NOT_FOUND });
 
-  const matched = bcrypt.compare(password, dbPassword);
-  if (!matched) {
-    res.status(422).json({
-      status: false,
-      message: "Credentials don't matched",
-    });
-    return;
-  }
+  const matched = await bcrypt.compare(password, user.password);
+  if (!matched)
+    return res
+      .status(422)
+      .json({ status: false, message: messages.PASSWORD_INCORRECT });
 
-  res.status(200).json({
-    status: true,
-    message: "User Successfully logged in",
-    data: user,
-  });
+  const userObj = user.toObject();
+  delete userObj.password;
+
+  res
+    .status(200)
+    .json({ status: true, message: messages.LOGIN_SUCCESS, data: userObj });
 };
