@@ -23,8 +23,10 @@ export const signupUser = async (req, res) => {
       .json({ status: false, message: messages.USER_EXISTS });
 
   const hashedPassword = await bcrypt.hash(password, 10);
+
   const aTokenExp = getExpiry(1);
   const rTokenExp = getExpiry(30);
+
   const aToken = generateToken({ email, name }, aTokenExp);
   const rToken = generateToken({ email, name }, rTokenExp);
 
@@ -66,6 +68,7 @@ export const loginUser = async (req, res) => {
       .json({ status: false, message: messages.USER_NOT_FOUND });
 
   const matched = await bcrypt.compare(password, user.password);
+  
   if (!matched)
     return res
       .status(422)
