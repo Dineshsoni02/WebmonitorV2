@@ -38,6 +38,7 @@ export const generateNewAccessToken = async (req, res) => {
   const user = await UserSchema.findOne({
     "tokens.refreshToken.token": refreshToken,
   });
+
   if (!user) {
     res.status(422).json({
       status: false,
@@ -73,3 +74,4 @@ export const generateNewAccessToken = async (req, res) => {
     });
   }
 };
+

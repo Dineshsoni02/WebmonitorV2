@@ -8,6 +8,8 @@ export const messages = {
   SIGNUP_SUCCESS: "User successfully created!",
   LOGIN_SUCCESS: "User successfully logged in",
   NO_REFRESH_TOKEN: "No refreshToken available",
+  NO_TOKEN: "No Token available",
   ACCESS_TOKEN_CREATED: "New access token created successfully",
   ACCESS_TOKEN_CREATION_ERROR: "Error in access token creation",
+  INVALID_TOKEN: "Invalid token",
 };
