@@ -1,4 +1,6 @@
 import jwt from "jsonwebtoken";
+import { messages } from "../constants/responseMessages.js";
+import UserSchema from "../User/UserSchema.js";
 
 const secretKey = process.env.SECRET_KEY || "fallback_secret";
 
@@ -21,4 +23,53 @@ export const decodeToken = (token) => {
   }
 
   return data;
+};
+
+export const generateNewAccessToken = async (req, res) => {
+  const { refreshToken } = req.body;
+  if (!refreshToken) {
+    res.status(400).json({
+      status: false,
+      message: messages.NO_REFRESH_TOKEN,
+    });
+    return;
+  }
+
+  const user = await UserSchema.findOne({
+    "tokens.refreshToken.token": refreshToken,
+  });
+  if (!user) {
+    res.status(422).json({
+      status: false,
+      message: messages.USER_NOT_FOUND,
+    });
+    return;
+  }
+
+  const aTokenExp = getExpiry(1);
+
+  const aToken = generateToken(
+    { email: user.email, name: user.name },
+    aTokenExp
+  );
+
+  user.tokens.accessToken = {
+    token: aToken,
+    expireAt: new Date(aTokenExp * 1000),
+  };
+  try {
+    await user.save();
+    const userObj = user.toObject();
+    delete userObj.password;
+    res.status(201).json({
+      status: true,
+      message: messages.ACCESS_TOKEN_CREATED,
+      data: userObj,
+    });
+  } catch (error) {
+    res.status(400).json({
+      status: false,
+      message: messages.ACCESS_TOKEN_CREATION_ERROR,
+    });
+  }
 };
