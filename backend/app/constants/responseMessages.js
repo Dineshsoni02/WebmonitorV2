@@ -20,4 +20,8 @@ export const messages = {
   WEBSITE_NOT_ACTIVE: "Website not active",
   WEBSITE_DELETION_ERROR: "Error in website deletion",
   WEBSITE_DELETED: "Website deleted successfully",
+  WEBSITE_DELETION_SUCCESS: "Website deleted successfully",
+  WEBSITE_DELETION_ERROR: "Error in website deletion",
+  WEBSITE_DELETION_SUCCESS: "Website deleted successfully",
+  WEBSITE_ID_REQUIRED: "Website ID is required",
 };

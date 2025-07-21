@@ -29,7 +29,7 @@ export const createWebsite = async (req, res) => {
   if (!response || response.status !== 200) {
     res.status(422).json({
       status: false,
-      messages: messages.WEBSITE_NOT_ACTIVE + url,
+      message: messages.WEBSITE_NOT_ACTIVE + url,
     });
   }
 
@@ -37,7 +37,7 @@ export const createWebsite = async (req, res) => {
   if (website) {
     res.status(422).json({
       status: false,
-      messages: messages.WEBSITE_ALREADY_EXISTS,
+      message: messages.WEBSITE_ALREADY_EXISTS,
     });
   }
 
@@ -52,14 +52,14 @@ export const createWebsite = async (req, res) => {
     .then((web) => {
       res.status(201).json({
         status: true,
-        messages: messages.WEBSITE_CREATED,
+        message: messages.WEBSITE_CREATED,
         data: web,
       });
     })
     .catch((err) => {
       res.status(500).json({
         status: false,
-        messages: messages.WEBSITE_CREATION_ERROR,
+        message: messages.WEBSITE_CREATION_ERROR,
         error: err,
       });
     });
@@ -70,7 +70,25 @@ export const deleteWebsite = async (req, res) => {
   if (!id) {
     res.status(400).json({
       status: false,
-      messages
+      message: messages.WEBSITE_ID_REQUIRED,
     });
   }
+
+  WebsiteSchema.deleteOne({ _id: id })
+    .then((web) => {
+      res.status(200).json({
+        status: true,
+        message: messages.WEBSITE_DELETED,
+        data: web,
+      });
+    })
+    .catch((err) => {
+      res.status(500).json({
+        status: false,
+        message: messages.WEBSITE_DELETION_ERROR,
+      });
+    });
+
+
+
 };
