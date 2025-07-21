@@ -88,7 +88,4 @@ export const deleteWebsite = async (req, res) => {
         message: messages.WEBSITE_DELETION_ERROR,
       });
     });
-
-
-
 };
