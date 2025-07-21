@@ -1,7 +1,7 @@
 import { messages } from "../constants/responseMessages.js";
 import UserSchema from "../User/UserSchema.js";
 
-export const validateAccessToken = async (req, res, next) => {
+export const authenticateUserMiddleware = async (req, res, next) => {
   const token = req.headers.authorization;
   if (!token) {
     res.status(400).json({
@@ -15,6 +15,7 @@ export const validateAccessToken = async (req, res, next) => {
     "tokens.accessToken.token": token,
   });
 
+
   if (!user) {
     res.status(422).json({
       status: false,
@@ -23,6 +24,6 @@ export const validateAccessToken = async (req, res, next) => {
     return;
   }
 
-  req.user;
+  req.user = user;
   next();
 };

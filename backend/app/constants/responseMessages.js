@@ -12,4 +12,12 @@ export const messages = {
   ACCESS_TOKEN_CREATED: "New access token created successfully",
   ACCESS_TOKEN_CREATION_ERROR: "Error in access token creation",
   INVALID_TOKEN: "Invalid token",
+  URL_REQUIRED: "URL is required",
+  INVALID_URL: "Invalid URL",
+  WEBSITE_CREATED: "Website created successfully",
+  WEBSITE_CREATION_ERROR: "Error in website creation",
+  WEBSITE_ALREADY_EXISTS: "Website already exists",
+  WEBSITE_NOT_ACTIVE: "Website not active",
+  WEBSITE_DELETION_ERROR: "Error in website deletion",
+  WEBSITE_DELETED: "Website deleted successfully",
 };
