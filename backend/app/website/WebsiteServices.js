@@ -75,11 +75,10 @@ export const deleteWebsite = async (req, res) => {
   }
 
   WebsiteSchema.deleteOne({ _id: id })
-    .then((web) => {
+    .then(() => {
       res.status(200).json({
         status: true,
         message: messages.WEBSITE_DELETED,
-        data: web,
       });
     })
     .catch((err) => {
@@ -88,4 +87,16 @@ export const deleteWebsite = async (req, res) => {
         message: messages.WEBSITE_DELETION_ERROR,
       });
     });
+};
+
+export const getAllWebsite = async (req, res) => {
+  const user = req.user;
+
+  const websites = await WebsiteSchema.find({ userId: user._id });
+
+  res.status(200).json({
+    status: true,
+    message: messages.WEBSITE_FETCHED,
+    data: websites,
+  });
 };

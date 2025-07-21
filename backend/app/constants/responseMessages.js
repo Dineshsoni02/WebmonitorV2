@@ -24,4 +24,5 @@ export const messages = {
   WEBSITE_DELETION_ERROR: "Error in website deletion",
   WEBSITE_DELETION_SUCCESS: "Website deleted successfully",
   WEBSITE_ID_REQUIRED: "Website ID is required",
+  WEBSITE_FETCHED: "Websites fetched successfully",
 };
