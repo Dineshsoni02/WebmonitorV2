@@ -100,3 +100,29 @@ export const getAllWebsite = async (req, res) => {
     data: websites,
   });
 };
+
+export const getWebsiteById = async (req, res) => {
+  const { id } = req.params;
+  if (!id) {
+    res.status(400).json({
+      status: false,
+      message: messages.WEBSITE_ID_REQUIRED,
+    });
+  }
+
+  const website = await WebsiteSchema.findById(id);
+  if (!website) {
+    res.status(404).json({
+      status: false,
+      message: messages.WEBSITE_NOT_FOUND,
+    });
+  }
+
+  res.status(200).json({
+    status: true,
+    message: messages.WEBSITE_FETCHED,
+    data: website,
+  });
+};
+        
+
