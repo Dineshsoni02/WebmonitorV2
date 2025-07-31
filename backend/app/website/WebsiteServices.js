@@ -101,7 +101,7 @@ export const getAllWebsite = async (req, res) => {
   });
 };
 
-export const getWebsiteById = async (req, res) => {
+export const x = async (req, res) => {
   const { id } = req.params;
   if (!id) {
     res.status(400).json({
@@ -124,5 +124,3 @@ export const getWebsiteById = async (req, res) => {
     data: website,
   });
 };
-        
-
