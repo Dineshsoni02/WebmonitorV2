@@ -7,7 +7,7 @@ export const createWebsite = async (req, res) => {
   const { url } = req.body;
 
   if (!url) {
-    res.status(400).json({
+    return res.status(400).json({
       status: false,
       message: messages.URL_REQUIRED,
     });
@@ -16,7 +16,7 @@ export const createWebsite = async (req, res) => {
   const isValidUrl = validateUrl(url);
 
   if (!isValidUrl) {
-    res.status(422).json({
+    return res.status(422).json({
       status: false,
       message: messages.INVALID_URL,
     });
@@ -27,7 +27,7 @@ export const createWebsite = async (req, res) => {
   const response = await axios.get(url).catch((err) => void err);
 
   if (!response || response.status !== 200) {
-    res.status(422).json({
+    return res.status(422).json({
       status: false,
       message: messages.WEBSITE_NOT_ACTIVE + url,
     });
@@ -35,7 +35,7 @@ export const createWebsite = async (req, res) => {
 
   const website = await WebsiteSchema.findOne({ url });
   if (website) {
-    res.status(422).json({
+    return res.status(422).json({
       status: false,
       message: messages.WEBSITE_ALREADY_EXISTS,
     });
@@ -68,7 +68,7 @@ export const createWebsite = async (req, res) => {
 export const deleteWebsite = async (req, res) => {
   const { id } = req.params;
   if (!id) {
-    res.status(400).json({
+    return res.status(400).json({
       status: false,
       message: messages.WEBSITE_ID_REQUIRED,
     });
@@ -101,26 +101,3 @@ export const getAllWebsite = async (req, res) => {
   });
 };
 
-export const x = async (req, res) => {
-  const { id } = req.params;
-  if (!id) {
-    res.status(400).json({
-      status: false,
-      message: messages.WEBSITE_ID_REQUIRED,
-    });
-  }
-
-  const website = await WebsiteSchema.findById(id);
-  if (!website) {
-    res.status(404).json({
-      status: false,
-      message: messages.WEBSITE_NOT_FOUND,
-    });
-  }
-
-  res.status(200).json({
-    status: true,
-    message: messages.WEBSITE_FETCHED,
-    data: website,
-  });
-};
