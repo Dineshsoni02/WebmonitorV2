@@ -6,8 +6,7 @@ import userRoutes from "./app/User/UserRoute.js";
 import webRoutes from "./app/website/WebsiteRoute.js";
 import cron from "node-cron";
 import WebsiteSchema from "./app/website/WebsiteSchema.js";
-import {isSiteActive} from "./app/utils/siteStats.js";
-
+import { isSiteActive } from "./app/utils/siteStats.js";
 
 dotenv.config();
 
@@ -31,6 +30,10 @@ cron.schedule("* * * * *", async () => {
     const website = allWebsites[i];
     const url = website.url;
     const isActive = await isSiteActive(url);
+    WebsiteSchema.updateOne({ _id: website.id }, { isActive });
+
+    if (!isActive && website.isActive) {
+    }
   }
 });
 
