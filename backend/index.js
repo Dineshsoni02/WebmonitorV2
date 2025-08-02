@@ -7,6 +7,7 @@ import webRoutes from "./app/website/WebsiteRoute.js";
 import cron from "node-cron";
 import WebsiteSchema from "./app/website/WebsiteSchema.js";
 import { isSiteActive } from "./app/utils/siteStats.js";
+import { sendEmail } from "./app/utils/sendEmail.js";
 
 dotenv.config();
 
