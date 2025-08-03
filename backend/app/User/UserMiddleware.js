@@ -1,5 +1,6 @@
 import { messages } from "../constants/responseMessages.js";
 import UserSchema from "../User/UserSchema.js";
+import { checkExpiry } from "../utils/token.js";
 
 export const authenticateUserMiddleware = async (req, res, next) => {
   const token = req.headers.authorization;
