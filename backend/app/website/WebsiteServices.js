@@ -92,7 +92,10 @@ export const deleteWebsite = async (req, res) => {
 export const getAllWebsite = async (req, res) => {
   const user = req.user;
 
-  const websites = await WebsiteSchema.find({ userId: user._id });
+  const websites = await WebsiteSchema.find({ userId: user._id }).populate({
+    path: "userId",
+    select: ["name", "email"],
+  });
 
   res.status(200).json({
     status: true,

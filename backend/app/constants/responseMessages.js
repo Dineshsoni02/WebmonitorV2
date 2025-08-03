@@ -25,4 +25,5 @@ export const messages = {
   WEBSITE_DELETION_SUCCESS: "Website deleted successfully",
   WEBSITE_ID_REQUIRED: "Website ID is required",
   WEBSITE_FETCHED: "Websites fetched successfully",
+  TOKEN_EXPIRED: "Token expired",
 };

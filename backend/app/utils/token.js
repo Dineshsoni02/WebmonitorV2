@@ -48,7 +48,11 @@ export const generateNewAccessToken = async (req, res) => {
   }
 
   const aTokenExp = getExpiry(1);
-
+  const rTokenExp = getExpiry(7);
+  const rToken = generateToken(
+    { email: user.email, name: user.name },
+    rTokenExp
+  );
   const aToken = generateToken(
     { email: user.email, name: user.name },
     aTokenExp
@@ -57,6 +61,10 @@ export const generateNewAccessToken = async (req, res) => {
   user.tokens.accessToken = {
     token: aToken,
     expireAt: new Date(aTokenExp * 1000),
+  };
+  user.tokens.refreshToken = {
+    token: rToken,
+    expireAt: new Date(rTokenExp * 1000),
   };
   try {
     await user.save();
@@ -75,3 +83,9 @@ export const generateNewAccessToken = async (req, res) => {
   }
 };
 
+export const checkExpiry = (token) => {
+  const decoded = jwt.verify(token, secretKey);
+  return decoded.exp < Date.now() / 1000;
+};
+
+         
