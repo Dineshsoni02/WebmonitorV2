@@ -31,9 +31,15 @@ cron.schedule("* * * * *", async () => {
     const website = allWebsites[i];
     const url = website.url;
     const isActive = await isSiteActive(url);
-    WebsiteSchema.updateOne({ _id: website.id }, { isActive });
+    WebsiteSchema.updateOne({ _id: website.id }, { isActive }).exec();
 
     if (!isActive && website.isActive) {
+      const { name, email } = website.userId;
+      await sendEmail(
+        email,
+        "Website is down",
+        `Hi ${name}, the website ${url} is down as we checked on ${new Date().toLocaleString()} `
+      );
     }
   }
 });
