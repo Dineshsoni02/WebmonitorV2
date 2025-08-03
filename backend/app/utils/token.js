@@ -84,8 +84,11 @@ export const generateNewAccessToken = async (req, res) => {
 };
 
 export const checkExpiry = (token) => {
-  const decoded = jwt.verify(token, secretKey);
-  return decoded.exp < Date.now() / 1000;
+  try {
+    const decoded = jwt.verify(token, secretKey);
+    return decoded.exp < Date.now() / 1000;
+  } catch (error) {
+    console.log("Token verification error:", error);
+    return true;  
+  }
 };
-
-         
