@@ -1,5 +1,8 @@
 import React from "react";
-import websiteStatus from "../assets/websiteStatus.png";
+import image1 from "../assets/image1.svg";
+import image2 from "../assets/image2.svg";
+import image3 from "../assets/image3.svg";
+import site_stats from "../assets/site_stats.svg";
 
 const HeaderTextComponent = () => {
   return (
@@ -13,15 +16,13 @@ const HeaderTextComponent = () => {
         <div className="flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-16 max-w-7xl mx-auto w-full">
           <div className="flex flex-col items-start justify-center flex-1 gap-8 lg:gap-12 max-w-2xl">
             <div className="space-y-6">
-              <h1 className="text-4xl md:text-5xl lg:text-7xl font-bold leading-tight tracking-tight">
-                Monitor Your{" "}
+              <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tight">
+                Monitor Your{" "} <br/>
                 <span className="bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-500 text-transparent bg-clip-text animate-pulse">
                   Website Status
-                </span>{" "}
-                <br />
-                <span className="text-3xl md:text-4xl lg:text-5xl font-semibold text-gray-300">
-                  24/7
                 </span>
+                <br />
+                  24/7
               </h1>
 
               <p className="text-lg md:text-xl text-gray-300 leading-relaxed max-w-xl">
@@ -76,7 +77,7 @@ const HeaderTextComponent = () => {
               <div className="absolute -inset-4 bg-gradient-to-r from-blue-600/20 to-cyan-600/20 rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
               <div className="relative bg-gradient-to-br from-gray-900/50 to-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-3xl p-6 shadow-2xl">
                 <img
-                  src={websiteStatus}
+                  src={site_stats}
                   alt="Website monitoring dashboard"
                   className="w-full h-auto max-w-lg rounded-2xl shadow-2xl transform group-hover:scale-105 transition-all duration-500"
                 />
@@ -89,7 +90,7 @@ const HeaderTextComponent = () => {
   );
 };
 
-const Body = () => {
+const BodyComponent = () => {
   return (
     <div>
       <HeaderTextComponent />
@@ -97,4 +98,4 @@ const Body = () => {
   );
 };
 
-export default Body;
+export default BodyComponent;

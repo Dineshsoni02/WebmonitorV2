@@ -1,11 +1,13 @@
 
 import "./App.css";
-import Body from "./components/body";
+
+import BodyComponent from "./components/BodyComponent";
+
 
 function App() {
   return (
     <div className="bg-light-gray">
-      <Body />
+      <BodyComponent />
     </div>
   );
 }
