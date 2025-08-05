@@ -21,14 +21,13 @@ const NavigationBar = () => {
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-gradient-to-r from-gray-900/95 to-gray-800/95 backdrop-blur-md border-b border-gray-700/50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16 lg:h-20">
+        <div className="flex items-center justify-between h-16 lg:h-18">
           {/* Logo */}
           <div className="flex items-center">
             <div
               className="flex items-center space-x-2 cursor-pointer"
               onClick={() => scrollToSection("home")}
             >
-              
               <span className="text-xl lg:text-2xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 text-transparent bg-clip-text">
                 WebMonitor
               </span>
@@ -39,31 +38,31 @@ const NavigationBar = () => {
           <div className="hidden md:flex items-center space-x-8">
             <button
               onClick={() => scrollToSection("home")}
-              className="text-gray-300 hover:text-white transition-colors duration-200 font-medium"
+              className="text-gray-300 hover:text-white transition-colors duration-200 font-medium cursor-pointer"
             >
               Home
             </button>
             <button
               onClick={() => scrollToSection("dashboard")}
-              className="text-gray-300 hover:text-white transition-colors duration-200 font-medium"
+              className="text-gray-300 hover:text-white transition-colors duration-200 font-medium cursor-pointer"
             >
               Dashboard
             </button>
             <button
               onClick={() => scrollToSection("features")}
-              className="text-gray-300 hover:text-white transition-colors duration-200 font-medium"
+              className="text-gray-300 hover:text-white transition-colors duration-200 font-medium cursor-pointer"
             >
               Features
             </button>
             <button
               onClick={() => scrollToSection("pricing")}
-              className="text-gray-300 hover:text-white transition-colors duration-200 font-medium"
+              className="text-gray-300 hover:text-white transition-colors duration-200 font-medium cursor-pointer"
             >
               Pricing
             </button>
             <button
               onClick={() => scrollToSection("contact")}
-              className="text-gray-300 hover:text-white transition-colors duration-200 font-medium"
+              className="text-gray-300 hover:text-white transition-colors duration-200 font-medium cursor-pointer"
             >
               Contact
             </button>
@@ -73,13 +72,13 @@ const NavigationBar = () => {
           <div className="hidden md:flex items-center space-x-4">
             <button
               onClick={() => handleAuthNavigation("login")}
-              className="text-gray-300 hover:text-white transition-colors duration-200 font-medium px-4 py-2 rounded-lg hover:bg-gray-700/50"
+              className="text-gray-300 hover:text-white transition-colors duration-200 font-medium px-4 py-2 rounded-lg hover:bg-gray-700/50 cursor-pointer"
             >
               Login
             </button>
             <button
               onClick={() => handleAuthNavigation("signup")}
-              className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-6 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/25"
+              className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-6 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/25 cursor-pointer"
             >
               Sign Up
             </button>
@@ -123,31 +122,31 @@ const NavigationBar = () => {
             <div className="px-2 pt-2 pb-3 space-y-1">
               <button
                 onClick={() => scrollToSection("home")}
-                className="block w-full text-left px-3 py-2 text-gray-300 hover:text-white hover:bg-gray-700/50 rounded-lg transition-colors duration-200 font-medium"
+                className="block w-full text-left px-3 py-2 text-gray-300 hover:text-white hover:bg-gray-700/50 rounded-lg transition-colors duration-200 font-medium cursor-pointer"
               >
                 Home
               </button>
               <button
                 onClick={() => scrollToSection("dashboard")}
-                className="block w-full text-left px-3 py-2 text-gray-300 hover:text-white hover:bg-gray-700/50 rounded-lg transition-colors duration-200 font-medium"
+                className="block w-full text-left px-3 py-2 text-gray-300 hover:text-white hover:bg-gray-700/50 rounded-lg transition-colors duration-200 font-medium cursor-pointer"
               >
                 Dashboard
               </button>
               <button
                 onClick={() => scrollToSection("features")}
-                className="block w-full text-left px-3 py-2 text-gray-300 hover:text-white hover:bg-gray-700/50 rounded-lg transition-colors duration-200 font-medium"
+                className="block w-full text-left px-3 py-2 text-gray-300 hover:text-white hover:bg-gray-700/50 rounded-lg transition-colors duration-200 font-medium cursor-pointer"
               >
                 Features
               </button>
               <button
                 onClick={() => scrollToSection("pricing")}
-                className="block w-full text-left px-3 py-2 text-gray-300 hover:text-white hover:bg-gray-700/50 rounded-lg transition-colors duration-200 font-medium"
+                className="block w-full text-left px-3 py-2 text-gray-300 hover:text-white hover:bg-gray-700/50 rounded-lg transition-colors duration-200 font-medium cursor-pointer"
               >
                 Pricing
               </button>
               <button
                 onClick={() => scrollToSection("contact")}
-                className="block w-full text-left px-3 py-2 text-gray-300 hover:text-white hover:bg-gray-700/50 rounded-lg transition-colors duration-200 font-medium"
+                className="block w-full text-left px-3 py-2 text-gray-300 hover:text-white hover:bg-gray-700/50 rounded-lg transition-colors duration-200 font-medium cursor-pointer"
               >
                 Contact
               </button>
@@ -156,13 +155,13 @@ const NavigationBar = () => {
               <div className="pt-4 pb-3 border-t border-gray-700/50">
                 <button
                   onClick={() => handleAuthNavigation("login")}
-                  className="block w-full text-left px-3 py-2 text-gray-300 hover:text-white hover:bg-gray-700/50 rounded-lg transition-colors duration-200 font-medium mb-2"
+                  className="block w-full text-left px-3 py-2 text-gray-300 hover:text-white hover:bg-gray-700/50 rounded-lg transition-colors duration-200 font-medium mb-2 cursor-pointer"
                 >
                   Login
                 </button>
                 <button
                   onClick={() => handleAuthNavigation("signup")}
-                  className="block w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-3 py-2 rounded-lg font-medium transition-all duration-300"
+                  className="block w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-3 py-2 rounded-lg font-medium transition-all duration-300 cursor-pointer"
                 >
                   Sign Up
                 </button>
