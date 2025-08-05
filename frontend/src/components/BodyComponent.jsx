@@ -7,22 +7,19 @@ import site_stats from "../assets/site_stats.svg";
 const HeaderTextComponent = () => {
   return (
     <div className="relative min-h-screen bg-gradient-to-br from-[#0c0e14] via-[#0f1419] to-[#0c0e14] text-white overflow-hidden">
-      {/* Background decoration */}
-
-      {/* Gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-r from-blue-900/10 via-transparent to-cyan-900/10"></div>
 
-      <div className="relative z-10 flex items-center justify-center px-4 py-16 lg:py-24">
-        <div className="flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-16 max-w-7xl mx-auto w-full">
-          <div className="flex flex-col items-start justify-center flex-1 gap-8 lg:gap-12 max-w-2xl">
+      <div className="relative z-10 flex items-center justify-center px-4 py-16 lg:py-22">
+        <div className="flex flex-col lg:flex-row items-center justify-center gap-8 lg:gap-12 max-w-7xl mx-auto w-full">
+          <div className="flex flex-col items-start justify-center flex-1 gap-8  max-w-2xl">
             <div className="space-y-6">
               <h1 className="text-4xl md:text-5xl lg:text-6xl font-bold leading-tight tracking-tight">
-                Monitor Your{" "} <br/>
+                Monitor Your <br />
                 <span className="bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-500 text-transparent bg-clip-text animate-pulse">
                   Website Status
                 </span>
                 <br />
-                  24/7
+                24/7
               </h1>
 
               <p className="text-lg md:text-xl text-gray-300 leading-relaxed max-w-xl">
@@ -72,14 +69,14 @@ const HeaderTextComponent = () => {
               </div>
             </div>
           </div>
-          <div className="flex flex-col items-center justify-center flex-1 lg:min-h-[600px]">
+          <div className="flex flex-col items-center justify-center flex-1 lg:min-h-[500px]">
             <div className="relative group">
               <div className="absolute -inset-4 bg-gradient-to-r from-blue-600/20 to-cyan-600/20 rounded-3xl blur-xl group-hover:blur-2xl transition-all duration-500"></div>
               <div className="relative bg-gradient-to-br from-gray-900/50 to-gray-800/50 backdrop-blur-sm border border-gray-700/50 rounded-3xl p-6 shadow-2xl">
                 <img
                   src={site_stats}
                   alt="Website monitoring dashboard"
-                  className="w-full h-auto max-w-lg rounded-2xl shadow-2xl transform group-hover:scale-105 transition-all duration-500"
+                  className="w-full h-auto lg:h-[500px] max-w-lg rounded-2xl shadow-2xl transform group-hover:scale-105 transition-all duration-500"
                 />
               </div>
             </div>
@@ -90,12 +87,10 @@ const HeaderTextComponent = () => {
   );
 };
 
-const BodyComponent = () => {
+export const BodyComponent = () => {
   return (
     <div>
       <HeaderTextComponent />
     </div>
   );
 };
-
-export default BodyComponent;
