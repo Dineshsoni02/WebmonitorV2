@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import site_stats from "../assets/site_stats.svg";
-
 const NavigationBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -54,33 +53,21 @@ const NavigationBar = () => {
             >
               Features
             </button>
-            <button
-              onClick={() => scrollToSection("pricing")}
-              className="text-gray-300 hover:text-white transition-colors duration-200 font-medium cursor-pointer"
-            >
-              Pricing
-            </button>
-            <button
-              onClick={() => scrollToSection("contact")}
-              className="text-gray-300 hover:text-white transition-colors duration-200 font-medium cursor-pointer"
-            >
-              Contact
-            </button>
           </div>
 
           {/* Desktop Auth Buttons */}
           <div className="hidden md:flex items-center space-x-4">
             <button
-              onClick={() => handleAuthNavigation("login")}
+              onClick={() => scrollToSection("dashboard")}
               className="text-gray-300 hover:text-white transition-colors duration-200 font-medium px-4 py-2 rounded-lg hover:bg-gray-700/50 cursor-pointer"
             >
-              Login
+              + Add Site
             </button>
             <button
               onClick={() => handleAuthNavigation("signup")}
               className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-6 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/25 cursor-pointer"
             >
-              Sign Up
+              Sign In
             </button>
           </div>
 
@@ -138,32 +125,20 @@ const NavigationBar = () => {
               >
                 Features
               </button>
-              <button
-                onClick={() => scrollToSection("pricing")}
-                className="block w-full text-left px-3 py-2 text-gray-300 hover:text-white hover:bg-gray-700/50 rounded-lg transition-colors duration-200 font-medium cursor-pointer"
-              >
-                Pricing
-              </button>
-              <button
-                onClick={() => scrollToSection("contact")}
-                className="block w-full text-left px-3 py-2 text-gray-300 hover:text-white hover:bg-gray-700/50 rounded-lg transition-colors duration-200 font-medium cursor-pointer"
-              >
-                Contact
-              </button>
 
               {/* Mobile Auth Buttons */}
               <div className="pt-4 pb-3 border-t border-gray-700/50">
                 <button
-                  onClick={() => handleAuthNavigation("login")}
+                  onClick={() => scrollToSection("dashboard")}
                   className="block w-full text-left px-3 py-2 text-gray-300 hover:text-white hover:bg-gray-700/50 rounded-lg transition-colors duration-200 font-medium mb-2 cursor-pointer"
                 >
-                  Login
+                  + Add Site
                 </button>
                 <button
                   onClick={() => handleAuthNavigation("signup")}
                   className="block w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-3 py-2 rounded-lg font-medium transition-all duration-300 cursor-pointer"
                 >
-                  Sign Up
+                  Sign In
                 </button>
               </div>
             </div>
@@ -260,6 +235,8 @@ const HeaderTextComponent = () => {
   );
 };
 
+const FeaturesSection = () => {};
+
 export const BodyComponent = () => {
   return (
     <div>
@@ -268,4 +245,3 @@ export const BodyComponent = () => {
     </div>
   );
 };
-
