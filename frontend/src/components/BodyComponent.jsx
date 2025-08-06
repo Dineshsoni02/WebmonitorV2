@@ -1,6 +1,13 @@
 import React, { useState } from "react";
 import site_stats from "../assets/site_stats.svg";
-
+import {
+  ChartColumn,
+  BellDot,
+  Smartphone,
+  Zap,
+  FileLock2,
+  ChartLine,
+} from "lucide-react";
 
 const NavigationBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -240,43 +247,43 @@ const HeaderTextComponent = () => {
 const FeaturesSection = () => {
   const features = [
     {
-      id:"1",
-      icon: <BarChartIcon className="w-6 h-6" />,
+      id: "1",
+      icon: <ChartColumn className="w-6 h-6" />,
       title: "Real-time Analytics",
       description:
         "Get instant insights with our powerful real-time monitoring and analytics dashboard.",
     },
     {
-      id:"2", 
-      icon: <BellIcon className="w-6 h-6" />,
+      id: "2",
+      icon: <BellDot className="w-6 h-6" />,
       title: "Instant Alerts",
       description:
         "Receive immediate notifications when your website experiences any downtime or issues.",
     },
     {
-      id:"3",
-      icon: <PhoneIcon className="w-6 h-6" />,
+      id: "3",
+      icon: <Smartphone className="w-6 h-6" />,
       title: "Mobile Responsive",
       description:
         "Monitor your websites on the go with our fully responsive mobile interface.",
     },
     {
-      id:"4",
-      icon: <FlashIcon className="w-6 h-6" />,
+      id: "4",
+      icon: <Zap className="w-6 h-6" />,
       title: "Lightning Fast",
       description:
         "Our optimized system ensures minimal impact on your website performance.",
     },
     {
-      id:"5", 
-      icon:   <LockIcon className="w-6 h-6" />,
+      id: "5",
+      icon: <FileLock2 className="w-6 h-6" />,
       title: "Secure & Private",
       description:
         "Your data is encrypted and stored securely with enterprise-grade security measures.",
     },
     {
-      id:"6",
-      icon: <ChartLineIcon className="w-6 h-6" />,
+      id: "6",
+      icon: <ChartLine className="w-6 h-6" />,
       title: "Performance Reports",
       description:
         "Detailed reports and analytics to help you optimize your website performance.",
