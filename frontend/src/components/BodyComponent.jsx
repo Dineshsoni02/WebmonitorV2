@@ -295,21 +295,25 @@ const FeaturesSection = () => {
       <div className="container mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="text-4xl font-bold text-white mb-4">
-            Powerful Features
+            Everything You Need to Monitor
+            <br />
+            <span className="bg-gradient-to-r from-blue-400 via-cyan-400 to-blue-500 text-transparent bg-clip-text animate-pulse">
+              Your Websites
+            </span>
           </h2>
           <p className="text-xl text-white max-w-2xl mx-auto">
-            Everything you need to monitor and optimize your website's
-            performance
+            Comprehensive monitoring tools that give you complete visibility
+            into your website's health and performance.
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mx-auto max-w-7xl">
           {features.map((feature) => (
             <div
               key={feature.id}
-              className="bg-gradient-to-r from-blue-600 to-cyan-600 p-8 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300"
+              className="bg-transparent border border-gray-700/50 hover:border-gray-600/80 p-8 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300"
             >
-              <div className="text-4xl mb-4">{feature.icon}</div>
+              <div className="text-4xl mb-4 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-xl p-2 w-12 h-12 flex items-center justify-center">{feature.icon}</div>
               <h3 className="text-xl font-semibold text-white mb-3">
                 {feature.title}
               </h3>
