@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import site_stats from "../assets/site_stats.svg";
+
 const NavigationBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -235,13 +236,18 @@ const HeaderTextComponent = () => {
   );
 };
 
-const FeaturesSection = () => {};
+const FeaturesSection = () => {
+  return <div className="bg-amber-300 min-h-screen ">
+
+  </div>;
+};
 
 export const BodyComponent = () => {
   return (
     <div>
       <NavigationBar />
       <HeaderTextComponent />
+      <FeaturesSection />
     </div>
   );
 };
