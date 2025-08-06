@@ -311,9 +311,11 @@ const FeaturesSection = () => {
           {features.map((feature) => (
             <div
               key={feature.id}
-              className="bg-transparent border border-gray-700/50 hover:border-gray-600/80 p-8 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300"
+              className="bg-transparent border border-gray-700/50 hover:border-gray-600/80 p-8 rounded-xl shadow-md hover:shadow-[0px_0px_18px_5px] hover:shadow-cyan-500/25 transition-all duration-300"
             >
-              <div className="text-4xl mb-4 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-xl p-2 w-12 h-12 flex items-center justify-center">{feature.icon}</div>
+              <div className="text-4xl mb-4 bg-gradient-to-r from-blue-600 to-cyan-600 rounded-xl p-2 w-12 h-12 flex items-center justify-center">
+                {feature.icon}
+              </div>
               <h3 className="text-xl font-semibold text-white mb-3">
                 {feature.title}
               </h3>
