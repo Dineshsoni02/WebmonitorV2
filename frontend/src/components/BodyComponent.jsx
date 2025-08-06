@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import site_stats from "../assets/site_stats.svg";
 
+
 const NavigationBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
@@ -237,9 +238,81 @@ const HeaderTextComponent = () => {
 };
 
 const FeaturesSection = () => {
-  return <div className="bg-amber-300 min-h-screen ">
+  const features = [
+    {
+      id:"1",
+      icon: <BarChartIcon className="w-6 h-6" />,
+      title: "Real-time Analytics",
+      description:
+        "Get instant insights with our powerful real-time monitoring and analytics dashboard.",
+    },
+    {
+      id:"2", 
+      icon: <BellIcon className="w-6 h-6" />,
+      title: "Instant Alerts",
+      description:
+        "Receive immediate notifications when your website experiences any downtime or issues.",
+    },
+    {
+      id:"3",
+      icon: <PhoneIcon className="w-6 h-6" />,
+      title: "Mobile Responsive",
+      description:
+        "Monitor your websites on the go with our fully responsive mobile interface.",
+    },
+    {
+      id:"4",
+      icon: <FlashIcon className="w-6 h-6" />,
+      title: "Lightning Fast",
+      description:
+        "Our optimized system ensures minimal impact on your website performance.",
+    },
+    {
+      id:"5", 
+      icon:   <LockIcon className="w-6 h-6" />,
+      title: "Secure & Private",
+      description:
+        "Your data is encrypted and stored securely with enterprise-grade security measures.",
+    },
+    {
+      id:"6",
+      icon: <ChartLineIcon className="w-6 h-6" />,
+      title: "Performance Reports",
+      description:
+        "Detailed reports and analytics to help you optimize your website performance.",
+    },
+  ];
 
-  </div>;
+  return (
+    <section className="py-20 bg-gradient-to-br from-[#0c0e14] via-[#0f1419] to-[#0c0e14] text-white">
+      <div className="container mx-auto px-4">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl font-bold text-white mb-4">
+            Powerful Features
+          </h2>
+          <p className="text-xl text-white max-w-2xl mx-auto">
+            Everything you need to monitor and optimize your website's
+            performance
+          </p>
+        </div>
+
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {features.map((feature) => (
+            <div
+              key={feature.id}
+              className="bg-gradient-to-r from-blue-600 to-cyan-600 p-8 rounded-xl shadow-md hover:shadow-lg transition-shadow duration-300"
+            >
+              <div className="text-4xl mb-4">{feature.icon}</div>
+              <h3 className="text-xl font-semibold text-white mb-3">
+                {feature.title}
+              </h3>
+              <p className="text-white">{feature.description}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
 };
 
 export const BodyComponent = () => {
