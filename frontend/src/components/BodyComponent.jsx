@@ -371,9 +371,9 @@ const DashboardSection = () => {
           <div className="statsCard bg-transparent border border-gray-700/50 hover:border-gray-600/80 p-8 rounded-xl shadow-md hover:shadow-[0px_0px_28px_2px] hover:shadow-cyan-500/25 transition-all duration-300">
             <div className="flex items-center gap-2 mb-4">
               <div className="text-2xl flex items-center justify-center">
-                <CircleCheckBig className="w-6 h-6" />
+                <CircleCheckBig className="w-5 h-5 text-green-400" />
               </div>
-              <h3 className="text-xl font-semibold text-white ">
+              <h3 className="text-base font-medium text-white ">
                 Online Sites
               </h3>
             </div>
@@ -382,9 +382,9 @@ const DashboardSection = () => {
           <div className="statsCard bg-transparent border border-gray-700/50 hover:border-gray-600/80 p-8 rounded-xl shadow-md hover:shadow-[0px_0px_28px_2px] hover:shadow-cyan-500/25 transition-all duration-300">
             <div className="flex items-center gap-2 mb-4">
               <div className="text-2xl flex items-center justify-center">
-                <Clock4 className="w-6 h-6" />
+                <Clock4 className="w-5 h-5 text-blue-400" />
               </div>
-              <h3 className="text-xl font-semibold text-white ">
+              <h3 className="text-base font-medium text-white ">
                 Avg Response
               </h3>
             </div>
@@ -393,18 +393,18 @@ const DashboardSection = () => {
           <div className="statsCard bg-transparent border border-gray-700/50 hover:border-gray-600/80 p-8 rounded-xl shadow-md hover:shadow-[0px_0px_28px_2px] hover:shadow-cyan-500/25 transition-all duration-300">
             <div className="flex items-center gap-2 mb-4">
               <div className="text-2xl flex items-center justify-center">
-                <TrendingUp className="w-6 h-6" />
+                <TrendingUp className="w-5 h-5 text-green-400" />
               </div>
-              <h3 className="text-xl font-semibold text-white ">Uptime</h3>
+              <h3 className="text-base font-medium text-white ">Uptime</h3>
             </div>
             <p className="text-white text-xl font-bold  ">99.9%</p>
           </div>
           <div className="statsCard bg-transparent border border-gray-700/50 hover:border-gray-600/80 p-8 rounded-xl shadow-md hover:shadow-[0px_0px_28px_2px] hover:shadow-cyan-500/25 transition-all duration-300">
             <div className="flex items-center gap-2 mb-4">
               <div className="text-2xl flex items-center justify-center">
-                <TriangleAlert className="w-6 h-6" />
+                <TriangleAlert className="w-5 h-5 text-orange-400" />
               </div>
-              <h3 className="text-xl font-semibold text-white ">SSL Issues </h3>
+              <h3 className="text-base font-medium text-white ">SSL Issues </h3>
             </div>
             <p className="text-white text-xl font-bold">1</p>
           </div>
