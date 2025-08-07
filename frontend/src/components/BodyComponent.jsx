@@ -328,12 +328,51 @@ const FeaturesSection = () => {
   );
 };
 
+const FooterSection = () => {
+  return (
+    <footer className="py-12 bg-gradient-to-br from-[#0c0e14] via-[#0f1419] to-[#0c0e14] text-white">
+      <div className="container mx-auto px-4">
+        <div className="text-center">
+          <p className="text-lg text-white max-w-2xl mx-auto">
+            © {new Date().getFullYear()} WebMonitor. All rights reserved.
+          </p>
+        </div>
+      </div>
+    </footer>
+  );
+};
+
+const DashboardSection = () => {
+  return (
+    <section
+      id="dashboard"
+      className="py-20 bg-gradient-to-br from-[#0c0e14] via-[#0f1419] to-[#0c0e14] text-white"
+    >
+      <div className="container mx-auto px-4 flex justify-between items-center max-w-7xl">
+        <div >
+          <h2 className="text-2xl font-bold text-white mb-2">
+            Your Monitoring Dashboard
+          </h2>
+          <p className="text-base text-white max-w-2xl">
+            Real-time status of all your monitored websites
+          </p>
+        </div>
+        <button className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-6 py-2 rounded-xl font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/25 focus:outline-none focus:ring-2 focus:ring-cyan-500/50">
+          + Add Website
+        </button>
+      </div>
+    </section>
+  );
+};
+
 export const BodyComponent = () => {
   return (
     <div>
       <NavigationBar />
       <HeaderTextComponent />
       <FeaturesSection />
+      <DashboardSection />
+      <FooterSection />
     </div>
   );
 };
