@@ -349,7 +349,7 @@ const DashboardSection = () => {
       className="py-20 bg-gradient-to-br from-[#0c0e14] via-[#0f1419] to-[#0c0e14] text-white"
     >
       <div className="container mx-auto px-4 flex justify-between items-center max-w-7xl">
-        <div >
+        <div>
           <h2 className="text-2xl font-bold text-white mb-2">
             Your Monitoring Dashboard
           </h2>
@@ -357,9 +357,54 @@ const DashboardSection = () => {
             Real-time status of all your monitored websites
           </p>
         </div>
-        <button className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-6 py-2 rounded-xl font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/25 focus:outline-none focus:ring-2 focus:ring-cyan-500/50">
+        <button className="cursor-pointer bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-6 py-2 rounded-xl font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/25 focus:outline-none focus:ring-2 focus:ring-cyan-500/50">
           + Add Website
         </button>
+      </div>
+
+      <div className="container mx-auto px-4 max-w-7xl mt-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="statsCard bg-transparent border border-gray-700/50 hover:border-gray-600/80 p-8 rounded-xl shadow-md hover:shadow-[0px_0px_28px_2px] hover:shadow-cyan-500/25 transition-all duration-300">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="text-2xl flex items-center justify-center">
+                <ChartColumn className="w-6 h-6" />
+              </div>
+              <h3 className="text-xl font-semibold text-white ">
+                Online Sites
+              </h3>
+            </div>
+            <p className="text-white text-xl font-bold">2/3</p>
+          </div>
+          <div className="statsCard bg-transparent border border-gray-700/50 hover:border-gray-600/80 p-8 rounded-xl shadow-md hover:shadow-[0px_0px_28px_2px] hover:shadow-cyan-500/25 transition-all duration-300">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="text-2xl flex items-center justify-center">
+                <ChartColumn className="w-6 h-6" />
+              </div>
+              <h3 className="text-xl font-semibold text-white ">
+                Avg Response
+              </h3>
+            </div>
+            <p className="text-white text-xl font-bold">482ms</p>
+          </div>
+          <div className="statsCard bg-transparent border border-gray-700/50 hover:border-gray-600/80 p-8 rounded-xl shadow-md hover:shadow-[0px_0px_28px_2px] hover:shadow-cyan-500/25 transition-all duration-300">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="text-2xl flex items-center justify-center">
+                <ChartColumn className="w-6 h-6" />
+              </div>
+              <h3 className="text-xl font-semibold text-white ">Uptime</h3>
+            </div>
+            <p className="text-white text-xl font-bold  ">99.9%</p>
+          </div>
+          <div className="statsCard bg-transparent border border-gray-700/50 hover:border-gray-600/80 p-8 rounded-xl shadow-md hover:shadow-[0px_0px_28px_2px] hover:shadow-cyan-500/25 transition-all duration-300">
+            <div className="flex items-center gap-2 mb-4">
+              <div className="text-2xl flex items-center justify-center">
+                <ChartColumn className="w-6 h-6" />
+              </div>
+              <h3 className="text-xl font-semibold text-white ">SSL Issues </h3>
+            </div>
+            <p className="text-white text-xl font-bold">1</p>
+          </div>
+        </div>
       </div>
     </section>
   );
