@@ -7,6 +7,10 @@ import {
   Zap,
   FileLock2,
   ChartLine,
+  CircleCheckBig,
+  Clock4,
+  TrendingUp,
+  TriangleAlert,
 } from "lucide-react";
 
 const NavigationBar = () => {
@@ -367,7 +371,7 @@ const DashboardSection = () => {
           <div className="statsCard bg-transparent border border-gray-700/50 hover:border-gray-600/80 p-8 rounded-xl shadow-md hover:shadow-[0px_0px_28px_2px] hover:shadow-cyan-500/25 transition-all duration-300">
             <div className="flex items-center gap-2 mb-4">
               <div className="text-2xl flex items-center justify-center">
-                <ChartColumn className="w-6 h-6" />
+                <CircleCheckBig className="w-6 h-6" />
               </div>
               <h3 className="text-xl font-semibold text-white ">
                 Online Sites
@@ -378,7 +382,7 @@ const DashboardSection = () => {
           <div className="statsCard bg-transparent border border-gray-700/50 hover:border-gray-600/80 p-8 rounded-xl shadow-md hover:shadow-[0px_0px_28px_2px] hover:shadow-cyan-500/25 transition-all duration-300">
             <div className="flex items-center gap-2 mb-4">
               <div className="text-2xl flex items-center justify-center">
-                <ChartColumn className="w-6 h-6" />
+                <Clock4 className="w-6 h-6" />
               </div>
               <h3 className="text-xl font-semibold text-white ">
                 Avg Response
@@ -389,7 +393,7 @@ const DashboardSection = () => {
           <div className="statsCard bg-transparent border border-gray-700/50 hover:border-gray-600/80 p-8 rounded-xl shadow-md hover:shadow-[0px_0px_28px_2px] hover:shadow-cyan-500/25 transition-all duration-300">
             <div className="flex items-center gap-2 mb-4">
               <div className="text-2xl flex items-center justify-center">
-                <ChartColumn className="w-6 h-6" />
+                <TrendingUp className="w-6 h-6" />
               </div>
               <h3 className="text-xl font-semibold text-white ">Uptime</h3>
             </div>
@@ -398,7 +402,7 @@ const DashboardSection = () => {
           <div className="statsCard bg-transparent border border-gray-700/50 hover:border-gray-600/80 p-8 rounded-xl shadow-md hover:shadow-[0px_0px_28px_2px] hover:shadow-cyan-500/25 transition-all duration-300">
             <div className="flex items-center gap-2 mb-4">
               <div className="text-2xl flex items-center justify-center">
-                <ChartColumn className="w-6 h-6" />
+                <TriangleAlert className="w-6 h-6" />
               </div>
               <h3 className="text-xl font-semibold text-white ">SSL Issues </h3>
             </div>
