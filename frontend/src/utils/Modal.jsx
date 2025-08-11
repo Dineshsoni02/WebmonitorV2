@@ -57,8 +57,8 @@ export const DialogBox = ({ showModal, setShowModal }) => {
                   Enter Website URL *
                 </label>
                 <input
-                  type="text"
-                  placeholder="Enter Website URL"
+                  type="url"
+                  placeholder="https://example.com"
                   required
                   value={websiteInfo.url}
                   onChange={(e) =>
@@ -73,7 +73,7 @@ export const DialogBox = ({ showModal, setShowModal }) => {
                 </label>
                 <input
                   type="text"
-                  placeholder="Enter Website Name"
+                  placeholder="Example Site"
                   value={websiteInfo.name}
                   onChange={(e) =>
                     setWebsiteInfo({ ...websiteInfo, name: e.target.value })
