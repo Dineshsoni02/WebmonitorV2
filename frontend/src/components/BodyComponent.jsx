@@ -12,7 +12,7 @@ import {
   TrendingUp,
   TriangleAlert,
 } from "lucide-react";
-import {DialogBox} from "../utils/Modal";
+import { DialogBox } from "../utils/Modal";
 
 const NavigationBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -350,7 +350,8 @@ const FooterSection = () => {
   );
 };
 
-const DashboardSection = () => {
+const DashboardSection = ({ setShowModal }) => {
+
   return (
     <section
       id="dashboard"
@@ -365,7 +366,10 @@ const DashboardSection = () => {
             Real-time status of all your monitored websites
           </p>
         </div>
-        <button className="cursor-pointer bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-6 py-2 rounded-xl font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/25 focus:outline-none focus:ring-2 focus:ring-cyan-500/50">
+        <button
+          className="cursor-pointer bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-6 py-2 rounded-xl font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/25 focus:outline-none focus:ring-2 focus:ring-cyan-500/50"
+          onClick={() => setShowModal(true)}
+        >
           + Add Website
         </button>
       </div>
@@ -419,13 +423,15 @@ const DashboardSection = () => {
 };
 
 export const BodyComponent = () => {
+  const [showModal, setShowModal] = useState(false);
+
   return (
     <div>
       <NavigationBar />
       <HeaderTextComponent />
       <FeaturesSection />
-      <DashboardSection />
-      <DialogBox />
+      <DashboardSection setShowModal={setShowModal} />
+      <DialogBox setShowModal={setShowModal} showModal={showModal} />
 
       <FooterSection />
     </div>

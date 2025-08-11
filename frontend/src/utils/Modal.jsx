@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import { Globe, X } from "lucide-react";
 
 const Modal = (props) => {
@@ -21,18 +21,11 @@ const Modal = (props) => {
   );
 };
 
-export const DialogBox = () => {
-  const [showModal, setShowModal] = useState(false);
-
-  const handleClose = () => {
-    console.log("close");
-    setShowModal(false);
-  };
-
+export const DialogBox = ({ showModal, setShowModal }) => {
   return (
     <>
       {showModal && (
-        <Modal onClose={handleClose}>
+        <Modal onClose={() => setShowModal(false)}>
           <div className=" p-8 mx-auto relative w-full">
             <div className="flex items-center gap-2 mb-4">
               <Globe className="w-6 h-6" />
