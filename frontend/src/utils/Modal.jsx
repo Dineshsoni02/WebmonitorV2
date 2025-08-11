@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Globe, X } from "lucide-react";
 
 const Modal = (props) => {
@@ -22,6 +22,16 @@ const Modal = (props) => {
 };
 
 export const DialogBox = ({ showModal, setShowModal }) => {
+  const [websiteInfo, setWebsiteInfo] = useState({
+    url: "",
+    name: "",
+  });
+
+  const handleAddWebsite = () => {
+    setShowModal(false);
+    console.log(websiteInfo);
+    setWebsiteInfo({ url: "", name: "" });
+  };
   return (
     <>
       {showModal && (
@@ -41,7 +51,7 @@ export const DialogBox = ({ showModal, setShowModal }) => {
               <X className="w-6 h-6" />
             </button>
 
-            <form className="flex flex-col gap-4">
+            <form className="flex flex-col gap-4" onSubmit={handleAddWebsite}>
               <div className="flex flex-col gap-2">
                 <label htmlFor="url" className="text-white">
                   Enter Website URL *
@@ -50,6 +60,10 @@ export const DialogBox = ({ showModal, setShowModal }) => {
                   type="text"
                   placeholder="Enter Website URL"
                   required
+                  value={websiteInfo.url}
+                  onChange={(e) =>
+                    setWebsiteInfo({ ...websiteInfo, url: e.target.value })
+                  }
                   className="bg-transparent border border-gray-700 hover:border-gray-600/80 p-2 rounded-lg shadow-md  hover:shadow-cyan-500/10 transition-all duration-300"
                 />
               </div>
@@ -60,11 +74,17 @@ export const DialogBox = ({ showModal, setShowModal }) => {
                 <input
                   type="text"
                   placeholder="Enter Website Name"
-                  required
+                  value={websiteInfo.name}
+                  onChange={(e) =>
+                    setWebsiteInfo({ ...websiteInfo, name: e.target.value })
+                  }
                   className="bg-transparent border border-gray-700 hover:border-gray-600/80 p-2 rounded-lg shadow-md hover:shadow-cyan-500/10 transition-all duration-300"
                 />
               </div>
-              <button className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-6 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/25 cursor-pointer">
+              <button
+                // type="submit"
+                className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-6 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/25 cursor-pointer"
+              >
                 Submit
               </button>
             </form>
