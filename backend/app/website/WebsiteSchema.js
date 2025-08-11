@@ -9,6 +9,9 @@ const websiteSchema = new Schema(
       required: true,
       unique: true,
     },
+    websiteName: {
+      type: String,
+    },
     userId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: "User",

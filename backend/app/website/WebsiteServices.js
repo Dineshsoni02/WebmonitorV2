@@ -4,7 +4,7 @@ import WebsiteSchema from "./WebsiteSchema.js";
 import axios from "axios";
 
 export const createWebsite = async (req, res) => {
-  const { url } = req.body;
+  const { url, websiteName } = req.body;
 
   if (!url) {
     return res.status(400).json({
@@ -41,8 +41,13 @@ export const createWebsite = async (req, res) => {
     });
   }
 
+  if (!websiteName) {
+    websiteName = url.split("/")[2];
+  }
+
   const newWebsite = new WebsiteSchema({
     url,
+    websiteName,
     userId: user._id,
     isActive: true,
   });
@@ -103,4 +108,3 @@ export const getAllWebsite = async (req, res) => {
     data: websites,
   });
 };
-

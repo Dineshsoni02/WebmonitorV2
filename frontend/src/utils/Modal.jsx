@@ -55,7 +55,7 @@ export const DialogBox = ({ showModal, setShowModal }) => {
               </div>
               <div className="flex flex-col gap-2">
                 <label htmlFor="name" className="text-white">
-                  Enter Website Name *
+                  Enter Website Name
                 </label>
                 <input
                   type="text"
