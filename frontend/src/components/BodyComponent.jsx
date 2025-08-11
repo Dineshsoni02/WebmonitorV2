@@ -27,7 +27,6 @@ const NavigationBar = () => {
 
   const handleAuthNavigation = (page) => {
     console.log(`Navigating to ${page} page`);
-    // You can replace this with your routing logic
     // window.location.href = `/auth?page=${page}`;
   };
 
