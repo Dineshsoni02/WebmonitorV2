@@ -29,7 +29,7 @@ export const DialogBox = ({ showModal, setShowModal }) => {
   });
   const [isUrlValid, setIsUrlValid] = useState(true);
 
-  const handleAddWebsite = (e) => {
+  const handleAddWebsite = async (e) => {
     e.preventDefault();
     if (!validateUrl(websiteInfo.url)) {
       setIsUrlValid(false);
@@ -37,6 +37,17 @@ export const DialogBox = ({ showModal, setShowModal }) => {
     }
     setIsUrlValid(true);
     console.log(websiteInfo);
+    const response = await fetch("http://localhost:5000/website/", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(websiteInfo),
+    });
+
+    const data = await response.json();
+    console.log(data);
+
     setWebsiteInfo({ url: "", name: "" });
     setShowModal(false);
   };
