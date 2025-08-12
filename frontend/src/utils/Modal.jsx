@@ -27,17 +27,20 @@ export const DialogBox = ({ showModal, setShowModal }) => {
     url: "",
     name: "",
   });
+  const [isUrlValid, setIsUrlValid] = useState(true);
 
   const handleAddWebsite = (e) => {
     e.preventDefault();
     if (!validateUrl(websiteInfo.url)) {
-      alert("Please enter a valid URL");
+      setIsUrlValid(false);
       return;
     }
+    setIsUrlValid(true);
     console.log(websiteInfo);
     setWebsiteInfo({ url: "", name: "" });
     setShowModal(false);
   };
+
   return (
     <>
       {showModal && (
@@ -72,6 +75,11 @@ export const DialogBox = ({ showModal, setShowModal }) => {
                   }
                   className="bg-transparent border border-gray-700 hover:border-gray-600/80 p-2 rounded-lg shadow-md  hover:shadow-cyan-500/10 transition-all duration-300"
                 />
+                {!isUrlValid && (
+                  <p className="text-red-400 text-sm font-medium">
+                    Enter Valid url 🚨
+                  </p>
+                )}
               </div>
               <div className="flex flex-col gap-2">
                 <label htmlFor="name" className="text-white">
@@ -80,7 +88,7 @@ export const DialogBox = ({ showModal, setShowModal }) => {
                 <input
                   type="text"
                   placeholder="Example Site"
-                  value={websiteInfo.name}
+                  value={websiteInfo.name || websiteInfo.url.split("/")[2]}
                   onChange={(e) =>
                     setWebsiteInfo({ ...websiteInfo, name: e.target.value })
                   }
@@ -88,7 +96,7 @@ export const DialogBox = ({ showModal, setShowModal }) => {
                 />
               </div>
               <button
-                // type="submit"
+                type="submit"
                 className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-6 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/25 cursor-pointer"
               >
                 Submit
