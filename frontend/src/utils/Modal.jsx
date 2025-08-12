@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Globe, X } from "lucide-react";
+import { validateUrl } from "../utils/Validation";
 
 const Modal = (props) => {
   const handleModalClick = () => {
@@ -27,10 +28,15 @@ export const DialogBox = ({ showModal, setShowModal }) => {
     name: "",
   });
 
-  const handleAddWebsite = () => {
-    setShowModal(false);
+  const handleAddWebsite = (e) => {
+    e.preventDefault();
+    if (!validateUrl(websiteInfo.url)) {
+      alert("Please enter a valid URL");
+      return;
+    }
     console.log(websiteInfo);
     setWebsiteInfo({ url: "", name: "" });
+    setShowModal(false);
   };
   return (
     <>
