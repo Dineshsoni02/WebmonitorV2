@@ -350,70 +350,220 @@ const FooterSection = () => {
 };
 
 const DashboardSection = ({ setShowModal }) => {
-
   return (
     <section
       id="dashboard"
       className="py-20 bg-gradient-to-br from-[#0c0e14] via-[#0f1419] to-[#0c0e14] text-white"
     >
-      <div className="container mx-auto px-4 flex justify-between items-center max-w-7xl">
-        <div>
-          <h2 className="text-2xl font-bold text-white mb-2">
-            Your Monitoring Dashboard
-          </h2>
-          <p className="text-base text-white max-w-2xl">
-            Real-time status of all your monitored websites
-          </p>
+      <div>
+        <div className="container mx-auto px-4 flex justify-between items-center max-w-7xl">
+          <div>
+            <h2 className="text-2xl font-bold text-white mb-2">
+              Your Monitoring Dashboard
+            </h2>
+            <p className="text-base text-white max-w-2xl">
+              Real-time status of all your monitored websites
+            </p>
+          </div>
+          <button
+            className="cursor-pointer bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-6 py-2 rounded-xl font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/25 focus:outline-none focus:ring-2 focus:ring-cyan-500/50"
+            onClick={() => setShowModal(true)}
+          >
+            + Add Website
+          </button>
         </div>
-        <button
-          className="cursor-pointer bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-6 py-2 rounded-xl font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/25 focus:outline-none focus:ring-2 focus:ring-cyan-500/50"
-          onClick={() => setShowModal(true)}
-        >
-          + Add Website
-        </button>
+
+        <div className="container mx-auto px-4 max-w-7xl mt-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+            <div className="statsCard bg-transparent border border-gray-700/50 hover:border-gray-600/80 p-8 rounded-xl shadow-md hover:shadow-[0px_0px_28px_2px] hover:shadow-cyan-500/25 transition-all duration-300">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="text-2xl flex items-center justify-center">
+                  <CircleCheckBig className="w-5 h-5 text-green-400" />
+                </div>
+                <h3 className="text-base font-medium text-white ">
+                  Online Sites
+                </h3>
+              </div>
+              <p className="text-white text-xl font-bold">2/3</p>
+            </div>
+            <div className="statsCard bg-transparent border border-gray-700/50 hover:border-gray-600/80 p-8 rounded-xl shadow-md hover:shadow-[0px_0px_28px_2px] hover:shadow-cyan-500/25 transition-all duration-300">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="text-2xl flex items-center justify-center">
+                  <Clock4 className="w-5 h-5 text-blue-400" />
+                </div>
+                <h3 className="text-base font-medium text-white ">
+                  Avg Response
+                </h3>
+              </div>
+              <p className="text-white text-xl font-bold">482ms</p>
+            </div>
+            <div className="statsCard bg-transparent border border-gray-700/50 hover:border-gray-600/80 p-8 rounded-xl shadow-md hover:shadow-[0px_0px_28px_2px] hover:shadow-cyan-500/25 transition-all duration-300">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="text-2xl flex items-center justify-center">
+                  <TrendingUp className="w-5 h-5 text-green-400" />
+                </div>
+                <h3 className="text-base font-medium text-white ">Uptime</h3>
+              </div>
+              <p className="text-white text-xl font-bold  ">99.9%</p>
+            </div>
+            <div className="statsCard bg-transparent border border-gray-700/50 hover:border-gray-600/80 p-8 rounded-xl shadow-md hover:shadow-[0px_0px_28px_2px] hover:shadow-cyan-500/25 transition-all duration-300">
+              <div className="flex items-center gap-2 mb-4">
+                <div className="text-2xl flex items-center justify-center">
+                  <TriangleAlert className="w-5 h-5 text-orange-400" />
+                </div>
+                <h3 className="text-base font-medium text-white ">
+                  SSL Issues{" "}
+                </h3>
+              </div>
+              <p className="text-white text-xl font-bold">1</p>
+            </div>
+          </div>
+        </div>
       </div>
 
-      <div className="container mx-auto px-4 max-w-7xl mt-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          <div className="statsCard bg-transparent border border-gray-700/50 hover:border-gray-600/80 p-8 rounded-xl shadow-md hover:shadow-[0px_0px_28px_2px] hover:shadow-cyan-500/25 transition-all duration-300">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="text-2xl flex items-center justify-center">
-                <CircleCheckBig className="w-5 h-5 text-green-400" />
-              </div>
-              <h3 className="text-base font-medium text-white ">
-                Online Sites
-              </h3>
+      <div className="container mx-auto px-4 max-w-7xl mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        <div className="websiteCard relative bg-transparent border border-gray-700/50 hover:border-gray-600/80 p-8 rounded-xl shadow-md hover:shadow-[0px_0px_28px_2px] hover:shadow-cyan-500/25 transition-all duration-300 flex gap-4 mb-4 flex-col">
+          {/* //top */}
+          <div className="flex gap-3 ">
+            <div className="dot bg-green-400 w-3 h-3 rounded-full animate-pulse"></div>
+            <div className="flex flex-col mt-0">
+              <div className="text-white font-bold mt-[-5px]">Website Name</div>
+              <span className="text-white/80 hover:text-white underline text-sm  ">
+                <a href="">http://localhost:5173/</a>
+              </span>
             </div>
-            <p className="text-white text-xl font-bold">2/3</p>
           </div>
-          <div className="statsCard bg-transparent border border-gray-700/50 hover:border-gray-600/80 p-8 rounded-xl shadow-md hover:shadow-[0px_0px_28px_2px] hover:shadow-cyan-500/25 transition-all duration-300">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="text-2xl flex items-center justify-center">
-                <Clock4 className="w-5 h-5 text-blue-400" />
-              </div>
-              <h3 className="text-base font-medium text-white ">
-                Avg Response
-              </h3>
-            </div>
-            <p className="text-white text-xl font-bold">482ms</p>
+
+          <div className="absolute top-2 right-2 text-white bg-green-600 px-2.5 py-0.5 text-sm font-medium rounded-full ">
+            Online
           </div>
-          <div className="statsCard bg-transparent border border-gray-700/50 hover:border-gray-600/80 p-8 rounded-xl shadow-md hover:shadow-[0px_0px_28px_2px] hover:shadow-cyan-500/25 transition-all duration-300">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="text-2xl flex items-center justify-center">
-                <TrendingUp className="w-5 h-5 text-green-400" />
+
+          {/* //bottom */}
+          <div className="mt-4 grid grid-cols-3 gap-2">
+            <div className="flex gap-0.5 flex-col items-center">
+              <div className="text-white font-bold">245ms</div>
+              <div className="text-white/60 font-medium text-xs">
+                Response Time
               </div>
-              <h3 className="text-base font-medium text-white ">Uptime</h3>
             </div>
-            <p className="text-white text-xl font-bold  ">99.9%</p>
+            <div className="flex gap-0.5 flex-col items-center">
+              <div className="text-white font-bold">99.9%</div>
+              <div className="text-white/60 font-medium text-xs">Uptime</div>
+            </div>
+            <div className="flex gap-0.5 flex-col items-center">
+              <div className="text-white font-bold">1</div>
+              <div className="text-white/60 font-medium text-xs">
+                SSL Issues
+              </div>
+            </div>
           </div>
-          <div className="statsCard bg-transparent border border-gray-700/50 hover:border-gray-600/80 p-8 rounded-xl shadow-md hover:shadow-[0px_0px_28px_2px] hover:shadow-cyan-500/25 transition-all duration-300">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="text-2xl flex items-center justify-center">
-                <TriangleAlert className="w-5 h-5 text-orange-400" />
-              </div>
-              <h3 className="text-base font-medium text-white ">SSL Issues </h3>
+        </div>
+        <div className="websiteCard relative bg-transparent border border-gray-700/50 hover:border-gray-600/80 p-8 rounded-xl shadow-md hover:shadow-[0px_0px_28px_2px] hover:shadow-cyan-500/25 transition-all duration-300 flex gap-4 mb-4 flex-col">
+          {/* //top */}
+          <div className="flex gap-3 ">
+            <div className="dot bg-red-400 w-3 h-3 rounded-full animate-pulse"></div>
+            <div className="flex flex-col mt-0">
+              <div className="text-white font-bold mt-[-5px]">Website Name</div>
+              <span className="text-white/80 hover:text-white underline text-sm  ">
+                <a href="">http://localhost:5173/</a>
+              </span>
             </div>
-            <p className="text-white text-xl font-bold">1</p>
+          </div>
+
+          <div className="absolute top-2 right-2 text-white bg-red-600 px-2.5 py-0.5 text-sm font-medium rounded-full ">
+            Offline
+          </div>
+
+          {/* //bottom */}
+          <div className="mt-4 grid grid-cols-3 gap-2">
+            <div className="flex gap-0.5 flex-col items-center">
+              <div className="text-white font-bold">245ms</div>
+              <div className="text-white/60 font-medium text-xs">
+                Response Time
+              </div>
+            </div>
+            <div className="flex gap-0.5 flex-col items-center">
+              <div className="text-white font-bold">99.9%</div>
+              <div className="text-white/60 font-medium text-xs">Uptime</div>
+            </div>
+            <div className="flex gap-0.5 flex-col items-center">
+              <div className="text-white font-bold">1</div>
+              <div className="text-white/60 font-medium text-xs">
+                SSL Issues
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="websiteCard relative bg-transparent border border-gray-700/50 hover:border-gray-600/80 p-8 rounded-xl shadow-md hover:shadow-[0px_0px_28px_2px] hover:shadow-cyan-500/25 transition-all duration-300 flex gap-4 mb-4 flex-col">
+          {/* //top */}
+          <div className="flex gap-3 ">
+            <div className="dot bg-yellow-400 w-3 h-3 rounded-full animate-pulse"></div>
+            <div className="flex flex-col mt-0">
+              <div className="text-white font-bold mt-[-5px]">Website Name</div>
+              <span className="text-white/80 hover:text-white underline text-sm  ">
+                <a href="">http://localhost:5173/</a>
+              </span>
+            </div>
+          </div>
+
+          <div className="absolute top-2 right-2 text-white bg-yellow-600 px-2.5 py-0.5 text-sm font-medium rounded-full ">
+            Issue
+          </div>
+
+          {/* //bottom */}
+          <div className="mt-4 grid grid-cols-3 gap-2">
+            <div className="flex gap-0.5 flex-col items-center">
+              <div className="text-white font-bold">245ms</div>
+              <div className="text-white/60 font-medium text-xs">
+                Response Time
+              </div>
+            </div>
+            <div className="flex gap-0.5 flex-col items-center">
+              <div className="text-white font-bold">99.9%</div>
+              <div className="text-white/60 font-medium text-xs">Uptime</div>
+            </div>
+            <div className="flex gap-0.5 flex-col items-center">
+              <div className="text-white font-bold">1</div>
+              <div className="text-white/60 font-medium text-xs">
+                SSL Issues
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="websiteCard relative bg-transparent border border-gray-700/50 hover:border-gray-600/80 p-8 rounded-xl shadow-md hover:shadow-[0px_0px_28px_2px] hover:shadow-cyan-500/25 transition-all duration-300 flex gap-4 mb-4 flex-col">
+          {/* //top */}
+          <div className="flex gap-3 ">
+            <div className="dot bg-green-400 w-3 h-3 rounded-full animate-pulse"></div>
+            <div className="flex flex-col mt-0">
+              <div className="text-white font-bold mt-[-5px]">Website Name</div>
+              <span className="text-white/80 hover:text-white underline text-sm  ">
+                <a href="">http://localhost:5173/</a>
+              </span>
+            </div>
+          </div>
+
+          <div className="absolute top-2 right-2 text-white bg-green-600 px-2.5 py-0.5 text-sm font-medium rounded-full ">
+            Online
+          </div>
+
+          {/* //bottom */}
+          <div className="mt-4 grid grid-cols-3 gap-2">
+            <div className="flex gap-0.5 flex-col items-center">
+              <div className="text-white font-bold">245ms</div>
+              <div className="text-white/60 font-medium text-xs">
+                Response Time
+              </div>
+            </div>
+            <div className="flex gap-0.5 flex-col items-center">
+              <div className="text-white font-bold">99.9%</div>
+              <div className="text-white/60 font-medium text-xs">Uptime</div>
+            </div>
+            <div className="flex gap-0.5 flex-col items-center">
+              <div className="text-white font-bold">1</div>
+              <div className="text-white/60 font-medium text-xs">
+                SSL Issues
+              </div>
+            </div>
           </div>
         </div>
       </div>
