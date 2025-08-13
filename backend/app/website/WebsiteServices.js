@@ -108,3 +108,27 @@ export const getAllWebsite = async (req, res) => {
     data: websites,
   });
 };
+
+export const guestWebsite = async (req, res) => {
+  const { url,name } = req.body;
+
+  console.log(url,name);
+
+  const response = await axios.get(url).catch((err) => void err);
+
+  if (!response || response.status !== 200) {
+    return res.status(422).json({
+      status: false,
+      message: messages.WEBSITE_NOT_ACTIVE + url,
+    });
+  }
+  
+  res.status(200).json({
+    status: true,
+    message: messages.WEBSITE_FETCHED,
+    data: response.status,
+  });
+
+
+
+};

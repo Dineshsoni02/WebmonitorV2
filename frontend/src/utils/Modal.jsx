@@ -48,8 +48,9 @@ export const DialogBox = ({ showModal, setShowModal }) => {
       return;
     }
     setIsUrlValid(true);
-    console.log(websiteInfo);
-    const response = await fetch("http://localhost:5000/website/", {
+    // console.log(websiteInfo);
+
+    const response = await fetch("http://localhost:5000/guest", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -58,7 +59,7 @@ export const DialogBox = ({ showModal, setShowModal }) => {
     });
 
     const data = await response.json();
-    console.log(data);
+    console.log("data", data);
 
     setWebsiteInfo({ url: "", name: "" });
     setShowModal(false);

@@ -6,12 +6,10 @@ import {
   createWebsite,
   deleteWebsite,
   getAllWebsite,
+  guestWebsite,
 } from "./WebsiteServices.js";
 
-// router.post("/website", createWebsite);
-// router.get("/website", getAllWebsite);
-// router.delete("/website/:id", deleteWebsite);
-
+router.post("/guest", guestWebsite);
 router.post("/website", authenticateUserMiddleware, createWebsite);
 router.get("/website", authenticateUserMiddleware, getAllWebsite);
 router.delete("/website/:id", authenticateUserMiddleware, deleteWebsite);
