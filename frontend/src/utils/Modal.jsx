@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Globe, X } from "lucide-react";
 import { validateUrl } from "../utils/Validation";
 
@@ -28,6 +28,18 @@ export const DialogBox = ({ showModal, setShowModal }) => {
     name: "",
   });
   const [isUrlValid, setIsUrlValid] = useState(true);
+
+  useEffect(() => {
+    if (websiteInfo.url && !websiteInfo.name) {
+      try {
+        const extractedName = new URL(websiteInfo.url).hostname.replace(
+          "www.",
+          ""
+        );
+        setWebsiteInfo({ ...websiteInfo, name: extractedName });
+      } catch (err) {}
+    }
+  }, [websiteInfo.url]);
 
   const handleAddWebsite = async (e) => {
     e.preventDefault();
@@ -74,11 +86,11 @@ export const DialogBox = ({ showModal, setShowModal }) => {
             <form className="flex flex-col gap-4" onSubmit={handleAddWebsite}>
               <div className="flex flex-col gap-2">
                 <label htmlFor="url" className="text-white">
-                  Enter Website URL *
+                  Enter Website URL * (must be with https://)
                 </label>
                 <input
                   type="url"
-                  placeholder="https://example.com"
+                  placeholder="https://example.com *"
                   required
                   value={websiteInfo.url}
                   onChange={(e) =>
@@ -99,7 +111,7 @@ export const DialogBox = ({ showModal, setShowModal }) => {
                 <input
                   type="text"
                   placeholder="Example Site"
-                  value={websiteInfo.name || websiteInfo.url.split("/")[2]}
+                  value={websiteInfo.name}
                   onChange={(e) =>
                     setWebsiteInfo({ ...websiteInfo, name: e.target.value })
                   }
