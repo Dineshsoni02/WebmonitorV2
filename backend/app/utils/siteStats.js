@@ -1,11 +1,9 @@
 import axios from "axios";
-import https from "https";
 import { performance } from "perf_hooks";
-import { JSDOM } from "jsdom";
-import dns from "dns";
-import util from "util";
+import puppeteer from "puppeteer";
+import tls from "tls";
+import { URL } from "url";
 
-const dnsLookup = util.promisify(dns.lookup);
 
 
 export const isSiteActive = async (url) => {
@@ -16,7 +14,6 @@ export const isSiteActive = async (url) => {
   return true;
 };
 
-// Get website response time in milliseconds
 export const getResponseTime = async (url) => {
   try {
     const start = performance.now();
@@ -29,7 +26,6 @@ export const getResponseTime = async (url) => {
   }
 };
 
-// Check if website is up
 export const checkUptime = async (url) => {
   try {
     const response = await axios.get(url, { timeout: 10000 });
@@ -39,101 +35,104 @@ export const checkUptime = async (url) => {
   }
 };
 
-// Check SSL certificate validity
-export const checkSSL = async (url) => {
-  try {
-    const hostname = new URL(url).hostname;
-    const agent = new https.Agent({ rejectUnauthorized: false });
+export const checkSSL = (siteUrl) => {
+  return new Promise((resolve) => {
+    try {
+      const { hostname, port } = new URL(siteUrl);
+      const tlsPort = port || 443;
 
-    await axios.get(`https://${hostname}`, {
-      httpsAgent: agent,
-      timeout: 10000,
-    });
+      const options = {
+        host: hostname,
+        port: tlsPort,
+        servername: hostname, // IMPORTANT for SNI!
+        rejectUnauthorized: false, // still allow expired/invalid certs to inspect them
+      };
 
-    // Get certificate info
-    const cert = await new Promise((resolve) => {
-      const req = https.request(
-        { host: hostname, port: 443, method: "HEAD", agent },
-        () => {}
-      );
-      req.on("socket", (socket) => {
-        socket.on("secureConnect", () => {
-          const cert = socket.getPeerCertificate();
-          resolve(cert);
+      const socket = tls.connect(options, () => {
+        const cert = socket.getPeerCertificate(true);
+
+        if (!cert || Object.keys(cert).length === 0) {
+          resolve({ isValid: false, error: "No certificate found" });
+          socket.end();
+          return;
+        }
+
+        const validFrom = new Date(cert.valid_from);
+        const validTo = new Date(cert.valid_to);
+        const daysRemaining = Math.ceil(
+          (validTo - new Date()) / (1000 * 60 * 60 * 24)
+        );
+
+        resolve({
+          isValid: daysRemaining > 0,
+          issuer: cert.issuer?.O || "Unknown",
+          subject: cert.subject?.CN || "Unknown",
+          validFrom,
+          validTo,
+          daysRemaining,
+          isExpired: daysRemaining <= 0,
         });
+
+        socket.end();
       });
-      req.on("error", () => resolve(null));
-      req.end();
-    });
-    n;
 
-    if (!cert || Object.keys(cert).length === 0) {
-      return { isValid: false, error: "No SSL certificate found" };
+      socket.on("error", (err) => {
+        resolve({ isValid: false, error: err.message });
+      });
+    } catch (err) {
+      resolve({ isValid: false, error: err.message });
     }
-
-    const validTo = new Date(cert.valid_to);
-    const daysRemaining = Math.ceil(
-      (validTo - new Date()) / (1000 * 60 * 60 * 24)
-    );
-
-    return {
-      isValid: true,
-      issuer: cert.issuer.O,
-      validFrom: new Date(cert.valid_from),
-      validTo,
-      daysRemaining,
-      isExpired: daysRemaining <= 0,
-      algorithm: cert.serialNumber ? "TLS 1.2+" : "Unknown",
-    };
-  } catch (error) {
-    return { isValid: false, error: error.message };
-  }
+  });
 };
 
-// Basic SEO analysis
 export const checkSEO = async (url) => {
   try {
-    const response = await axios.get(url);
-    const dom = new JSDOM(response.data);
-    const doc = dom.window.document;
+    const browser = await puppeteer.launch({ headless: "new" });
+    const page = await browser.newPage();
+    await page.goto(url, { waitUntil: "domcontentloaded", timeout: 15000 });
 
-    // Get title and meta description
-    const title = doc.querySelector("title")?.textContent || "";
-    const metaDescription =
-      doc.querySelector('meta[name="description"]')?.getAttribute("content") ||
-      "";
-    const h1 = Array.from(doc.querySelectorAll("h1")).map((h) => h.textContent);
-    const h2 = Array.from(doc.querySelectorAll("h2")).map((h) => h.textContent);
-    const images = Array.from(doc.querySelectorAll("img"));
+    const seoData = await page.evaluate(() => {
+      const title = document.title || "";
+      const metaDescription =
+        document
+          .querySelector('meta[name="description"]')
+          ?.getAttribute("content") || "";
+      const h1 = [...document.querySelectorAll("h1")].map((el) =>
+        el.textContent.trim()
+      );
+      const h2 = [...document.querySelectorAll("h2")].map((el) =>
+        el.textContent.trim()
+      );
+      const images = [...document.querySelectorAll("img")];
+      const imagesWithoutAlt = images.filter(
+        (img) => !img.getAttribute("alt")?.trim()
+      );
 
-    // Check for common SEO issues
-    const issues = [];
-    if (title.length > 60) issues.push("Title is too long (max 60 chars)");
-    if (metaDescription.length > 160)
-      issues.push("Meta description is too long (max 160 chars)");
-    if (h1.length === 0) issues.push("No H1 tag found");
-    if (h1.length > 1) issues.push("Multiple H1 tags found");
+      const issues = [];
+      if (title.length > 60) issues.push("Title too long (>60 chars)");
+      if (metaDescription.length > 160)
+        issues.push("Meta description too long (>160 chars)");
+      if (h1.length === 0) issues.push("No H1 tag found");
+      if (h1.length > 1) issues.push("Multiple H1 tags found");
+      if (imagesWithoutAlt.length > 0)
+        issues.push(`${imagesWithoutAlt.length} images missing alt text`);
 
-    // Check images for alt text
-    const imagesWithoutAlt = images.filter((img) => !img.alt.trim());
-    if (imagesWithoutAlt.length > 0) {
-      issues.push(`${imagesWithoutAlt.length} image(s) without alt text`);
-    }
+      return {
+        title,
+        metaDescription,
+        h1Count: h1.length,
+        h2Count: h2.length,
+        imageCount: images.length,
+        imagesWithoutAlt: imagesWithoutAlt.length,
+        issues,
+        hasIssues: issues.length > 0,
+      };
+    });
 
-    return {
-      title,
-      titleLength: title.length,
-      metaDescription,
-      metaDescriptionLength: metaDescription.length,
-      h1Count: h1.length,
-      h2Count: h2.length,
-      imageCount: images.length,
-      imagesWithoutAlt: imagesWithoutAlt.length,
-      issues,
-      hasIssues: issues.length > 0,
-    };
+    await browser.close();
+    return seoData;
   } catch (error) {
-    console.error("SEO check error:", error);
     return { error: error.message };
   }
 };
+
