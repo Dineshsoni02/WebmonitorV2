@@ -124,29 +124,24 @@ export const guestWebsite = async (req, res) => {
       });
     }
 
-    // Add http:// if no protocol is specified
-    const formattedUrl = url.startsWith('http') ? url : `http://${url}`;
     
-    // Check if website is up first
-    const isUp = await checkUptime(formattedUrl);
+    const isUp = await checkUptime(url);
     if (!isUp) {
       return res.status(422).json({
         status: false,
-        message: messages.WEBSITE_NOT_ACTIVE + url,
+        message: messages.WEBSITE_NOT_ACTIVE + " " + url,
       });
     }
 
-    // Run all checks in parallel
     const [responseTime, sslInfo, seoInfo] = await Promise.all([
-      getResponseTime(formattedUrl),
-      checkSSL(formattedUrl),
-      checkSEO(formattedUrl)
+      getResponseTime(url),
+      checkSSL(url),
+      checkSEO(url)
     ]);
 
-    // Prepare response data
     const websiteData = {
-      url: formattedUrl,
-      name: name || new URL(formattedUrl).hostname,
+      url: url,
+      name: name || new URL(url).hostname,
       status: 'online',
       lastChecked: new Date().toISOString(),
       responseTime: responseTime ? `${responseTime}ms` : 'N/A',
