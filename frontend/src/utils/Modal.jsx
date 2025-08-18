@@ -37,7 +37,9 @@ export const DialogBox = ({ showModal, setShowModal }) => {
           ""
         );
         setWebsiteInfo({ ...websiteInfo, name: extractedName });
-      } catch (err) {}
+      } catch (err) {
+        void err;
+      }
     }
   }, [websiteInfo.url]);
 

@@ -4,8 +4,6 @@ import puppeteer from "puppeteer";
 import tls from "tls";
 import { URL } from "url";
 
-
-
 export const isSiteActive = async (url) => {
   if (!url) return false;
 
@@ -17,7 +15,7 @@ export const isSiteActive = async (url) => {
 export const getResponseTime = async (url) => {
   try {
     const start = performance.now();
-    await axios.get(url);
+    await axios.get(url, { timeout: 10000 });
     const end = performance.now();
     return Math.round(end - start);
   } catch (error) {
@@ -135,4 +133,3 @@ export const checkSEO = async (url) => {
     return { error: error.message };
   }
 };
-
