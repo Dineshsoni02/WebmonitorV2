@@ -28,6 +28,7 @@ export const DialogBox = ({ showModal, setShowModal }) => {
     name: "",
   });
   const [isUrlValid, setIsUrlValid] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     if (websiteInfo.url && !websiteInfo.name) {
@@ -50,8 +51,7 @@ export const DialogBox = ({ showModal, setShowModal }) => {
       return;
     }
     setIsUrlValid(true);
-    // console.log(websiteInfo);
-
+    setIsLoading(true);
     const response = await fetch("http://localhost:5000/guest", {
       method: "POST",
       headers: {
@@ -62,7 +62,7 @@ export const DialogBox = ({ showModal, setShowModal }) => {
 
     const data = await response.json();
     console.log("data", data);
-
+    setIsLoading(false);
     setWebsiteInfo({ url: "", name: "" });
     setShowModal(false);
   };
@@ -123,11 +123,18 @@ export const DialogBox = ({ showModal, setShowModal }) => {
               </div>
               <button
                 type="submit"
+                disabled={isLoading}
                 className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-6 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/25 cursor-pointer"
               >
-                Submit
+                {isLoading ? "Loading..." : "Submit"}
               </button>
             </form>
+
+            {isLoading && (
+              <div className="fixed top-0 left-0 w-full h-full bg-black/50 flex items-center justify-center">
+                <div className=" animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white"></div>
+              </div>
+            )}
           </div>
         </Modal>
       )}
