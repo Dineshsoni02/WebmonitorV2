@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { validateUrl } from "../utils/Validation";
 import Modal from "../utils/Modal";
 import { Globe, X } from "lucide-react";
+import { getWebsiteStats } from "../utils/ApiCalls";
 
 export const DialogBox = ({ showModal, setShowModal }) => {
   const [websiteInfo, setWebsiteInfo] = useState({
@@ -33,16 +34,13 @@ export const DialogBox = ({ showModal, setShowModal }) => {
     }
     setIsUrlValid(true);
     setIsLoading(true);
-    const response = await fetch("http://localhost:5000/guest", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(websiteInfo),
-    });
 
-    const data = await response.json();
-    console.log("data", data);
+    try {
+      const data = await getWebsiteStats(websiteInfo);
+      console.log("data", data);
+    } catch (error) {
+      console.log(error);
+    }
     setIsLoading(false);
     setWebsiteInfo({ url: "", name: "" });
     setShowModal(false);
