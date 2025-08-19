@@ -12,7 +12,7 @@ import {
   TrendingUp,
   TriangleAlert,
 } from "lucide-react";
-import { DialogBox } from "../utils/Modal";
+import DialogBox from "./DialogBox";
 
 const NavigationBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
