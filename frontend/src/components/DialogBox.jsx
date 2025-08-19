@@ -3,13 +3,14 @@ import { validateUrl } from "../utils/Validation";
 import Modal from "../utils/Modal";
 import { Globe, X } from "lucide-react";
 import { getWebsiteStats } from "../utils/ApiCalls";
+import { addWebsiteToLocalStorage, alreadyExists } from "../utils/Constants";
 
 export const DialogBox = ({ showModal, setShowModal }) => {
   const [websiteInfo, setWebsiteInfo] = useState({
     url: "",
     name: "",
   });
-  const [isUrlValid, setIsUrlValid] = useState(true);
+  const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
@@ -29,18 +30,34 @@ export const DialogBox = ({ showModal, setShowModal }) => {
   const handleAddWebsite = async (e) => {
     e.preventDefault();
     if (!validateUrl(websiteInfo.url)) {
-      setIsUrlValid(false);
+      setErrorMessage("Please enter a valid URL with https://");
       return;
     }
-    setIsUrlValid(true);
+    setErrorMessage("");
+
+    if (alreadyExists(websiteInfo.url)) {
+      setErrorMessage("Website already exists.");
+      return;
+    }
+
     setIsLoading(true);
 
     try {
       const data = await getWebsiteStats(websiteInfo);
       console.log("data", data);
+      if (data?.error || data?.status === false) {
+        setErrorMessage(data?.error || data?.message);
+        setIsLoading(false);
+
+        return;
+      }
+
+      addWebsiteToLocalStorage(data);
     } catch (error) {
       console.log(error);
+      setErrorMessage(error?.message);
     }
+
     setIsLoading(false);
     setWebsiteInfo({ url: "", name: "" });
     setShowModal(false);
@@ -80,9 +97,9 @@ export const DialogBox = ({ showModal, setShowModal }) => {
                   }
                   className="bg-transparent border border-gray-700 hover:border-gray-600/80 p-2 rounded-lg shadow-md  hover:shadow-cyan-500/10 transition-all duration-300"
                 />
-                {!isUrlValid && (
+                {errorMessage && (
                   <p className="text-red-400 text-sm font-medium">
-                    Enter Valid url 🚨
+                    {errorMessage}
                   </p>
                 )}
               </div>
