@@ -1,6 +1,8 @@
 import React from "react";
 
-const WebsiteCard = () => {
+const WebsiteCard = ({ websiteInfo }) => {
+  console.log(websiteInfo);
+
   return (
     <div className="websiteCard relative bg-transparent border border-gray-700/50 hover:border-gray-600/80 p-8 rounded-xl shadow-md hover:shadow-[0px_0px_28px_2px] hover:shadow-cyan-500/25 transition-all duration-300 flex gap-4 mb-4 flex-col">
       {/* //top */}
