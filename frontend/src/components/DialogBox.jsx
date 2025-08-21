@@ -29,26 +29,27 @@ export const DialogBox = ({ showModal, setShowModal }) => {
 
   const handleAddWebsite = async (e) => {
     e.preventDefault();
+
     if (!validateUrl(websiteInfo.url)) {
       setErrorMessage("Please enter a valid URL with https://");
       return;
     }
-    setErrorMessage("");
 
     if (alreadyExists(websiteInfo.url)) {
       setErrorMessage("Website already exists.");
       return;
     }
 
+    setErrorMessage("");
     setIsLoading(true);
 
     try {
       const data = await getWebsiteStats(websiteInfo);
       console.log("data", data);
+
       if (data?.error || data?.status === false) {
         setErrorMessage(data?.error || data?.message);
         setIsLoading(false);
-
         return;
       }
 
@@ -92,9 +93,10 @@ export const DialogBox = ({ showModal, setShowModal }) => {
                   placeholder="https://example.com *"
                   required
                   value={websiteInfo.url}
-                  onChange={(e) =>
-                    setWebsiteInfo({ ...websiteInfo, url: e.target.value })
-                  }
+                  onChange={(e) => {
+                    setWebsiteInfo({ ...websiteInfo, url: e.target.value });
+                    if (errorMessage) setErrorMessage("");
+                  }}
                   className="bg-transparent border border-gray-700 hover:border-gray-600/80 p-2 rounded-lg shadow-md  hover:shadow-cyan-500/10 transition-all duration-300"
                 />
                 {errorMessage && (
