@@ -13,6 +13,7 @@ import {
   TriangleAlert,
 } from "lucide-react";
 import DialogBox from "./DialogBox";
+import WebsiteCard from "./WebsiteCard";
 
 const NavigationBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -422,6 +423,9 @@ const DashboardSection = ({ setShowModal }) => {
       </div>
 
       <div className="container mx-auto px-4 max-w-7xl mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      
+        <WebsiteCard/>
+      
         <div className="websiteCard relative bg-transparent border border-gray-700/50 hover:border-gray-600/80 p-8 rounded-xl shadow-md hover:shadow-[0px_0px_28px_2px] hover:shadow-cyan-500/25 transition-all duration-300 flex gap-4 mb-4 flex-col">
           {/* //top */}
           <div className="flex gap-3 ">
