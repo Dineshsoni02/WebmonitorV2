@@ -393,7 +393,14 @@ const DashboardSection = ({ setShowModal }) => {
                   Online Sites
                 </h3>
               </div>
-              <p className="text-white text-xl font-bold">2/3</p>
+              <p className="text-white text-xl font-bold">
+                {
+                  websiteList.filter(
+                    (website) => website?.data?.status === "online"
+                  ).length
+                }
+                /{websiteList.length}
+              </p>
             </div>
             <div className="statsCard bg-transparent border border-gray-700/50 hover:border-gray-600/80 p-8 rounded-xl shadow-md hover:shadow-[0px_0px_28px_2px] hover:shadow-cyan-500/25 transition-all duration-300">
               <div className="flex items-center gap-2 mb-4">
@@ -404,7 +411,21 @@ const DashboardSection = ({ setShowModal }) => {
                   Avg Response
                 </h3>
               </div>
-              <p className="text-white text-xl font-bold">482ms</p>
+              <p className="text-white text-xl font-bold">
+                {websiteList.reduce(
+                  (total, website) =>
+                    (total += website?.data?.responseTime.split("ms")[0]),
+                  0
+                ) / websiteList.length}
+                ms
+                {console.log(
+                  websiteList.reduce(
+                    (total, website) =>
+                      (total += website?.data?.responseTime.split("ms")[0]),
+                    0
+                  ) / websiteList.length
+                )}
+              </p>
             </div>
             <div className="statsCard bg-transparent border border-gray-700/50 hover:border-gray-600/80 p-8 rounded-xl shadow-md hover:shadow-[0px_0px_28px_2px] hover:shadow-cyan-500/25 transition-all duration-300">
               <div className="flex items-center gap-2 mb-4">
@@ -413,7 +434,14 @@ const DashboardSection = ({ setShowModal }) => {
                 </div>
                 <h3 className="text-base font-medium text-white ">Uptime</h3>
               </div>
-              <p className="text-white text-xl font-bold  ">99.9%</p>
+              <p className="text-white text-xl font-bold  ">
+                {websiteList.reduce(
+                  (total, website) =>
+                    total + website?.data?.responseTime / websiteList.length,
+                  0
+                )}
+                ms
+              </p>
             </div>
             <div className="statsCard bg-transparent border border-gray-700/50 hover:border-gray-600/80 p-8 rounded-xl shadow-md hover:shadow-[0px_0px_28px_2px] hover:shadow-cyan-500/25 transition-all duration-300">
               <div className="flex items-center gap-2 mb-4">
