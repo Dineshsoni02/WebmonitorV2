@@ -29,18 +29,18 @@ const WebsiteCard = ({ websiteInfo }) => {
       {/* Header Section */}
       <div className="flex justify-between items-start">
         <div className="flex items-center gap-3">
-          <div 
+          <div
             className={`!w-3 !h-3 rounded-full ${statusColor} animate-pulse `}
           ></div>
           <div className="flex-1/2">
-            <h3 className="text-xl font-bold text-white whitespace-pre-wrap line-clamp-2">
+            <h3 className="text-xl font-bold text-white whitespace-pre-wrap line-clamp-2 mb-1">
               {websiteInfo?.seo?.title || websiteInfo?.name}
             </h3>
             <a
               href={websiteInfo?.url}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-cyan-400 hover:text-cyan-300 text-sm flex items-center gap-1"
+              className="text-cyan-400 hover:text-cyan-300 text-sm flex items-center gap-1 w-max max-w-[300px] overflow-hidden text-ellipsis"
             >
               <Globe className="w-4 h-4" />
               {websiteInfo?.url.replace(/^https?:\/\//, "")}
@@ -111,9 +111,9 @@ const WebsiteCard = ({ websiteInfo }) => {
             {websiteInfo.seo.issues.map((issue, index) => (
               <div
                 key={index}
-                className="flex items-start gap-2 text-yellow-400 text-xs"
+                className="flex items-start gap-2 text-yellow-400 text-xs mt-2"
               >
-                <TriangleAlert className="mt-0.5 flex-shrink-0" />
+                <TriangleAlert className=" flex-shrink-0 w-4 h-4" />
                 <span>{issue}</span>
               </div>
             ))}

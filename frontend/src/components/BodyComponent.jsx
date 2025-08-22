@@ -168,7 +168,7 @@ const HeaderTextComponent = () => {
   return (
     <div
       id="home"
-      className="relative min-h-screen bg-gradient-to-br from-[#0c0e14] via-[#0f1419] to-[#0c0e14] text-white overflow-hidden"
+      className="relative min-h-screen bg-gradient-to-br from-[#0c0e14] via-[#0f1419] to-[#0c0e14] text-white overflow-hidden pt-8"
     >
       <div className="absolute inset-0 bg-gradient-to-r from-blue-900/10 via-transparent to-cyan-900/10"></div>
 
@@ -365,7 +365,7 @@ const DashboardSection = ({ setShowModal }) => {
       className="py-20 bg-gradient-to-br from-[#0c0e14] via-[#0f1419] to-[#0c0e14] text-white"
     >
       <div>
-        <div className="container mx-auto px-4 flex justify-between items-center max-w-7xl">
+        <div className="container mx-auto px-4 flex justify-between items-center max-w-7xl flex-col gap-5 text-center lg:text-left lg:flex-row lg:items-start">
           <div>
             <h2 className="text-2xl font-bold text-white mb-2">
               Your Monitoring Dashboard
@@ -383,7 +383,7 @@ const DashboardSection = ({ setShowModal }) => {
         </div>
 
         <div className="container mx-auto px-4 max-w-7xl mt-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 lg:gap-8">
             <div className="statsCard bg-transparent border border-gray-700/50 hover:border-gray-600/80 p-8 rounded-xl shadow-md hover:shadow-[0px_0px_28px_2px] hover:shadow-cyan-500/25 transition-all duration-300">
               <div className="flex items-center gap-2 mb-4">
                 <div className="text-2xl flex items-center justify-center">
@@ -430,7 +430,7 @@ const DashboardSection = ({ setShowModal }) => {
         </div>
       </div>
 
-      <div className="container mx-auto px-4 max-w-7xl mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="container mx-auto px-4 max-w-7xl mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0 lg:gap-4">
         {websiteList.map((website) => (
           <WebsiteCard key={website?.data?.url} websiteInfo={website.data} />
         ))}
