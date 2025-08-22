@@ -29,11 +29,11 @@ const WebsiteCard = ({ websiteInfo }) => {
       {/* Header Section */}
       <div className="flex justify-between items-start">
         <div className="flex items-center gap-3">
-          <div
-            className={`w-3 h-3 rounded-full ${statusColor} animate-pulse`}
+          <div 
+            className={`!w-3 !h-3 rounded-full ${statusColor} animate-pulse `}
           ></div>
-          <div>
-            <h3 className="text-xl font-bold text-white">
+          <div className="flex-1/2">
+            <h3 className="text-xl font-bold text-white whitespace-pre-wrap line-clamp-2">
               {websiteInfo?.seo?.title || websiteInfo?.name}
             </h3>
             <a
@@ -42,7 +42,7 @@ const WebsiteCard = ({ websiteInfo }) => {
               rel="noopener noreferrer"
               className="text-cyan-400 hover:text-cyan-300 text-sm flex items-center gap-1"
             >
-              <Globe className="text-xs" />
+              <Globe className="w-4 h-4" />
               {websiteInfo?.url.replace(/^https?:\/\//, "")}
             </a>
           </div>
