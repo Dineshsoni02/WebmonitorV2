@@ -33,7 +33,7 @@ const WebsiteCard = ({ websiteInfo }) => {
             className={`!w-3 !h-3 rounded-full ${statusColor} animate-pulse `}
           ></div>
           <div className="flex-1/2">
-            <h3 className="text-xl font-bold text-white whitespace-pre-wrap line-clamp-2 mb-1">
+            <h3 className="text-xl font-bold text-white whitespace-pre-wrap line-clamp-1 mb-1">
               {websiteInfo?.seo?.title || websiteInfo?.name}
             </h3>
             <a

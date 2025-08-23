@@ -1,12 +1,12 @@
 import React, { useEffect, useState } from "react";
 import site_stats from "../assets/site_stats.svg";
 import {
-  ChartColumn,
-  BellDot,
-  Smartphone,
-  Zap,
-  FileLock2,
-  ChartLine,
+  Activity,
+  Gauge,
+  Clock,
+  FileText,
+  Search,
+  Lock,
   CircleCheckBig,
   Clock4,
   TrendingUp,
@@ -254,45 +254,45 @@ const FeaturesSection = () => {
   const features = [
     {
       id: "1",
-      icon: <ChartColumn className="w-6 h-6" />,
-      title: "Real-time Analytics",
+      icon: <Activity className="w-6 h-6" />,
+      title: "Real-Time Status",
       description:
-        "Get instant insights with our powerful real-time monitoring and analytics dashboard.",
+        "Always know if your website is online. Continuous monitoring ensures you stay ahead of downtime.",
     },
     {
       id: "2",
-      icon: <BellDot className="w-6 h-6" />,
-      title: "Instant Alerts",
+      icon: <Gauge className="w-6 h-6" />,
+      title: "Performance Insights",
       description:
-        "Receive immediate notifications when your website experiences any downtime or issues.",
+        "Measure how fast your site responds. Get instant response time metrics to keep user experience smooth.",
     },
     {
       id: "3",
-      icon: <Smartphone className="w-6 h-6" />,
-      title: "Mobile Responsive",
+      icon: <Lock className="w-6 h-6" />,
+      title: "SSL Security",
       description:
-        "Monitor your websites on the go with our fully responsive mobile interface.",
+        "Never let your certificates expire unnoticed. Stay informed about SSL validity, issuer, and days remaining.",
     },
     {
       id: "4",
-      icon: <Zap className="w-6 h-6" />,
-      title: "Lightning Fast",
+      icon: <Search className="w-6 h-6" />,
+      title: "SEO Health",
       description:
-        "Our optimized system ensures minimal impact on your website performance.",
+        "Spot hidden SEO issues before they cost you traffic. Detect multiple H1 tags, missing alt text, and more.",
     },
     {
       id: "5",
-      icon: <FileLock2 className="w-6 h-6" />,
-      title: "Secure & Private",
+      icon: <Clock className="w-6 h-6" />,
+      title: "Latest Check",
       description:
-        "Your data is encrypted and stored securely with enterprise-grade security measures.",
+        "Know exactly when your site was last checked. Stay confident with up-to-date monitoring.",
     },
     {
       id: "6",
-      icon: <ChartLine className="w-6 h-6" />,
-      title: "Performance Reports",
+      icon: <FileText className="w-6 h-6" />,
+      title: "Meta Preview",
       description:
-        "Detailed reports and analytics to help you optimize your website performance.",
+        "See your site the way search engines do. Instantly view title and description for better visibility.",
     },
   ];
 
@@ -414,14 +414,19 @@ const DashboardSection = ({ setShowModal }) => {
               <p className="text-white text-xl font-bold">
                 {websiteList.reduce(
                   (total, website) =>
-                    (total += website?.data?.responseTime.split("ms")[0]),
+                    (total += parseInt(
+                      website?.data?.responseTime.split("ms")[0]
+                    )),
                   0
                 ) / websiteList.length}
                 ms
                 {console.log(
                   websiteList.reduce(
                     (total, website) =>
-                      (total += website?.data?.responseTime.split("ms")[0]),
+                      (total += parseInt(
+                        website?.data?.responseTime.split("ms")[0],
+                        10
+                      )),
                     0
                   ) / websiteList.length
                 )}
