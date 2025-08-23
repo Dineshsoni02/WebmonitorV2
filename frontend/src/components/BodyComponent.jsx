@@ -420,16 +420,6 @@ const DashboardSection = ({ setShowModal }) => {
                   0
                 ) / websiteList.length}
                 ms
-                {console.log(
-                  websiteList.reduce(
-                    (total, website) =>
-                      (total += parseInt(
-                        website?.data?.responseTime.split("ms")[0],
-                        10
-                      )),
-                    0
-                  ) / websiteList.length
-                )}
               </p>
             </div>
             <div className="statsCard bg-transparent border border-gray-700/50 hover:border-gray-600/80 p-8 rounded-xl shadow-md hover:shadow-[0px_0px_28px_2px] hover:shadow-cyan-500/25 transition-all duration-300">
@@ -437,15 +427,17 @@ const DashboardSection = ({ setShowModal }) => {
                 <div className="text-2xl flex items-center justify-center">
                   <TrendingUp className="w-5 h-5 text-green-400" />
                 </div>
-                <h3 className="text-base font-medium text-white ">Uptime</h3>
+                <h3 className="text-base font-medium text-white ">
+                  SSL Expiry (Soonest)
+                </h3>
               </div>
               <p className="text-white text-xl font-bold  ">
-                {websiteList.reduce(
-                  (total, website) =>
-                    total + website?.data?.responseTime / websiteList.length,
-                  0
+                {Math.min(
+                  ...websiteList.map(
+                    (website) => website?.data?.ssl?.daysRemaining
+                  )
                 )}
-                ms
+                days
               </p>
             </div>
             <div className="statsCard bg-transparent border border-gray-700/50 hover:border-gray-600/80 p-8 rounded-xl shadow-md hover:shadow-[0px_0px_28px_2px] hover:shadow-cyan-500/25 transition-all duration-300">
@@ -454,10 +446,15 @@ const DashboardSection = ({ setShowModal }) => {
                   <TriangleAlert className="w-5 h-5 text-orange-400" />
                 </div>
                 <h3 className="text-base font-medium text-white ">
-                  SSL Issues{" "}
+                  Total SEO Issues{" "}
                 </h3>
               </div>
-              <p className="text-white text-xl font-bold">1</p>
+              <p className="text-white text-xl font-bold">
+                {websiteList.reduce(
+                  (start, website) => start + website?.data?.seo?.issues.length,
+                  0
+                )}
+              </p>
             </div>
           </div>
         </div>
