@@ -62,6 +62,7 @@ export const DialogBox = ({ showModal, setShowModal }) => {
     setIsLoading(false);
     setWebsiteInfo({ url: "", name: "" });
     setShowModal(false);
+    window.location.reload();
   };
 
   return (

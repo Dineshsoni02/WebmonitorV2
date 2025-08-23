@@ -418,7 +418,7 @@ const DashboardSection = ({ setShowModal }) => {
                       website?.data?.responseTime.split("ms")[0]
                     )),
                   0
-                ) / websiteList.length}
+                ) / websiteList.length || 0}
                 ms
               </p>
             </div>
@@ -432,11 +432,13 @@ const DashboardSection = ({ setShowModal }) => {
                 </h3>
               </div>
               <p className="text-white text-xl font-bold  ">
-                {Math.min(
-                  ...websiteList.map(
-                    (website) => website?.data?.ssl?.daysRemaining
-                  )
-                )}
+                {websiteList.length > 0
+                  ? Math.min(
+                      ...websiteList.map(
+                        (website) => website?.data?.ssl?.daysRemaining
+                      )
+                    )
+                  : 0}
                 days
               </p>
             </div>
@@ -451,7 +453,8 @@ const DashboardSection = ({ setShowModal }) => {
               </div>
               <p className="text-white text-xl font-bold">
                 {websiteList.reduce(
-                  (start, website) => start + website?.data?.seo?.issues.length,
+                  (start, website) =>
+                    start + website?.data?.seo?.issues?.length,
                   0
                 )}
               </p>
