@@ -165,6 +165,12 @@ const NavigationBar = () => {
 };
 
 const HeaderTextComponent = () => {
+  const [websiteUrl, setWebsiteUrl] = useState("");
+
+  const handleAddWebsite = (e) => {
+    e.preventDefault();
+    console.log(websiteUrl);
+  };
   return (
     <div
       id="home"
@@ -217,13 +223,16 @@ const HeaderTextComponent = () => {
                 <form className="space-y-4">
                   <div className="flex flex-col sm:flex-row gap-3">
                     <input
-                      type="text"
+                      type="url"
                       placeholder="https://www.google.com"
+                      value={websiteUrl}
+                      onChange={(e) => setWebsiteUrl(e.target.value)}
                       className="flex-1 bg-gray-800/50 border border-gray-600/50 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 transition-all duration-300"
                     />
                     <button
                       type="submit"
-                      className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/25 focus:outline-none focus:ring-2 focus:ring-cyan-500/50"
+                      onClick={handleAddWebsite}
+                      className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/25 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 cursor-pointer"
                     >
                       Check Now
                     </button>

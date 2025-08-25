@@ -1,69 +1,23 @@
-import React, { useState, useEffect } from "react";
-import { validateUrl } from "../utils/Validation";
+import React, { useState } from "react";
 import Modal from "../utils/Modal";
 import { Globe, X } from "lucide-react";
-import { getWebsiteStats } from "../utils/ApiCalls";
-import { addWebsiteToLocalStorage, alreadyExists } from "../utils/Constants";
+import HandleAddWebsite from "../utils/HandleAddWebsite";
 
 export const DialogBox = ({ showModal, setShowModal }) => {
   const [websiteInfo, setWebsiteInfo] = useState({
     url: "",
     name: "",
   });
-  const [errorMessage, setErrorMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-
-  useEffect(() => {
-    if (websiteInfo.url && !websiteInfo.name) {
-      try {
-        const extractedName = new URL(websiteInfo.url).hostname.replace(
-          "www.",
-          ""
-        );
-        setWebsiteInfo({ ...websiteInfo, name: extractedName });
-      } catch (err) {
-        void err;
-      }
+  const { errorMessage, isLoading, handleAddWebsite,setErrorMessage } = HandleAddWebsite(
+    websiteInfo,
+    {
+      setWebsiteInfo,
+      onSuccess: () => {
+        setShowModal(false);
+        window.location.reload();
+      },
     }
-  }, [websiteInfo.url]);
-
-  const handleAddWebsite = async (e) => {
-    e.preventDefault();
-
-    if (!validateUrl(websiteInfo.url)) {
-      setErrorMessage("Please enter a valid URL with https://");
-      return;
-    }
-
-    if (alreadyExists(websiteInfo.url)) {
-      setErrorMessage("Website already exists.");
-      return;
-    }
-
-    setErrorMessage("");
-    setIsLoading(true);
-
-    try {
-      const data = await getWebsiteStats(websiteInfo);
-      console.log("data", data);
-
-      if (data?.error || data?.status === false) {
-        setErrorMessage(data?.error || data?.message);
-        setIsLoading(false);
-        return;
-      }
-
-      addWebsiteToLocalStorage(data);
-    } catch (error) {
-      console.log(error);
-      setErrorMessage(error?.message);
-    }
-
-    setIsLoading(false);
-    setWebsiteInfo({ url: "", name: "" });
-    setShowModal(false);
-    window.location.reload();
-  };
+  );
 
   return (
     <>

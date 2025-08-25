@@ -20,29 +20,29 @@ app.use(webRoutes);
 const PORT = process.env.PORT || 5000;
 
 // cron.schedule("* 9 * * *", async () => {
-cron.schedule("* * * * *", async () => {
-  const allWebsites = await WebsiteSchema.find({}).populate({
-    path: "userId",
-    select: ["name", "email"],
-  });
-  if (!allWebsites.length) return;
+// cron.schedule("* * * * *", async () => {
+//   const allWebsites = await WebsiteSchema.find({}).populate({
+//     path: "userId",
+//     select: ["name", "email"],
+//   });
+//   if (!allWebsites.length) return;
 
-  for (let i = 0; i < allWebsites.length; i++) {
-    const website = allWebsites[i];
-    const url = website.url;
-    const isActive = await isSiteActive(url);
-    WebsiteSchema.updateOne({ _id: website.id }, { isActive }).exec();
+//   for (let i = 0; i < allWebsites.length; i++) {
+//     const website = allWebsites[i];
+//     const url = website.url;
+//     const isActive = await isSiteActive(url);
+//     WebsiteSchema.updateOne({ _id: website.id }, { isActive }).exec();
 
-    if (!isActive && website.isActive) {
-      const { name, email } = website.userId;
-      await sendEmail(
-        email,
-        "Website is down",
-        `Hi ${name}, the website ${url} is down as we checked on ${new Date().toLocaleString()} `
-      );
-    }
-  }
-});
+//     if (!isActive && website.isActive) {
+//       const { name, email } = website.userId;
+//       await sendEmail(
+//         email,
+//         "Website is down",
+//         `Hi ${name}, the website ${url} is down as we checked on ${new Date().toLocaleString()} `
+//       );
+//     }
+//   }
+// });
 
 app.listen(PORT, () => {
   console.log(`🚀 Backend is running at http://localhost:${PORT}`);
