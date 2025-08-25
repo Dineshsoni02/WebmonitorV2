@@ -3,10 +3,7 @@ import { validateUrl } from "./Validation";
 import { getWebsiteStats } from "./ApiCalls";
 import { addWebsiteToLocalStorage, alreadyExists } from "./Constants";
 
-
-
-
-const HandleAddWebsite = (websiteInfo, options = {}) => {
+const useAddWebsite = (websiteInfo, options = {}) => {
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -72,7 +69,7 @@ const HandleAddWebsite = (websiteInfo, options = {}) => {
     return result;
   };
 
-  return { errorMessage, isLoading, handleAddWebsite,setErrorMessage };
+  return { errorMessage, isLoading, handleAddWebsite, setErrorMessage };
 };
 
-export default HandleAddWebsite;
+export default useAddWebsite;

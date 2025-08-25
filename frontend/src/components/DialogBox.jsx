@@ -1,23 +1,21 @@
 import React, { useState } from "react";
 import Modal from "../utils/Modal";
 import { Globe, X } from "lucide-react";
-import HandleAddWebsite from "../utils/HandleAddWebsite";
+import useAddWebsite from "../utils/useAddWebsite";
 
 export const DialogBox = ({ showModal, setShowModal }) => {
   const [websiteInfo, setWebsiteInfo] = useState({
     url: "",
     name: "",
   });
-  const { errorMessage, isLoading, handleAddWebsite,setErrorMessage } = HandleAddWebsite(
-    websiteInfo,
-    {
+  const { errorMessage, isLoading, handleAddWebsite, setErrorMessage } =
+    useAddWebsite(websiteInfo, {
       setWebsiteInfo,
       onSuccess: () => {
         setShowModal(false);
         window.location.reload();
       },
-    }
-  );
+    });
 
   return (
     <>
