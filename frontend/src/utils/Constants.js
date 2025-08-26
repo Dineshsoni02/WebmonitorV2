@@ -24,3 +24,10 @@ export const addWebsiteToLocalStorage = (data) => {
   allWebsites.push(data);
   localStorage.setItem("allWebsitesData", JSON.stringify(allWebsites));
 };
+
+export const removeWebsiteFromLocalStorage = (url) => {
+  const allWebsites = getAllWebsitesFromLocalStorage();
+  const updatedWebsites = allWebsites.filter((item) => item?.data?.url !== url);
+  localStorage.setItem("allWebsitesData", JSON.stringify(updatedWebsites));
+  window.location.reload();
+};

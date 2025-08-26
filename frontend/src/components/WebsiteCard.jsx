@@ -1,6 +1,7 @@
 import React from "react";
 
-import { Globe, Lock, TriangleAlert, Search } from "lucide-react";
+import { Globe, Lock, TriangleAlert, Search, Trash2 } from "lucide-react";
+import { removeWebsiteFromLocalStorage } from "../utils/Constants";
 
 const WebsiteCard = ({ websiteInfo }) => {
   // console.log(websiteInfo);
@@ -144,6 +145,13 @@ const WebsiteCard = ({ websiteInfo }) => {
           </div>
         </div>
       </div>
+
+      <button
+        onClick={() => removeWebsiteFromLocalStorage(websiteInfo?.url)}
+        className="mt-2 absolute bottom-2 right-2 text-red-500 hover:text-red-600 px-2 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 cursor-pointer"
+      >
+        <Trash2 />
+      </button>
     </div>
   );
 };

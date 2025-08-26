@@ -177,7 +177,6 @@ const HeaderTextComponent = () => {
       }
     );
 
-console.count("realpod");
 
  return (
     <div
