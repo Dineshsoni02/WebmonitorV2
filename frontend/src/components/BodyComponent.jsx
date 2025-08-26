@@ -16,15 +16,13 @@ import DialogBox from "./DialogBox";
 import WebsiteCard from "./WebsiteCard";
 import { getAllWebsitesFromLocalStorage } from "../utils/Constants";
 import useAddWebsite from "../utils/useAddWebsite";
+import { scrollToSection } from "../utils/Constants";
 
 const NavigationBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
-  const scrollToSection = (sectionId) => {
-    const element = document.getElementById(sectionId);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
+  const handleScrollToSection = (sectionId) => {
+    scrollToSection(sectionId);
     setIsMenuOpen(false);
   };
 
@@ -41,7 +39,7 @@ const NavigationBar = () => {
           <div className="flex items-center">
             <div
               className="flex items-center space-x-2 cursor-pointer"
-              onClick={() => scrollToSection("home")}
+              onClick={() => handleScrollToSection("home")}
             >
               <span className="text-xl lg:text-2xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 text-transparent bg-clip-text">
                 WebMonitor
@@ -52,19 +50,19 @@ const NavigationBar = () => {
           {/* Desktop Navigation Links */}
           <div className="hidden md:flex items-center space-x-8">
             <button
-              onClick={() => scrollToSection("home")}
+              onClick={() => handleScrollToSection("home")}
               className="text-gray-300 hover:text-white transition-colors duration-200 font-medium cursor-pointer"
             >
               Home
             </button>
             <button
-              onClick={() => scrollToSection("dashboard")}
+              onClick={() => handleScrollToSection("dashboard")}
               className="text-gray-300 hover:text-white transition-colors duration-200 font-medium cursor-pointer"
             >
               Dashboard
             </button>
             <button
-              onClick={() => scrollToSection("features")}
+              onClick={() => handleScrollToSection("features")}
               className="text-gray-300 hover:text-white transition-colors duration-200 font-medium cursor-pointer"
             >
               Features
@@ -74,7 +72,7 @@ const NavigationBar = () => {
           {/* Desktop Auth Buttons */}
           <div className="hidden md:flex items-center space-x-4">
             <button
-              onClick={() => scrollToSection("dashboard")}
+              onClick={() => handleScrollToSection("dashboard")}
               className="text-gray-300 hover:text-white transition-colors duration-200 font-medium px-4 py-2 rounded-lg hover:bg-gray-700/50 cursor-pointer"
             >
               + Add Site
@@ -124,19 +122,19 @@ const NavigationBar = () => {
           <div className="md:hidden bg-gradient-to-b from-gray-900/95 to-gray-800/95 backdrop-blur-md border-t border-gray-700/50">
             <div className="px-2 pt-2 pb-3 space-y-1">
               <button
-                onClick={() => scrollToSection("home")}
+                onClick={() => handleScrollToSection("home")}
                 className="block w-full text-left px-3 py-2 text-gray-300 hover:text-white hover:bg-gray-700/50 rounded-lg transition-colors duration-200 font-medium cursor-pointer"
               >
                 Home
               </button>
               <button
-                onClick={() => scrollToSection("dashboard")}
+                onClick={() => handleScrollToSection("dashboard")}
                 className="block w-full text-left px-3 py-2 text-gray-300 hover:text-white hover:bg-gray-700/50 rounded-lg transition-colors duration-200 font-medium cursor-pointer"
               >
                 Dashboard
               </button>
               <button
-                onClick={() => scrollToSection("features")}
+                onClick={() => handleScrollToSection("features")}
                 className="block w-full text-left px-3 py-2 text-gray-300 hover:text-white hover:bg-gray-700/50 rounded-lg transition-colors duration-200 font-medium cursor-pointer"
               >
                 Features
@@ -145,7 +143,7 @@ const NavigationBar = () => {
               {/* Mobile Auth Buttons */}
               <div className="pt-4 pb-3 border-t border-gray-700/50">
                 <button
-                  onClick={() => scrollToSection("dashboard")}
+                  onClick={() => handleScrollToSection("dashboard")}
                   className="block w-full text-left px-3 py-2 text-gray-300 hover:text-white hover:bg-gray-700/50 rounded-lg transition-colors duration-200 font-medium mb-2 cursor-pointer"
                 >
                   + Add Site
@@ -168,22 +166,20 @@ const NavigationBar = () => {
 const HeaderTextComponent = () => {
   const [websiteUrl, setWebsiteUrl] = useState("");
 
-  // const handleAddWebsite = (e) => {
-  //   e.preventDefault();
-  //   console.log(websiteUrl);
-  // };
-
   const { errorMessage, isLoading, handleAddWebsite, setErrorMessage } =
     useAddWebsite(
       { url: websiteUrl },
       {
         onSuccess: () => {
+          window.location.href = "#dashboard";
           window.location.reload();
         },
       }
     );
 
-  return (
+console.count("realpod");
+
+ return (
     <div
       id="home"
       className="relative min-h-screen bg-gradient-to-br from-[#0c0e14] via-[#0f1419] to-[#0c0e14] text-white overflow-hidden pt-8"
@@ -256,7 +252,7 @@ const HeaderTextComponent = () => {
                   </div>
                 </form>
                 {isLoading && (
-                  <div className="fixed top-0 left-0 w-full h-full bg-black/50 flex items-center justify-center">
+                  <div className="fixed top-0 left-0 w-full h-full bg-black/10 flex items-center justify-center">
                     <div className=" animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white"></div>
                   </div>
                 )}

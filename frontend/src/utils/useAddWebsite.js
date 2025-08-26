@@ -7,7 +7,7 @@ const useAddWebsite = (websiteInfo, options = {}) => {
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  console.log(websiteInfo);
+  // console.log(websiteInfo);
   useEffect(() => {
     if (websiteInfo.url && !websiteInfo.name) {
       try {

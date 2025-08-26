@@ -3,7 +3,7 @@ import React from "react";
 import { Globe, Lock, TriangleAlert, Search } from "lucide-react";
 
 const WebsiteCard = ({ websiteInfo }) => {
-  console.log(websiteInfo);
+  // console.log(websiteInfo);
   const statusColor =
     websiteInfo?.status === "online" ? "bg-green-500" : "bg-red-500";
   const sslStatusColor = websiteInfo?.ssl?.isValid
