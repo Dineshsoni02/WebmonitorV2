@@ -7,6 +7,7 @@ const useAddWebsite = (websiteInfo, options = {}) => {
   const [errorMessage, setErrorMessage] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
+  console.log(websiteInfo);
   useEffect(() => {
     if (websiteInfo.url && !websiteInfo.name) {
       try {
@@ -68,7 +69,6 @@ const useAddWebsite = (websiteInfo, options = {}) => {
     }
     return result;
   };
-
 
   return { errorMessage, isLoading, handleAddWebsite, setErrorMessage };
 };

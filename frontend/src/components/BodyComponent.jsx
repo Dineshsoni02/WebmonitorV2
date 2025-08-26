@@ -15,6 +15,7 @@ import {
 import DialogBox from "./DialogBox";
 import WebsiteCard from "./WebsiteCard";
 import { getAllWebsitesFromLocalStorage } from "../utils/Constants";
+import useAddWebsite from "../utils/useAddWebsite";
 
 const NavigationBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -167,10 +168,21 @@ const NavigationBar = () => {
 const HeaderTextComponent = () => {
   const [websiteUrl, setWebsiteUrl] = useState("");
 
-  const handleAddWebsite = (e) => {
-    e.preventDefault();
-    console.log(websiteUrl);
-  };
+  // const handleAddWebsite = (e) => {
+  //   e.preventDefault();
+  //   console.log(websiteUrl);
+  // };
+
+  const { errorMessage, isLoading, handleAddWebsite, setErrorMessage } =
+    useAddWebsite(
+      { url: websiteUrl },
+      {
+        onSuccess: () => {
+          window.location.reload();
+        },
+      }
+    );
+
   return (
     <div
       id="home"
@@ -226,18 +238,33 @@ const HeaderTextComponent = () => {
                       type="url"
                       placeholder="https://www.google.com"
                       value={websiteUrl}
-                      onChange={(e) => setWebsiteUrl(e.target.value)}
+                      onChange={(e) => {
+                        setWebsiteUrl(e.target.value);
+                        setErrorMessage("");
+                      }}
                       className="flex-1 bg-gray-800/50 border border-gray-600/50 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 transition-all duration-300"
                     />
+
                     <button
                       type="submit"
                       onClick={handleAddWebsite}
+                      disabled={isLoading}
                       className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/25 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 cursor-pointer"
                     >
-                      Check Now
+                      {isLoading ? "Checking..." : "Check Now"}
                     </button>
                   </div>
                 </form>
+                {isLoading && (
+                  <div className="fixed top-0 left-0 w-full h-full bg-black/50 flex items-center justify-center">
+                    <div className=" animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-white"></div>
+                  </div>
+                )}
+                {errorMessage && (
+                  <p className="text-red-400 text-sm font-medium ml-3 mt-1">
+                    {errorMessage}
+                  </p>
+                )}
               </div>
             </div>
           </div>
