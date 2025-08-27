@@ -63,7 +63,6 @@ export const recheckAllWebsites = async (setWebsiteList, setIsRechecking) => {
     }
 
     setWebsiteList(updatedWebsites);
-    setIsRechecking(false);
   } finally {
     setIsRechecking(false);
   }

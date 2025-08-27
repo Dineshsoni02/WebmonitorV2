@@ -9,8 +9,6 @@ export const DialogBox = ({ showModal, setShowModal }) => {
     name: "",
   });
 
-
-  
   const { errorMessage, isLoading, handleAddWebsite, setErrorMessage } =
     useAddWebsite(websiteInfo, {
       setWebsiteInfo,
@@ -80,7 +78,7 @@ export const DialogBox = ({ showModal, setShowModal }) => {
                 disabled={isLoading}
                 className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-6 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/25 cursor-pointer"
               >
-                {isLoading ? "Loading..." : "Submit"}
+                {isLoading ? "Adding..." : "Submit"}
               </button>
             </form>
 
