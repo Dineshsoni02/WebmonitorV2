@@ -49,15 +49,22 @@ export const addOrUpdateWebsiteInLocalStorage = (data) => {
   localStorage.setItem("allWebsitesData", JSON.stringify(allWebsites));
 };
 
-export const recheckAllWebsites = async (setWebsiteList) => {
-  const allWebsites = getAllWebsitesFromLocalStorage();
-  const updatedWebsites = [];
+export const recheckAllWebsites = async (setWebsiteList, setIsRechecking) => {
+  setIsRechecking(true);
 
-  for (const website of allWebsites) {
-    const data = await getWebsiteStats(website?.data);
-    addOrUpdateWebsiteInLocalStorage(data);
-    updatedWebsites.push(data);
+  try {
+    const allWebsites = getAllWebsitesFromLocalStorage();
+    const updatedWebsites = [];
+
+    for (const website of allWebsites) {
+      const data = await getWebsiteStats(website?.data);
+      addOrUpdateWebsiteInLocalStorage(data);
+      updatedWebsites.push(data);
+    }
+
+    setWebsiteList(updatedWebsites);
+    setIsRechecking(false);
+  } finally {
+    setIsRechecking(false);
   }
-
-  setWebsiteList(updatedWebsites);
 };

@@ -385,6 +385,7 @@ const FooterSection = () => {
 
 const DashboardSection = ({ setShowModal }) => {
   const [websiteList, setWebsiteList] = useState([]);
+  const [isRechecking, setIsRechecking] = useState(false);
 
   useEffect(() => {
     const websites = getAllWebsitesFromLocalStorage();
@@ -497,11 +498,18 @@ const DashboardSection = ({ setShowModal }) => {
 
           {websiteList.length > 0 && (
             <button
-              onClick={() => recheckAllWebsites(setWebsiteList)}
+              onClick={() =>
+                recheckAllWebsites(setWebsiteList, setIsRechecking)
+              }
+              disabled={isRechecking}
               className="flex items-center gap-2 mb-4 text-white cursor-pointer mt-4 ml-auto"
             >
-              <RefreshCw className="w-5 h-5 text-cyan-400" />
-              Recheck
+              <RefreshCw
+                className={`w-5 h-5 text-cyan-400 ${
+                  isRechecking ? "animate-spin" : ""
+                }`}
+              />
+              {isRechecking ? "Rechecking..." : "Recheck"}
             </button>
           )}
         </div>
