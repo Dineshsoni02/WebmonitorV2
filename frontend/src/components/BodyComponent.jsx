@@ -445,11 +445,11 @@ const DashboardSection = ({ setShowModal }) => {
               <p className="text-white text-xl font-bold">
                 {websiteList.reduce(
                   (total, website) =>
-                    (total += parseInt(
+                    Math.round((total += parseInt(
                       website?.data?.responseTime.split("ms")[0]
-                    )),
+                    )) / websiteList.length || 0),
                   0
-                ) / websiteList.length || 0}
+                )}
                 ms
               </p>
             </div>
