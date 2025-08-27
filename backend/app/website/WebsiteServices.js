@@ -2,8 +2,12 @@ import { messages } from "../constants/responseMessages.js";
 import { validateUrl } from "../utils/validation.js";
 import WebsiteSchema from "./WebsiteSchema.js";
 import axios from "axios";
-import { getResponseTime , checkSSL , checkSEO , checkUptime} from "../utils/siteStats.js";
-
+import {
+  getResponseTime,
+  checkSSL,
+  checkSEO,
+  checkUptime,
+} from "../utils/siteStats.js";
 
 export const createWebsite = async (req, res) => {
   const { url, websiteName } = req.body;
@@ -111,8 +115,6 @@ export const getAllWebsite = async (req, res) => {
   });
 };
 
-
-
 export const guestWebsite = async (req, res) => {
   try {
     const { url, name } = req.body;
@@ -120,54 +122,76 @@ export const guestWebsite = async (req, res) => {
     if (!url) {
       return res.status(400).json({
         status: false,
-        message: 'URL is required',
+        message: "URL is required",
       });
     }
 
-    
     const isUp = await checkUptime(url);
-    if (!isUp) {
-      return res.status(422).json({
-        status: false,
-        message: messages.WEBSITE_NOT_ACTIVE + " " + url,
-      });
+    // if (!isUp) {
+    //   return res.status(422).json({
+    //     status: false,
+    //     message: messages.WEBSITE_NOT_ACTIVE + " " + url,
+    //   });
+    // }
+
+    let websiteData;
+
+    if (isUp) {
+      const [responseTime, sslInfo, seoInfo] = await Promise.all([
+        getResponseTime(url),
+        checkSSL(url),
+        checkSEO(url),
+      ]);
+
+      websiteData = {
+        url,
+        name: name || new URL(url).hostname,
+        status: "online",
+        lastChecked: new Date().toISOString(),
+        responseTime: responseTime ? `${responseTime}ms` : "N/A",
+        ssl: {
+          isValid: sslInfo?.isValid || false,
+          ...(sslInfo?.isValid
+            ? {
+                issuer: sslInfo.issuer,
+                validFrom: sslInfo.validFrom,
+                validTo: sslInfo.validTo,
+                daysRemaining: sslInfo.daysRemaining,
+                algorithm: sslInfo.algorithm,
+              }
+            : { error: sslInfo?.error || "SSL check failed" }),
+        },
+        seo: seoInfo.error
+          ? { error: seoInfo.error }
+          : {
+              title: seoInfo.title,
+              titleLength: seoInfo.titleLength,
+              metaDescription: seoInfo.metaDescription,
+              metaDescriptionLength: seoInfo.metaDescriptionLength,
+              h1Count: seoInfo.h1Count,
+              h2Count: seoInfo.h2Count,
+              imageCount: seoInfo.imageCount,
+              imagesWithoutAlt: seoInfo.imagesWithoutAlt,
+              issues: seoInfo.issues,
+              hasIssues: seoInfo.hasIssues,
+            },
+      };
+    } else {
+      websiteData = {
+        url,
+        name: name || new URL(url).hostname,
+        status: "offline",  
+        lastChecked: new Date().toISOString(),
+        responseTime: "0ms",
+        ssl: {
+          isValid: false,
+          error: "SSL check failed",
+        },
+        seo: {
+          error: "SSL check failed",
+        },
+      };
     }
-
-    const [responseTime, sslInfo, seoInfo] = await Promise.all([
-      getResponseTime(url),
-      checkSSL(url),
-      checkSEO(url)
-    ]);
-
-    const websiteData = {
-      url: url,
-      name: name || new URL(url).hostname,
-      status: 'online',
-      lastChecked: new Date().toISOString(),
-      responseTime: responseTime ? `${responseTime}ms` : 'N/A',
-      ssl: {
-        isValid: sslInfo?.isValid || false,
-        ...(sslInfo?.isValid ? {
-          issuer: sslInfo.issuer,
-          validFrom: sslInfo.validFrom,
-          validTo: sslInfo.validTo,
-          daysRemaining: sslInfo.daysRemaining,
-          algorithm: sslInfo.algorithm
-        } : { error: sslInfo?.error || 'SSL check failed' })
-      },
-      seo: seoInfo.error ? { error: seoInfo.error } : {
-        title: seoInfo.title,
-        titleLength: seoInfo.titleLength,
-        metaDescription: seoInfo.metaDescription,
-        metaDescriptionLength: seoInfo.metaDescriptionLength,
-        h1Count: seoInfo.h1Count,
-        h2Count: seoInfo.h2Count,
-        imageCount: seoInfo.imageCount,
-        imagesWithoutAlt: seoInfo.imagesWithoutAlt,
-        issues: seoInfo.issues,
-        hasIssues: seoInfo.hasIssues
-      }
-    };
 
     res.status(200).json({
       status: true,
@@ -175,11 +199,11 @@ export const guestWebsite = async (req, res) => {
       data: websiteData,
     });
   } catch (error) {
-    console.error('Error in guestWebsite:', error);
+    console.error("Error in guestWebsite:", error);
     res.status(500).json({
       status: false,
-      message: 'An error occurred while analyzing the website',
-      error: error.message
+      message: "An error occurred while analyzing the website",
+      error: error.message,
     });
   }
 };

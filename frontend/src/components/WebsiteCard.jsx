@@ -56,97 +56,138 @@ const WebsiteCard = ({ websiteInfo }) => {
         </span>
       </div>
 
-      {/* Status Grid */}
-      <div className="grid grid-cols-3 gap-4 mt-2">
-        <div className="bg-gray-800/50 p-3 rounded-lg">
-          <div className="text-gray-400 text-xs font-medium mb-1">
-            RESPONSE TIME
-          </div>
-          <div className="text-white font-bold">
-            {websiteInfo?.responseTime}
-          </div>
-        </div>
-        <div className="bg-gray-800/50 p-3 rounded-lg">
-          <div className="text-gray-400 text-xs font-medium mb-1">
-            LAST CHECKED
-          </div>
-          <div className="text-white font-mono text-sm">
-            {formatDate(websiteInfo?.lastChecked).split(",")[0] +
-              " " +
-              formatDate(websiteInfo?.lastChecked).split(",")[2]}
-          </div>
-        </div>
-        <div className="bg-gray-800/50 p-3 rounded-lg">
-          <div className="text-gray-400 text-xs font-medium mb-1">
-            SSL STATUS
-          </div>
-          <div className="flex items-center gap-1">
-            <div className={`w-2 h-2 rounded-full ${sslStatusColor}`}></div>
-            <span className="text-white text-sm">
-              {websiteInfo?.ssl?.daysRemaining}d left
-            </span>
-          </div>
-        </div>
-      </div>
-
-      {/* SEO Section */}
-      <div className="mt-2">
-        <div className="flex items-center justify-between mb-2">
-          <div className="flex items-center gap-2">
-            <Search className="text-cyan-400" />
-            <h4 className="text-sm font-medium text-white">SEO Status</h4>
-          </div>
-          <span
-            className={`px-2 py-0.5 text-xs rounded-full ${seoStatusColor} text-white`}
-          >
-            {websiteInfo?.seo?.hasIssues ? "Needs Attention" : "Good"}
-          </span>
-        </div>
-
-        {websiteInfo?.seo?.metaDescription && (
-          <p className="text-gray-300 text-sm mb-3 line-clamp-2">
-            {websiteInfo.seo.metaDescription}
-          </p>
-        )}
-
-        {websiteInfo?.seo?.hasIssues && (
-          <div className="mt-2 space-y-1">
-            {websiteInfo.seo.issues.map((issue, index) => (
-              <div
-                key={index}
-                className="flex items-start gap-2 text-yellow-400 text-xs mt-2"
-              >
-                <TriangleAlert className=" flex-shrink-0 w-4 h-4" />
-                <span>{issue}</span>
+      {websiteInfo?.status === "online" ? (
+        <>
+          {/* Status Grid */}
+          <div className="grid grid-cols-3 gap-4 mt-2">
+            <div className="bg-gray-800/50 p-3 rounded-lg">
+              <div className="text-gray-400 text-xs font-medium mb-1">
+                RESPONSE TIME
               </div>
-            ))}
+              <div className="text-white font-bold">
+                {websiteInfo?.responseTime}
+              </div>
+            </div>
+            <div className="bg-gray-800/50 p-3 rounded-lg">
+              <div className="text-gray-400 text-xs font-medium mb-1">
+                LAST CHECKED
+              </div>
+              <div className="text-white font-mono text-sm">
+                {formatDate(websiteInfo?.lastChecked).split(",")[0] +
+                  " " +
+                  formatDate(websiteInfo?.lastChecked).split(",")[2]}
+              </div>
+            </div>
+            <div className="bg-gray-800/50 p-3 rounded-lg">
+              <div className="text-gray-400 text-xs font-medium mb-1">
+                SSL STATUS
+              </div>
+              <div className="flex items-center gap-1">
+                <div className={`w-2 h-2 rounded-full ${sslStatusColor}`}></div>
+                <span className="text-white text-sm">
+                  {websiteInfo?.ssl?.daysRemaining}d left
+                </span>
+              </div>
+            </div>
           </div>
-        )}
-      </div>
+          {/* SEO Section */}
+          <div className="mt-2">
+            <div className="flex items-center justify-between mb-2">
+              <div className="flex items-center gap-2">
+                <Search className="text-cyan-400" />
+                <h4 className="text-sm font-medium text-white">SEO Status</h4>
+              </div>
+              <span
+                className={`px-2 py-0.5 text-xs rounded-full ${seoStatusColor} text-white`}
+              >
+                {websiteInfo?.seo?.hasIssues ? "Needs Attention" : "Good"}
+              </span>
+            </div>
 
-      {/* SSL Details */}
-      <div className="mt-2 pt-3 border-t border-gray-700/50">
-        <div className="flex items-center gap-2 text-sm text-gray-400 mb-2">
-          <Lock className="text-cyan-400" />
-          <span>SSL Certificate</span>
-        </div>
-        <div className="grid grid-cols-2 gap-2 text-xs">
-          <div>
-            <div className="text-gray-500">Issuer</div>
-            <div className="text-white truncate">
-              {websiteInfo?.ssl?.issuer || "N/A"}
+            {websiteInfo?.seo?.metaDescription && (
+              <p className="text-gray-300 text-sm mb-3 line-clamp-2">
+                {websiteInfo.seo.metaDescription}
+              </p>
+            )}
+
+            {websiteInfo?.seo?.hasIssues && (
+              <div className="mt-2 space-y-1">
+                {websiteInfo.seo.issues.map((issue, index) => (
+                  <div
+                    key={index}
+                    className="flex items-start gap-2 text-yellow-400 text-xs mt-2"
+                  >
+                    <TriangleAlert className=" flex-shrink-0 w-4 h-4" />
+                    <span>{issue}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+          {/* SSL Details */}
+          <div className="mt-2 pt-3 border-t border-gray-700/50">
+            <div className="flex items-center gap-2 text-sm text-gray-400 mb-2">
+              <Lock className="text-cyan-400" />
+              <span>SSL Certificate</span>
+            </div>
+            <div className="grid grid-cols-2 gap-2 text-xs">
+              <div>
+                <div className="text-gray-500">Issuer</div>
+                <div className="text-white truncate">
+                  {websiteInfo?.ssl?.issuer || "N/A"}
+                </div>
+              </div>
+              <div>
+                <div className="text-gray-500">Valid Until</div>
+                <div className="text-white">
+                  {websiteInfo?.ssl?.validTo
+                    ? new Date(websiteInfo.ssl.validTo).toLocaleDateString()
+                    : "N/A"}
+                </div>
+              </div>
             </div>
           </div>
-          <div>
-            <div className="text-gray-500">Valid Until</div>
-            <div className="text-white">
-              {websiteInfo?.ssl?.validTo
-                ? new Date(websiteInfo.ssl.validTo).toLocaleDateString()
-                : "N/A"}
+        </>
+      ) : (
+        <>
+          <div className="bg-gray-800/50 p-4 rounded-lg text-center">
+            <div className="flex flex-col items-center justify-center py-4">
+              <div className="w-12 h-12 rounded-full bg-red-500/20 flex items-center justify-center mb-3">
+                <TriangleAlert className="w-6 h-6 text-red-500" />
+              </div>
+              <h4 className="text-lg font-semibold text-white mb-1">
+                Website is Offline
+              </h4>
+              <p className="text-gray-400 text-sm mb-3">
+                We couldn't reach this website
+              </p>
+
+              <div className="w-full max-w-xs mx-auto bg-gray-700/50 rounded-full h-1.5 mb-4">
+                <div className="bg-red-500 h-1.5 rounded-full w-full"></div>
+              </div>
+
+              <div className="bg-gray-800/50 p-3 rounded-lg w-full">
+                <div className="text-gray-400 text-xs font-medium mb-1">
+                  LAST CHECKED
+                </div>
+                <div className="text-white font-mono text-sm">
+                  {formatDate(websiteInfo?.lastChecked).split(",")[0] +
+                    " " +
+                    formatDate(websiteInfo?.lastChecked).split(",")[2]}
+                </div>
+              </div>
+
+              <button
+                onClick={() => window.open(websiteInfo?.url, "_blank")}
+                className="mt-4 text-cyan-400 hover:text-cyan-300 text-sm font-medium flex items-center gap-1 cursor-pointer"
+              >
+                <Globe className="w-4 h-4" />
+                Try to visit
+              </button>
             </div>
           </div>
-        </div>
-      </div>
+        </>
+      )}
 
       <button
         onClick={() => removeWebsiteFromLocalStorage(websiteInfo?.url)}

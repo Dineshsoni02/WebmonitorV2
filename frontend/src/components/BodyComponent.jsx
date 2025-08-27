@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useMemo } from "react";
 import site_stats from "../assets/site_stats.svg";
 import {
   Activity,
@@ -392,6 +392,14 @@ const DashboardSection = ({ setShowModal }) => {
     setWebsiteList(websites);
   }, []);
 
+  const activeSites = useMemo(() => {
+    return websiteList.filter(
+      (website) =>
+        website?.data?.status === "online" &&
+        website?.data?.responseTime !== "N/A"
+    );
+  }, [websiteList]);
+
   return (
     <section
       id="dashboard"
@@ -445,12 +453,12 @@ const DashboardSection = ({ setShowModal }) => {
                 </h3>
               </div>
               <p className="text-white text-xl font-bold">
-                {websiteList.reduce(
+                {activeSites.reduce(
                   (total, website) =>
                     Math.round(
                       (total += parseInt(
                         website?.data?.responseTime.split("ms")[0]
-                      )) / websiteList.length || 0
+                      )) / activeSites.length || 0
                     ),
                   0
                 )}
@@ -467,9 +475,9 @@ const DashboardSection = ({ setShowModal }) => {
                 </h3>
               </div>
               <p className="text-white text-xl font-bold  ">
-                {websiteList.length > 0
+                {activeSites.length > 0
                   ? Math.min(
-                      ...websiteList.map(
+                      ...activeSites.map(
                         (website) => website?.data?.ssl?.daysRemaining
                       )
                     )
@@ -487,9 +495,9 @@ const DashboardSection = ({ setShowModal }) => {
                 </h3>
               </div>
               <p className="text-white text-xl font-bold">
-                {websiteList.reduce(
-                  (start, website) =>
-                    start + website?.data?.seo?.issues?.length,
+                {activeSites.reduce(
+                  (sum, website) =>
+                    sum + (website?.data?.seo?.issues?.length || 0),
                   0
                 )}
               </p>
