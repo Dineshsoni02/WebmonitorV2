@@ -11,12 +11,14 @@ import {
   Clock4,
   TrendingUp,
   TriangleAlert,
+  RefreshCw,
 } from "lucide-react";
 import DialogBox from "./DialogBox";
 import WebsiteCard from "./WebsiteCard";
 import { getAllWebsitesFromLocalStorage } from "../utils/Constants";
 import useAddWebsite from "../utils/useAddWebsite";
 import { scrollToSection } from "../utils/Constants";
+import { recheckAllWebsites } from "../utils/Constants";
 
 const NavigationBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -177,8 +179,7 @@ const HeaderTextComponent = () => {
       }
     );
 
-
- return (
+  return (
     <div
       id="home"
       className="relative min-h-screen bg-gradient-to-br from-[#0c0e14] via-[#0f1419] to-[#0c0e14] text-white overflow-hidden pt-8"
@@ -445,9 +446,11 @@ const DashboardSection = ({ setShowModal }) => {
               <p className="text-white text-xl font-bold">
                 {websiteList.reduce(
                   (total, website) =>
-                    Math.round((total += parseInt(
-                      website?.data?.responseTime.split("ms")[0]
-                    )) / websiteList.length || 0),
+                    Math.round(
+                      (total += parseInt(
+                        website?.data?.responseTime.split("ms")[0]
+                      )) / websiteList.length || 0
+                    ),
                   0
                 )}
                 ms
@@ -491,6 +494,16 @@ const DashboardSection = ({ setShowModal }) => {
               </p>
             </div>
           </div>
+
+          {websiteList.length > 0 && (
+            <button
+              onClick={() => recheckAllWebsites(setWebsiteList)}
+              className="flex items-center gap-2 mb-4 text-white cursor-pointer mt-4 ml-auto"
+            >
+              <RefreshCw className="w-5 h-5 text-cyan-400" />
+              Recheck
+            </button>
+          )}
         </div>
       </div>
 

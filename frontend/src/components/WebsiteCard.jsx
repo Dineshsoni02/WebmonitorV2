@@ -71,7 +71,9 @@ const WebsiteCard = ({ websiteInfo }) => {
             LAST CHECKED
           </div>
           <div className="text-white font-mono text-sm">
-            {formatDate(websiteInfo?.lastChecked).split(",")[0]}
+            {formatDate(websiteInfo?.lastChecked).split(",")[0] +
+              " " +
+              formatDate(websiteInfo?.lastChecked).split(",")[2]}
           </div>
         </div>
         <div className="bg-gray-800/50 p-3 rounded-lg">
