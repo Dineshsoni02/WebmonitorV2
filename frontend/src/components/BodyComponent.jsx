@@ -51,7 +51,6 @@ const NavigationBar = () => {
 
           {/* Desktop Navigation Links */}
           <div className="hidden md:flex items-center space-x-8">
-
             <button
               onClick={() => handleScrollToSection("dashboard")}
               className="text-gray-300 hover:text-white transition-colors duration-200 font-medium cursor-pointer"
@@ -78,7 +77,7 @@ const NavigationBar = () => {
               onClick={() => handleAuthNavigation("signup")}
               className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-6 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/25 cursor-pointer"
             >
-              Sign In
+              Sign In to Get Alerts
             </button>
           </div>
 
@@ -143,7 +142,7 @@ const NavigationBar = () => {
                   onClick={() => handleAuthNavigation("signup")}
                   className="block w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-3 py-2 rounded-lg font-medium transition-all duration-300 cursor-pointer"
                 >
-                  Sign In
+                  Sign In to Get Alerts
                 </button>
               </div>
             </div>
