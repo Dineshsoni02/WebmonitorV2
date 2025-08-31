@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Eye, EyeOff, Mail, Lock, User } from "lucide-react";
+import { InputWithIcon } from "../utils/InputWithIcon";
 
 const Auth = () => {
   const [isSignIn, setIsSignIn] = useState(true);
@@ -46,7 +47,6 @@ const Auth = () => {
 };
 
 const SignIn = () => {
-  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -69,53 +69,31 @@ const SignIn = () => {
   return (
     <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
       <div className="rounded-md shadow-sm -space-y-px">
-        <div className="relative mb-4">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <Mail className="h-5 w-5 text-gray-400" />
-          </div>
-          <input
-            id="email"
-            name="email"
-            type="email"
-            // autoComplete="email"
-            required
-            className="appearance-none rounded-none relative block w-full px-3 py-2 pl-10 border border-gray-300 placeholder-gray-500 text-white rounded-t-md focus:outline-none focus:ring-cyan-500/50 focus:border-cyan-500/50 focus:z-10 sm:text-sm"
-            placeholder="Email address"
-            value={formData.email}
-            onChange={handleChange}
-          />
-        </div>
-        <div className="relative">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <Lock className="h-5 w-5 text-gray-400" />
-          </div>
-          <input
-            id="password"
-            name="password"
-            type={showPassword ? "text" : "password"}
-            // autoComplete="current-password"
-            required
-            className="appearance-none rounded-none relative block w-full px-3 py-2 pl-10 border border-gray-300 placeholder-gray-500 text-white rounded-b-md focus:outline-none focus:ring-cyan-500/50 focus:border-cyan-500/50 focus:z-10 sm:text-sm "
-            placeholder="Password"
-            value={formData.password}
-            onChange={handleChange}
-          />
-          <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
-            <button
-              type="button"
-              className="text-gray-400 hover:text-gray-500 focus:outline-none cursor-pointer"
-              onClick={() => setShowPassword(!showPassword)}
-            >
-              {showPassword ? (
-                <EyeOff className="h-5 w-5" />
-              ) : (
-                <Eye className="h-5 w-5" />
-              )}
-            </button>
-          </div>
-        </div>
-      </div>
+        <InputWithIcon
+          id="email"
+          name="email"
+          type="email"
+          placeholder="Email address"
+          autoComplete="email"
+          required
+          value={formData.email}
+          onChange={handleChange}
+          Icon={Mail}
+        />
 
+        <InputWithIcon
+          id="password"
+          name="password"
+          type="password"
+          placeholder="Password"
+          autoComplete="current-password"
+          required
+          value={formData.password}
+          onChange={handleChange}
+          Icon={Lock}
+          withToggle
+        />
+      </div>
 
       <div>
         <button
@@ -151,71 +129,44 @@ const SignUp = () => {
   return (
     <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
       <div className="rounded-md shadow-sm space-y-4">
-        <div className="relative">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <User className="h-5 w-5 text-gray-400" />
-          </div>
-          <input
-            id="name"
-            name="name"
-            type="text"
-            autoComplete="name"
-            required
-            className="appearance-none rounded-none relative block w-full px-3 py-2 pl-10 border border-gray-300 placeholder-gray-500 text-white rounded-t-md focus:outline-none focus:ring-cyan-500/50 focus:border-cyan-500/50 focus:z-10 sm:text-sm"
-            placeholder="Full name"
-            value={formData.name}
-            onChange={handleChange}
-          />
-        </div>
+        <InputWithIcon
+          id="name"
+          name="name"
+          type="text"
+          placeholder="Full name"
+          autoComplete="name"
+          required
+          value={formData.name}
+          onChange={handleChange}
+          Icon={User}
+        />
 
-        <div className="relative">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <Mail className="h-5 w-5 text-gray-400" />
-          </div>
-          <input
-            id="email"
-            name="email"
-            type="email"
-            autoComplete="email"
-            required
-            className="appearance-none rounded-none relative block w-full px-3 py-2 pl-10 border border-gray-300 placeholder-gray-500 text-white focus:outline-none focus:ring-cyan-500/50 focus:border-cyan-500/50 focus:z-10 sm:text-sm"
-            placeholder="Email address"
-            value={formData.email}
-            onChange={handleChange}
-          />
-        </div>
+        <InputWithIcon
+          id="email"
+          name="email"
+          type="email"
+          autoComplete="email"
+          required
+          placeholder="Email address"
+          value={formData.email}
+          onChange={handleChange}
+          Icon={Mail}
+        />
 
-        <div className="relative">
-          <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <Lock className="h-5 w-5 text-gray-400" />
-          </div>
-          <input
-            id="password"
-            name="password"
-            type={showPassword ? "text" : "password"}
-            autoComplete="new-password"
-            required
-            className="appearance-none rounded-none relative block w-full px-3 py-2 pl-10 border border-gray-300 rounded-b-md placeholder-gray-500 text-white focus:outline-none focus:ring-cyan-500/50 focus:border-cyan-500/50 focus:z-10 sm:text-sm"
-            placeholder="Password"
-            value={formData.password}
-            onChange={handleChange}
-          />
-          <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
-            <button
-              type="button"
-              className="text-gray-400 hover:text-gray-500 focus:outline-none cursor-pointer"
-              onClick={() => setShowPassword(!showPassword)}
-            >
-              {showPassword ? (
-                <EyeOff className="h-5 w-5" />
-              ) : (
-                <Eye className="h-5 w-5" />
-              )}
-            </button>
-          </div>
-        </div>
+        <InputWithIcon
+          id="password"
+          name="password"
+          type="password"
+          placeholder="Password"
+          autoComplete="current-password"
+          required
+          value={formData.password}
+          onChange={handleChange}
+          Icon={Lock}
+          withToggle
+        />
 
-      
+        
       </div>
 
       <div>
