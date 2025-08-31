@@ -5,7 +5,6 @@ export const scrollToSection = (sectionId) => {
   if (element) {
     element.scrollIntoView({ behavior: "smooth" });
   }
-  setIsMenuOpen(false);
 };
 
 export const getAllWebsitesFromLocalStorage = () => {

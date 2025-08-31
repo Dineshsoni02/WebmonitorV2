@@ -19,9 +19,11 @@ import { getAllWebsitesFromLocalStorage } from "../utils/Constants";
 import useAddWebsite from "../utils/useAddWebsite";
 import { scrollToSection } from "../utils/Constants";
 import { recheckAllWebsites } from "../utils/Constants";
+import { useNavigate } from "react-router-dom";
 
-const NavigationBar = () => {
+export const NavigationBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const navigate = useNavigate();
 
   const handleScrollToSection = (sectionId) => {
     scrollToSection(sectionId);
@@ -30,7 +32,7 @@ const NavigationBar = () => {
 
   const handleAuthNavigation = (page) => {
     console.log(`Navigating to ${page} page`);
-    // window.location.href = `/auth?page=${page}`;
+    navigate("/auth");
   };
 
   return (
@@ -41,7 +43,10 @@ const NavigationBar = () => {
           <div className="flex items-center">
             <div
               className="flex items-center space-x-2 cursor-pointer"
-              onClick={() => handleScrollToSection("home")}
+              onClick={() => {
+                handleScrollToSection("home");
+                navigate("/");
+              }}
             >
               <span className="text-xl lg:text-2xl font-bold bg-gradient-to-r from-blue-400 to-cyan-400 text-transparent bg-clip-text">
                 WebMonitor
@@ -357,7 +362,7 @@ const FeaturesSection = () => {
   );
 };
 
-const FooterSection = () => {
+export const FooterSection = () => {
   return (
     <footer className="py-12 bg-gradient-to-br from-[#0c0e14] via-[#0f1419] to-[#0c0e14] text-white">
       <div className="container mx-auto px-4">
