@@ -51,12 +51,7 @@ const NavigationBar = () => {
 
           {/* Desktop Navigation Links */}
           <div className="hidden md:flex items-center space-x-8">
-            <button
-              onClick={() => handleScrollToSection("home")}
-              className="text-gray-300 hover:text-white transition-colors duration-200 font-medium cursor-pointer"
-            >
-              Home
-            </button>
+
             <button
               onClick={() => handleScrollToSection("dashboard")}
               className="text-gray-300 hover:text-white transition-colors duration-200 font-medium cursor-pointer"
@@ -123,12 +118,6 @@ const NavigationBar = () => {
         {isMenuOpen && (
           <div className="md:hidden bg-gradient-to-b from-gray-900/95 to-gray-800/95 backdrop-blur-md border-t border-gray-700/50">
             <div className="px-2 pt-2 pb-3 space-y-1">
-              <button
-                onClick={() => handleScrollToSection("home")}
-                className="block w-full text-left px-3 py-2 text-gray-300 hover:text-white hover:bg-gray-700/50 rounded-lg transition-colors duration-200 font-medium cursor-pointer"
-              >
-                Home
-              </button>
               <button
                 onClick={() => handleScrollToSection("dashboard")}
                 className="block w-full text-left px-3 py-2 text-gray-300 hover:text-white hover:bg-gray-700/50 rounded-lg transition-colors duration-200 font-medium cursor-pointer"
