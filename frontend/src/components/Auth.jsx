@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { Eye, EyeOff, Mail, Lock, User } from "lucide-react";
 import { InputWithIcon } from "../utils/InputWithIcon";
+import Button from "../utils/Button";
 
 const Auth = () => {
   const [isSignIn, setIsSignIn] = useState(true);
@@ -33,12 +34,13 @@ const Auth = () => {
         <div className="text-center text-sm">
           <span className="text-white">
             {isSignIn ? "Don't have an account? " : "Already have an account? "}
-            <button
+            <Button
               onClick={() => setIsSignIn(!isSignIn)}
-              className="font-medium cursor-pointer text-cyan-600 hover:text-cyan-500 focus:outline-none"
+              variant="none"
+              className="!px-1 !py-0 font-medium cursor-pointer text-cyan-600 hover:text-cyan-500 focus:outline-none"
             >
               {isSignIn ? "Sign up" : "Sign in"}
-            </button>
+            </Button>
           </span>
         </div>
       </div>
@@ -96,19 +98,15 @@ const SignIn = () => {
       </div>
 
       <div>
-        <button
-          type="submit"
-          className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-6 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/25 cursor-pointer w-full"
-        >
+        <Button type="submit" className="w-full">
           Sign in
-        </button>
+        </Button>
       </div>
     </form>
   );
 };
 
 const SignUp = () => {
-  const [showPassword, setShowPassword] = useState(false);
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -165,17 +163,12 @@ const SignUp = () => {
           Icon={Lock}
           withToggle
         />
-
-        
       </div>
 
       <div>
-        <button
-          type="submit"
-          className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-6 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/25 cursor-pointer w-full"
-        >
+        <Button type="submit" className="w-full">
           Sign up
-        </button>
+        </Button>
       </div>
     </form>
   );

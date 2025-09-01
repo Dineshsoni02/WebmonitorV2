@@ -20,6 +20,7 @@ import useAddWebsite from "../utils/useAddWebsite";
 import { scrollToSection } from "../utils/Constants";
 import { recheckAllWebsites } from "../utils/Constants";
 import { useNavigate } from "react-router-dom";
+import Button from "../utils/Button";
 
 export const NavigationBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -56,40 +57,45 @@ export const NavigationBar = () => {
 
           {/* Desktop Navigation Links */}
           <div className="hidden md:flex items-center space-x-8">
-            <button
+            <Button
               onClick={() => handleScrollToSection("dashboard")}
+              variant="none"
               className="text-gray-300 hover:text-white transition-colors duration-200 font-medium cursor-pointer"
             >
               Dashboard
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => handleScrollToSection("features")}
+              variant="none"
               className="text-gray-300 hover:text-white transition-colors duration-200 font-medium cursor-pointer"
             >
               Features
-            </button>
+            </Button>
           </div>
 
           {/* Desktop Auth Buttons */}
           <div className="hidden md:flex items-center space-x-4">
-            <button
+            <Button
               onClick={() => handleScrollToSection("dashboard")}
+              variant="none"
               className="text-gray-300 hover:text-white transition-colors duration-200 font-medium px-4 py-2 rounded-lg hover:bg-gray-700/50 cursor-pointer"
             >
               + Add Site
-            </button>
-            <button
+            </Button>
+            <Button
               onClick={() => handleAuthNavigation("signup")}
+              variant="none"
               className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-6 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/25 cursor-pointer"
             >
               Sign In to Get Alerts
-            </button>
+            </Button>
           </div>
 
           {/* Mobile menu button */}
           <div className="md:hidden">
-            <button
+            <Button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
+              variant="none"
               className="text-gray-300 hover:text-white transition-colors duration-200 p-2"
             >
               <svg
@@ -114,7 +120,7 @@ export const NavigationBar = () => {
                   />
                 )}
               </svg>
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -122,33 +128,33 @@ export const NavigationBar = () => {
         {isMenuOpen && (
           <div className="md:hidden bg-gradient-to-b from-gray-900/95 to-gray-800/95 backdrop-blur-md border-t border-gray-700/50">
             <div className="px-2 pt-2 pb-3 space-y-1">
-              <button
+              <Button
                 onClick={() => handleScrollToSection("dashboard")}
+                variant="none"
                 className="block w-full text-left px-3 py-2 text-gray-300 hover:text-white hover:bg-gray-700/50 rounded-lg transition-colors duration-200 font-medium cursor-pointer"
               >
                 Dashboard
-              </button>
-              <button
+              </Button>
+              <Button
                 onClick={() => handleScrollToSection("features")}
+                variant="none"
                 className="block w-full text-left px-3 py-2 text-gray-300 hover:text-white hover:bg-gray-700/50 rounded-lg transition-colors duration-200 font-medium cursor-pointer"
               >
                 Features
-              </button>
+              </Button>
 
               {/* Mobile Auth Buttons */}
               <div className="pt-4 pb-3 border-t border-gray-700/50">
-                <button
+                <Button
                   onClick={() => handleScrollToSection("dashboard")}
+                  variant="none"
                   className="block w-full text-left px-3 py-2 text-gray-300 hover:text-white hover:bg-gray-700/50 rounded-lg transition-colors duration-200 font-medium mb-2 cursor-pointer"
                 >
                   + Add Site
-                </button>
-                <button
-                  onClick={() => handleAuthNavigation("signup")}
-                  className="block w-full bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-3 py-2 rounded-lg font-medium transition-all duration-300 cursor-pointer"
-                >
+                </Button>
+                <Button onClick={() => handleAuthNavigation("signup")}>
                   Sign In to Get Alerts
-                </button>
+                </Button>
               </div>
             </div>
           </div>
@@ -234,14 +240,14 @@ const HeaderTextComponent = () => {
                       className="flex-1 bg-gray-800/50 border border-gray-600/50 rounded-xl px-4 py-3 text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 focus:border-cyan-500/50 transition-all duration-300"
                     />
 
-                    <button
+                    <Button
                       type="submit"
                       onClick={handleAddWebsite}
                       disabled={isLoading}
-                      className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-6 py-3 rounded-xl font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/25 focus:outline-none focus:ring-2 focus:ring-cyan-500/50 cursor-pointer"
+    
                     >
                       {isLoading ? "Checking..." : "Check Now"}
-                    </button>
+                    </Button>
                   </div>
                 </form>
                 {isLoading && (
@@ -408,12 +414,7 @@ const DashboardSection = ({ setShowModal }) => {
               Real-time status of all your monitored websites
             </p>
           </div>
-          <button
-            className="cursor-pointer bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-6 py-2 rounded-xl font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/25 focus:outline-none focus:ring-2 focus:ring-cyan-500/50"
-            onClick={() => setShowModal(true)}
-          >
-            + Add Website
-          </button>
+          <Button onClick={() => setShowModal(true)}>+ Add Website</Button>
         </div>
 
         <div className="container mx-auto px-4 max-w-7xl mt-8">
@@ -501,11 +502,12 @@ const DashboardSection = ({ setShowModal }) => {
           </div>
 
           {websiteList.length > 0 && (
-            <button
+            <Button
               onClick={() =>
                 recheckAllWebsites(setWebsiteList, setIsRechecking)
               }
               disabled={isRechecking}
+              variant="none"
               className="flex items-center gap-2 mb-4 text-white cursor-pointer mt-4 ml-auto"
             >
               <RefreshCw
@@ -514,7 +516,7 @@ const DashboardSection = ({ setShowModal }) => {
                 }`}
               />
               {isRechecking ? "Rechecking..." : "Recheck"}
-            </button>
+            </Button>
           )}
         </div>
       </div>

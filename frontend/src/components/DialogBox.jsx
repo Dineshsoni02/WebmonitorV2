@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Modal from "../utils/Modal";
 import { Globe, X } from "lucide-react";
 import useAddWebsite from "../utils/useAddWebsite";
+import Button from "../utils/Button";
 
 export const DialogBox = ({ showModal, setShowModal }) => {
   const [websiteInfo, setWebsiteInfo] = useState({
@@ -30,12 +31,14 @@ export const DialogBox = ({ showModal, setShowModal }) => {
                 Add Website to Monitor
               </h2>
             </div>
-            <button
-              className=" text-white  rounded-lg font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg  cursor-pointer absolute top-2 right-2"
+           
+            <Button
+            variant="none"
+              className=" text-white rounded-lg font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg  cursor-pointer absolute top-2 right-2"
               onClick={() => setShowModal(false)}
             >
               <X className="w-6 h-6" />
-            </button>
+            </Button>
 
             <form className="flex flex-col gap-4" onSubmit={handleAddWebsite}>
               <div className="flex flex-col gap-2">
