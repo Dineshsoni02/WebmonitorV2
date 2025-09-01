@@ -533,13 +533,10 @@ export const BodyComponent = () => {
 
   return (
     <div>
-      <NavigationBar />
       <HeaderTextComponent />
       <FeaturesSection />
       <DashboardSection setShowModal={setShowModal} />
       <DialogBox setShowModal={setShowModal} showModal={showModal} />
-
-      <FooterSection />
     </div>
   );
 };
