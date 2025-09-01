@@ -76,13 +76,13 @@ export const DialogBox = ({ showModal, setShowModal }) => {
                   className="bg-transparent border border-gray-700 hover:border-gray-600/80 p-2 rounded-lg shadow-md hover:shadow-cyan-500/10 transition-all duration-300"
                 />
               </div>
-              <button
+              <Button
                 type="submit"
                 disabled={isLoading}
-                className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-6 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/25 cursor-pointer"
+              
               >
-                {isLoading ? "Adding..." : "Submit"}
-              </button>
+                {isLoading ? "Checking..." : "Submit"}
+              </Button>
             </form>
 
             {isLoading && (
