@@ -1,5 +1,5 @@
 import { getWebsiteStats } from "./ApiCalls";
-
+import pLimit from "p-limit";
 export const scrollToSection = (sectionId) => {
   const element = document.getElementById(sectionId);
   if (element) {
@@ -48,21 +48,72 @@ export const addOrUpdateWebsiteInLocalStorage = (data) => {
   localStorage.setItem("allWebsitesData", JSON.stringify(allWebsites));
 };
 
+// export const recheckAllWebsites = async (setWebsiteList, setIsRechecking) => {
+//   setIsRechecking(true);
+
+//   try {
+//     const allWebsites = getAllWebsitesFromLocalStorage();
+//     const updatedWebsites = [];
+
+//     for (const website of allWebsites) {
+//       const data = await getWebsiteStats(website?.data);
+//       addOrUpdateWebsiteInLocalStorage(data);
+//       updatedWebsites.push(data);
+//     }
+
+//     setWebsiteList(updatedWebsites);
+//   } finally {
+//     setIsRechecking(false);
+//   }
+// };
+
+// export const recheckAllWebsites = async (setWebsiteList, setIsRechecking) => {
+//   setIsRechecking(true);
+
+//   try {
+//     const allWebsites = getAllWebsitesFromLocalStorage();
+
+//     const updatedWebsites = await Promise.all(
+//       allWebsites.map(async (website) => {
+//         try {
+//           const data = await getWebsiteStats(website?.data);
+//           addOrUpdateWebsiteInLocalStorage(data);
+//           return data;
+//         } catch (err) {
+//           console.error(`Failed to fetch stats for ${website?.data?.url}`, err);
+//           return website; 
+//         }
+//       })
+//     );
+
+//     setWebsiteList(updatedWebsites);
+//   } finally {
+//     setIsRechecking(false);
+//   }
+// };
+
+
+
+
 export const recheckAllWebsites = async (setWebsiteList, setIsRechecking) => {
   setIsRechecking(true);
 
   try {
     const allWebsites = getAllWebsitesFromLocalStorage();
-    const updatedWebsites = [];
+    const limit = pLimit(5); // max 5 requests at a time
 
-    for (const website of allWebsites) {
-      const data = await getWebsiteStats(website?.data);
-      addOrUpdateWebsiteInLocalStorage(data);
-      updatedWebsites.push(data);
-    }
+    const tasks = allWebsites.map((website) =>
+      limit(async () => {
+        const data = await getWebsiteStats(website?.data);
+        addOrUpdateWebsiteInLocalStorage(data);
+        return data;
+      })
+    );
 
+    const updatedWebsites = await Promise.all(tasks);
     setWebsiteList(updatedWebsites);
   } finally {
     setIsRechecking(false);
   }
 };
+

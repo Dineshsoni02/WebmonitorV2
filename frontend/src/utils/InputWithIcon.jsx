@@ -17,12 +17,12 @@ export const InputWithIcon = ({
 
   return (
     <div className="relative mb-4">
-      {/* Icon */}
+     
       <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none bg-[#0c0e14]/0">
         <Icon className="h-5 w-5 text-gray-400" />
       </div>
 
-      {/* Input */}
+    
       <input
         id={id}
         name={name}
@@ -35,7 +35,7 @@ export const InputWithIcon = ({
         className="appearance-none block w-full px-3 py-2 pl-10 border border-gray-700 bg-[#0c0e14]/0 text-white rounded-md placeholder-gray-500 focus:outline-none focus:ring-cyan-500/50 focus:border-cyan-500/50 sm:text-sm"
       />
 
-      {/* Password toggle */}
+      
       {withToggle && (
         <div className="absolute inset-y-0 right-0 pr-3 flex items-center">
           <button
