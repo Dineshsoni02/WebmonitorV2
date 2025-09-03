@@ -81,7 +81,7 @@ export const addOrUpdateWebsiteInLocalStorage = (data) => {
 //           return data;
 //         } catch (err) {
 //           console.error(`Failed to fetch stats for ${website?.data?.url}`, err);
-//           return website; 
+//           return website;
 //         }
 //       })
 //     );
@@ -91,9 +91,6 @@ export const addOrUpdateWebsiteInLocalStorage = (data) => {
 //     setIsRechecking(false);
 //   }
 // };
-
-
-
 
 export const recheckAllWebsites = async (setWebsiteList, setIsRechecking) => {
   setIsRechecking(true);
@@ -116,4 +113,3 @@ export const recheckAllWebsites = async (setWebsiteList, setIsRechecking) => {
     setIsRechecking(false);
   }
 };
-
