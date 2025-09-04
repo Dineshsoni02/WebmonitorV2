@@ -12,6 +12,8 @@ import {
   TrendingUp,
   TriangleAlert,
   RefreshCw,
+  LogOut,
+  CircleUser,
 } from "lucide-react";
 import DialogBox from "./DialogBox";
 import WebsiteCard from "./WebsiteCard";
@@ -22,6 +24,29 @@ import { recheckAllWebsites } from "../utils/Constants";
 import { useNavigate } from "react-router-dom";
 import Button from "../utils/Button";
 
+const user = JSON.parse(localStorage.getItem("user"));
+
+const UserHeader = () => {
+  return (
+    <div className="flex items-center">
+      <div className="flex items-center space-x-2 text-white">
+        <CircleUser className="w-5 h-5" />
+        <p className="text-sm font-medium capitalize">{user?.name}</p>
+      </div>
+      <Button
+        variant="none"
+        className="text-red-200 hover:text-red-500 transition-colors duration-200 font-medium cursor-pointer !px-2 !py-0"
+        onClick={() => {
+          localStorage.removeItem("user");
+          window.location.reload();
+        }}
+      >
+        <LogOut className="w-5 h-5" />
+      </Button>
+    </div>
+  );
+};
+
 export const NavigationBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
@@ -29,11 +54,6 @@ export const NavigationBar = () => {
   const handleScrollToSection = (sectionId) => {
     scrollToSection(sectionId);
     setIsMenuOpen(false);
-  };
-
-  const handleAuthNavigation = (page) => {
-    console.log(`Navigating to ${page} page`);
-    navigate("/auth");
   };
 
   return (
@@ -82,13 +102,18 @@ export const NavigationBar = () => {
             >
               + Add Site
             </Button>
-            <Button
-              onClick={() => handleAuthNavigation("signup")}
-              variant="none"
-              className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-6 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/25 cursor-pointer"
-            >
-              Sign In to Get Alerts
-            </Button>
+
+            {user ? (
+              <UserHeader />
+            ) : (
+              <Button
+                onClick={() => navigate("/auth")}
+                variant="none"
+                className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-6 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/25 cursor-pointer"
+              >
+                Sign In to Get Alerts
+              </Button>
+            )}
           </div>
 
           {/* Mobile menu button */}
@@ -152,9 +177,13 @@ export const NavigationBar = () => {
                 >
                   + Add Site
                 </Button>
-                <Button onClick={() => handleAuthNavigation("signup")}>
-                  Sign In to Get Alerts
-                </Button>
+                {user ? (
+                  <UserHeader />
+                ) : (
+                  <Button onClick={() => navigate("/auth")}>
+                    Sign In to Get Alerts
+                  </Button>
+                )}
               </div>
             </div>
           </div>
@@ -244,7 +273,6 @@ const HeaderTextComponent = () => {
                       type="submit"
                       onClick={handleAddWebsite}
                       disabled={isLoading}
-    
                     >
                       {isLoading ? "Checking..." : "Check Now"}
                     </Button>

@@ -7,7 +7,7 @@ import { useNavigate } from "react-router-dom";
 
 const SignUp = () => {
   const navigate = useNavigate();
-  
+
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -56,10 +56,11 @@ const SignUp = () => {
       const data = await response.json();
 
       if (data?.status) {
-        console.log(data?.data?.tokens);
+        console.log(data?.data);
 
-        localStorage.setItem("tokens", JSON.stringify(data?.data?.tokens));
+        localStorage.setItem("user", JSON.stringify(data?.data));
         navigate("/");
+        window.location.reload();
       } else {
         setErrorMessage(data?.message);
       }
@@ -172,10 +173,11 @@ const SignIn = () => {
       const data = await response.json();
       console.log(data);
       if (data?.status) {
-        console.log(data?.data?.tokens);
+        console.log(data?.data);
 
-        localStorage.setItem("tokens", JSON.stringify(data?.data?.tokens));
+        localStorage.setItem("user", JSON.stringify(data?.data));
         navigate("/");
+        window.location.reload();
       } else {
         setErrorMessage(data?.message);
       }
