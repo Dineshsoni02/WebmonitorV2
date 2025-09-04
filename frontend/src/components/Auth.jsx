@@ -1,8 +1,227 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Mail, Lock, User } from "lucide-react";
 import { InputWithIcon } from "../utils/InputWithIcon";
 import Button from "../utils/Button";
 import { validateEmail } from "../utils/Validation";
+import { useNavigate } from "react-router-dom";
+
+const SignUp = () => {
+  const navigate = useNavigate();
+  
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    password: "",
+  });
+
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setErrorMessage("");
+    if (!formData.name || !formData.email || !formData.password) {
+      setErrorMessage("All fields are necessary");
+      return;
+    }
+
+    if (!validateEmail(formData.email)) {
+      setErrorMessage("Please enter a valid email address");
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      setErrorMessage("Password must be at least 6 characters long");
+      return;
+    }
+
+    setErrorMessage("");
+    try {
+      setIsLoading(true);
+      const response = await fetch("http://localhost:5000/user/signup", {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      }).catch((err) => {
+        setErrorMessage(err.message);
+      });
+
+      const data = await response.json();
+
+      if (data?.status) {
+        console.log(data?.data?.tokens);
+
+        localStorage.setItem("tokens", JSON.stringify(data?.data?.tokens));
+        navigate("/");
+      } else {
+        setErrorMessage(data?.message);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+
+    console.log("Sign up:", formData);
+  };
+
+  return (
+    <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+      <div className="rounded-md shadow-sm space-y-4">
+        <InputWithIcon
+          id="name"
+          name="name"
+          type="text"
+          placeholder="Full name"
+          value={formData.name}
+          onChange={handleChange}
+          Icon={User}
+        />
+
+        <InputWithIcon
+          id="email"
+          name="email"
+          type="email"
+          placeholder="Email address"
+          value={formData.email}
+          onChange={handleChange}
+          Icon={Mail}
+        />
+
+        <InputWithIcon
+          id="password"
+          name="password"
+          type="password"
+          placeholder="Password"
+          value={formData.password}
+          onChange={handleChange}
+          Icon={Lock}
+          withToggle
+        />
+        {errorMessage && <p className="text-red-500 text-sm">{errorMessage}</p>}
+      </div>
+
+      <div>
+        <Button type="submit" className="w-full" disabled={isLoading}>
+          {isLoading ? "Signing up..." : "Sign up"}
+        </Button>
+      </div>
+    </form>
+  );
+};
+
+const SignIn = () => {
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    email: "",
+    password: "",
+  });
+
+  const [errorMessage, setErrorMessage] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prev) => ({
+      ...prev,
+      [name]: value,
+    }));
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    setErrorMessage("");
+    if (!formData.email || !formData.password) {
+      alert("All fields are necessary");
+      return;
+    }
+
+    if (!validateEmail(formData.email)) {
+      alert("Please enter a valid email address");
+      return;
+    }
+
+    if (formData.password.length < 6) {
+      setErrorMessage("Password must be at least 6 characters long");
+      return;
+    }
+
+    setErrorMessage("");
+
+    try {
+      setIsLoading(true);
+      const response = await fetch("http://localhost:5000/user/login", {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      }).catch((err) => {
+        setErrorMessage(err.message);
+      });
+
+      const data = await response.json();
+      console.log(data);
+      if (data?.status) {
+        console.log(data?.data?.tokens);
+
+        localStorage.setItem("tokens", JSON.stringify(data?.data?.tokens));
+        navigate("/");
+      } else {
+        setErrorMessage(data?.message);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+
+    console.log("Sign in:", formData);
+  };
+
+  return (
+    <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+      <div className="rounded-md shadow-sm -space-y-px">
+        <InputWithIcon
+          id="email"
+          name="email"
+          type="email"
+          placeholder="Email address"
+          value={formData.email}
+          onChange={handleChange}
+          Icon={Mail}
+        />
+
+        <InputWithIcon
+          id="password"
+          name="password"
+          type="password"
+          placeholder="Password"
+          value={formData.password}
+          onChange={handleChange}
+          Icon={Lock}
+          withToggle
+        />
+        {errorMessage && <p className="text-red-500 text-sm">{errorMessage}</p>}
+      </div>
+
+      <div>
+        <Button type="submit" className="w-full" disabled={isLoading}>
+          {isLoading ? "Signing in..." : "Sign in"}
+        </Button>
+      </div>
+    </form>
+  );
+};
 
 const Auth = () => {
   const [isSignIn, setIsSignIn] = useState(true);
@@ -47,190 +266,6 @@ const Auth = () => {
         </div>
       </div>
     </div>
-  );
-};
-
-const SignUp = () => {
-  const [formData, setFormData] = useState({
-    name: "",
-    email: "",
-    password: "",
-  });
-
-  const [errorMessage, setErrorMessage] = useState("");
-  const [isLoading, setIsLoading] = useState(false);
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setErrorMessage("");
-    if (!formData.name || !formData.email || !formData.password) {
-      setErrorMessage("All fields are necessary");
-      return;
-    }
-
-    if (!validateEmail(formData.email)) {
-      setErrorMessage("Please enter a valid email address");
-      return;
-    }
-
-    if (formData.password.length < 6) {
-      setErrorMessage("Password must be at least 6 characters long");
-      return;
-    }
-
-    setErrorMessage("");
-    try {
-      setIsLoading(true);
-      const response = await fetch("http://localhost:5000/user/signup", {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-
-      const data = await response.json();
-      console.log(data);
-    } catch (error) {
-      console.log(error);
-    } finally {
-      setIsLoading(false);
-    }
-
-    console.log("Sign up:", formData);
-  };
-
-  return (
-    <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-      <div className="rounded-md shadow-sm space-y-4">
-        <InputWithIcon
-          id="name"
-          name="name"
-          type="text"
-          placeholder="Full name"
-          autoComplete="name"
-          value={formData.name}
-          onChange={handleChange}
-          Icon={User}
-        />
-
-        <InputWithIcon
-          id="email"
-          name="email"
-          type="email"
-          autoComplete="email"
-          placeholder="Email address"
-          value={formData.email}
-          onChange={handleChange}
-          Icon={Mail}
-        />
-
-        <InputWithIcon
-          id="password"
-          name="password"
-          type="password"
-          placeholder="Password"
-          autoComplete="current-password"
-          value={formData.password}
-          onChange={handleChange}
-          Icon={Lock}
-          withToggle
-        />
-        {errorMessage && <p className="text-red-500 text-sm">{errorMessage}</p>}
-      </div>
-
-      <div>
-        <Button type="submit" className="w-full" disabled={isLoading}>
-          {isLoading ? "Signing up..." : "Sign up"}
-        </Button>
-      </div>
-    </form>
-  );
-};
-
-const SignIn = () => {
-  const [formData, setFormData] = useState({
-    email: "",
-    password: "",
-  });
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    try {
-      const response = await fetch("http://localhost:5000/user/login", {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
-
-      if (!response.ok) {
-        throw new Error("Network response was not ok");
-      }
-
-      const data = await response.json();
-      console.log(data);
-    } catch (error) {
-      console.log(error);
-    }
-
-    console.log("Sign in:", formData);
-  };
-
-  return (
-    <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-      <div className="rounded-md shadow-sm -space-y-px">
-        <InputWithIcon
-          id="email"
-          name="email"
-          type="email"
-          placeholder="Email address"
-          autoComplete="email"
-          required
-          value={formData.email}
-          onChange={handleChange}
-          Icon={Mail}
-        />
-
-        <InputWithIcon
-          id="password"
-          name="password"
-          type="password"
-          placeholder="Password"
-          autoComplete="current-password"
-          required
-          value={formData.password}
-          onChange={handleChange}
-          Icon={Lock}
-          withToggle
-        />
-      </div>
-
-      <div>
-        <Button type="submit" className="w-full">
-          Sign in
-        </Button>
-      </div>
-    </form>
   );
 };
 
