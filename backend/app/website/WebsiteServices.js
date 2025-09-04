@@ -180,7 +180,7 @@ export const guestWebsite = async (req, res) => {
       websiteData = {
         url,
         name: name || new URL(url).hostname,
-        status: "offline",  
+        status: "offline",
         lastChecked: new Date().toISOString(),
         responseTime: "0ms",
         ssl: {
