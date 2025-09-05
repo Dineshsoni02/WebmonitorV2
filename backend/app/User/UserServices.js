@@ -68,11 +68,24 @@ export const loginUser = async (req, res) => {
       .json({ status: false, message: messages.USER_NOT_FOUND });
 
   const matched = await bcrypt.compare(password, user.password);
-  
+
   if (!matched)
     return res
       .status(422)
       .json({ status: false, message: messages.PASSWORD_INCORRECT });
+
+  const aTokenExp = getExpiry(1);
+  const rTokenExp = getExpiry(30);
+
+  const aToken = generateToken({ email, name }, aTokenExp);
+  const rToken = generateToken({ email, name }, rTokenExp);
+
+  user.tokens = {
+    accessToken: { token: aToken, expireAt: new Date(aTokenExp * 1000) },
+    refreshToken: { token: rToken, expireAt: new Date(rTokenExp * 1000) },
+  };
+
+  await user.save();
 
   const userObj = user.toObject();
   delete userObj.password;
