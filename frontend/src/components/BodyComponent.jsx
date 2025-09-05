@@ -23,10 +23,11 @@ import { scrollToSection } from "../utils/Constants";
 import { recheckAllWebsites } from "../utils/Constants";
 import { useNavigate } from "react-router-dom";
 import Button from "../utils/Button";
-
-const user = JSON.parse(localStorage.getItem("user"));
+import { useAuth } from "../context/AuthContext";
 
 const UserHeader = () => {
+  const { user, logout } = useAuth();
+
   return (
     <div className="flex items-center">
       <div className="flex items-center space-x-2 text-white">
@@ -37,8 +38,7 @@ const UserHeader = () => {
         variant="none"
         className="text-red-200 hover:text-red-500 transition-colors duration-200 font-medium cursor-pointer !px-2 !py-0"
         onClick={() => {
-          localStorage.removeItem("user");
-          window.location.reload();
+          logout();
         }}
       >
         <LogOut className="w-5 h-5" />
@@ -50,7 +50,7 @@ const UserHeader = () => {
 export const NavigationBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
-
+  const { user } = useAuth();
   const handleScrollToSection = (sectionId) => {
     scrollToSection(sectionId);
     setIsMenuOpen(false);

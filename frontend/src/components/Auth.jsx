@@ -4,8 +4,11 @@ import { InputWithIcon } from "../utils/InputWithIcon";
 import Button from "../utils/Button";
 import { validateEmail } from "../utils/Validation";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 const SignUp = () => {
+  const { saveUser } = useAuth();
+
   const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
@@ -58,9 +61,8 @@ const SignUp = () => {
       if (data?.status) {
         console.log(data?.data);
 
-        localStorage.setItem("user", JSON.stringify(data?.data));
+        saveUser(data?.data);
         navigate("/");
-        window.location.reload();
       } else {
         setErrorMessage(data?.message);
       }
@@ -120,7 +122,7 @@ const SignUp = () => {
 
 const SignIn = () => {
   const navigate = useNavigate();
-
+  const { saveUser } = useAuth();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -174,10 +176,8 @@ const SignIn = () => {
       console.log(data);
       if (data?.status) {
         console.log(data?.data);
-
-        localStorage.setItem("user", JSON.stringify(data?.data));
+        saveUser(data?.data);
         navigate("/");
-        window.location.reload();
       } else {
         setErrorMessage(data?.message);
       }
