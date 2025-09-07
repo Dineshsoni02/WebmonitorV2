@@ -5,9 +5,10 @@ import Button from "../utils/Button";
 import { validateEmail } from "../utils/Validation";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
+import axios from "axios";
 
 const SignUp = () => {
-  const { saveUser } = useAuth();
+  const { saveUser, user } = useAuth();
 
   const navigate = useNavigate();
 
@@ -62,6 +63,30 @@ const SignUp = () => {
         console.log(data?.data);
 
         saveUser(data?.data);
+        const guestWebsites = JSON.parse(
+          localStorage.getItem("allWebsitesData") || "[]"
+        );
+        console.log("gw", guestWebsites);
+
+        console.log("tokennnnn", user?.tokens?.accessToken?.token);
+        const websiteMigrateResponse = await fetch(
+          "http://localhost:5000/user/migrate",
+          {
+            method: "POST",
+            headers: {
+              "Content-type": "application/json",
+              Authorization: `Bearer ${user?.tokens?.accessToken?.token}`,
+            },
+            body: JSON.stringify({ websites: guestWebsites }),
+          }
+        ).catch((err) => {
+          setErrorMessage(err.message);
+        });
+
+        if (websiteMigrateResponse?.status) {
+          console.log("Website migrated successfully");
+          // localStorage.removeItem("allWebsitesData");
+        }
         navigate("/");
       } else {
         setErrorMessage(data?.message);
@@ -122,7 +147,7 @@ const SignUp = () => {
 
 const SignIn = () => {
   const navigate = useNavigate();
-  const { saveUser } = useAuth();
+  const { saveUser,user } = useAuth();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -174,9 +199,36 @@ const SignIn = () => {
 
       const data = await response.json();
       console.log(data);
+
       if (data?.status) {
         console.log(data?.data);
         saveUser(data?.data);
+
+        const guestWebsites = JSON.parse(
+          localStorage.getItem("allWebsitesData") || "[]"
+        );
+        // console.log("gw", guestWebsites);
+
+        console.log("user", data?.data?.tokens?.accessToken?.token);
+        const websiteMigrateResponse = await fetch(
+          "http://localhost:5000/migrate",
+          {
+            method: "POST",
+            headers: {
+              "Content-type": "application/json",
+              Authorization: `Bearer ${data?.data?.tokens?.accessToken?.token}`,
+            },
+            body: JSON.stringify({ websites: guestWebsites }),
+          }
+        ).catch((err) => {
+          setErrorMessage(err.message);
+        });
+
+        if (websiteMigrateResponse?.status) {
+          console.log("Website migrated successfully");
+          // localStorage.removeItem("allWebsitesData");
+        }
+
         navigate("/");
       } else {
         setErrorMessage(data?.message);

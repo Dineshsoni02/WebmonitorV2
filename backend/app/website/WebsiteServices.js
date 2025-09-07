@@ -207,3 +207,47 @@ export const guestWebsite = async (req, res) => {
     });
   }
 };
+
+export const migrateGuestWebsites = async (req, res) => {
+  try {
+    const { websites } = req.body;
+    const user = req.user;
+    if (!websites || !Array.isArray(websites)) {
+      return res.status(400).json({
+        status: false,
+        message: "No websites to migrate",
+      });
+    }
+    const results = [];
+
+    for (let i = 0; i < websites.length; i++) {
+      const { url, name } = websites[i];
+
+      if (!url) continue;
+      const exists = await WebsiteSchema.findOne({ url, userId: user._id });
+      if (exists) continue;
+
+      const newWebsite = new WebsiteSchema({
+        url,
+        websiteName: name || new URL(url).hostname,
+        userId: user._id,
+        isActive: true,
+      });
+
+      await newWebsite.save();
+      results.push(newWebsite);
+
+      res.status(201).json({
+        status: true,
+        message: "Guest websites migrated",
+        data: results,
+      });
+    }
+  } catch (err) {
+    res.status(500).json({
+      status: false,
+      message: "An error occurred while migrating the websites",
+      error: err.message,
+    });
+  }
+};

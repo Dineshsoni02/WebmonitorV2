@@ -3,13 +3,17 @@ import UserSchema from "../User/UserSchema.js";
 import { checkExpiry } from "../utils/token.js";
 
 export const authenticateUserMiddleware = async (req, res, next) => {
-  const token = req.headers.authorization;
+  let token = req.headers.authorization;
   if (!token) {
     res.status(400).json({
       status: false,
       message: messages.NO_TOKEN,
     });
     return;
+  }
+
+  if (token.startsWith("Bearer ")) {
+    token = token.slice(7).trim();
   }
 
   try {

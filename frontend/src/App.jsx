@@ -32,6 +32,7 @@ function App() {
       ],
     },
   ]);
+
   return (
     <AuthProvider>
       <div className="bg-light-gray">
