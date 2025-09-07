@@ -77,8 +77,8 @@ export const loginUser = async (req, res) => {
   const aTokenExp = getExpiry(1);
   const rTokenExp = getExpiry(30);
 
-  const aToken = generateToken({ email, name }, aTokenExp);
-  const rToken = generateToken({ email, name }, rTokenExp);
+  const aToken = generateToken({ email }, aTokenExp);
+  const rToken = generateToken({ email}, rTokenExp);
 
   user.tokens = {
     accessToken: { token: aToken, expireAt: new Date(aTokenExp * 1000) },
