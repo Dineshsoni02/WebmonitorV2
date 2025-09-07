@@ -11,6 +11,36 @@ const AuthContext = createContext();
 export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
 
+  const refreshToken = useCallback(async () => {
+    try {
+      const storedUser = JSON.parse(localStorage.getItem("user"));
+      if (!storedUser?.tokens?.refreshToken?.token) return;
+
+      const response = await fetch("http://localhost:5000/user/refresh-token", {
+        method: "POST",
+        headers: {
+          "Content-type": "application/json",
+        },
+        body: JSON.stringify({
+          refreshToken: storedUser.tokens.refreshToken.token,
+        }),
+      });
+
+      const data = await response.json();
+      if (data?.status) {
+        saveUser(data.data);
+        return true;
+      } else {
+        logout();
+        return false;
+      }
+    } catch (err) {
+      console.error("Refresh token error:", err);
+      logout();
+      return false;
+    }
+  }, []);
+
   useEffect(() => {
     const storedUser = JSON.parse(localStorage.getItem("user"));
     if (storedUser) {
@@ -45,37 +75,6 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
-  const refreshToken = useCallback(async () => {
-    try {
-      const storedUser = JSON.parse(localStorage.getItem("user"));
-      if (!storedUser?.tokens?.refreshToken?.token) return;
-
-      const response = await fetch("http://localhost:5000/user/refresh-token", {
-        method: "POST",
-        headers: {
-          "Content-type": "application/json",
-        },
-        body: JSON.stringify({
-          refreshToken: storedUser.tokens.refreshToken.token,
-        }),
-      });
-
-      const data = await response.json();
-      if (data?.status) {
-        saveUser(data.data);
-        return true;
-      } else {
-        logout();
-        return false;
-      }
-    } catch (err) {
-      console.error("Refresh token error:", err);
-      logout();
-      return false;
-    }
-  }, []);
-
-  
   return (
     <AuthContext.Provider value={{ user, saveUser, logout, refreshToken }}>
       {children}
