@@ -24,6 +24,7 @@ import { recheckAllWebsites } from "../utils/Constants";
 import { useNavigate } from "react-router-dom";
 import Button from "../utils/Button";
 import { useAuth } from "../context/AuthContext";
+import { migrateGuestWebsites } from "../utils/Constants";
 
 const UserHeader = () => {
   const { user, logout } = useAuth();
@@ -414,6 +415,8 @@ const DashboardSection = ({ setShowModal }) => {
   const [websiteList, setWebsiteList] = useState([]);
   const [isRechecking, setIsRechecking] = useState(false);
 
+  const { user } = useAuth();
+
   useEffect(() => {
     const websites = getAllWebsitesFromLocalStorage();
     setWebsiteList(websites);
@@ -427,11 +430,30 @@ const DashboardSection = ({ setShowModal }) => {
     );
   }, [websiteList]);
 
+  const manualMigrateGuestWebsites = () => {
+    const filteredWebsites = websiteList.map((website) => {
+      return {
+        name: website?.data?.name,
+        url: website?.data?.url,
+        isActive: website?.data?.status === "online",
+      };
+    });
+    const token = user?.tokens?.accessToken?.token;
+    migrateGuestWebsites(filteredWebsites, token);
+  };
+
   return (
     <section
       id="dashboard"
       className="py-20 bg-gradient-to-br from-[#0c0e14] via-[#0f1419] to-[#0c0e14] text-white"
     >
+      <Button
+        onClick={() => manualMigrateGuestWebsites()}
+        variant="none"
+        className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-6 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/25 cursor-pointer"
+      >
+        Migrate to DB
+      </Button>
       <div>
         <div className="container mx-auto px-4 flex justify-between items-center max-w-7xl flex-col gap-5 text-center lg:text-left lg:flex-row lg:items-start">
           <div>
