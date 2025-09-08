@@ -113,3 +113,24 @@ export const recheckAllWebsites = async (setWebsiteList, setIsRechecking) => {
     setIsRechecking(false);
   }
 };
+
+export const migrateGuestWebsites = async (
+  guestWebsites,
+  token,
+  setErrorMessage
+) => {
+  console.log("migrating websites");
+  console.log("websites", guestWebsites, token);
+  const websiteMigrateResponse = await fetch("http://localhost:5000/migrate", {
+    method: "POST",
+    headers: {
+      "Content-type": "application/json",
+      Authorization: `Bearer ${token}`,
+    },
+    body: JSON.stringify({ websites: guestWebsites }),
+  }).catch((err) => {
+    setErrorMessage(err.message);
+  });
+
+  return websiteMigrateResponse;
+};

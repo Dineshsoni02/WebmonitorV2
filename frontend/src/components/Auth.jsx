@@ -6,6 +6,7 @@ import { validateEmail } from "../utils/Validation";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import axios from "axios";
+import { migrateGuestWebsites } from "../utils/Constants";
 
 const SignUp = () => {
   const { saveUser, user } = useAuth();
@@ -147,7 +148,7 @@ const SignUp = () => {
 
 const SignIn = () => {
   const navigate = useNavigate();
-  const { saveUser,user } = useAuth();
+  const { saveUser, user } = useAuth();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -198,31 +199,28 @@ const SignIn = () => {
       });
 
       const data = await response.json();
-      console.log(data);
+      // console.log(data);
 
       if (data?.status) {
         console.log(data?.data);
         saveUser(data?.data);
 
+        navigate("/");
+
         const guestWebsites = JSON.parse(
           localStorage.getItem("allWebsitesData") || "[]"
         );
-        // console.log("gw", guestWebsites);
+        const filteredWebsites = guestWebsites.map(
+          ({ name, url, status }) => (console.log(name, url, status))
+        );
 
-        console.log("user", data?.data?.tokens?.accessToken?.token);
-        const websiteMigrateResponse = await fetch(
-          "http://localhost:5000/migrate",
-          {
-            method: "POST",
-            headers: {
-              "Content-type": "application/json",
-              Authorization: `Bearer ${data?.data?.tokens?.accessToken?.token}`,
-            },
-            body: JSON.stringify({ websites: guestWebsites }),
-          }
-        ).catch((err) => {
-          setErrorMessage(err.message);
-        });
+        // console.log("gw", guestWebsites);
+        const token = data?.data?.tokens?.accessToken?.token;
+        const websiteMigrateResponse = await migrateGuestWebsites(
+          filteredWebsites,
+          token,
+          setErrorMessage
+        );
 
         if (websiteMigrateResponse?.status) {
           console.log("Website migrated successfully");
@@ -239,7 +237,7 @@ const SignIn = () => {
       setIsLoading(false);
     }
 
-    console.log("Sign in:", formData);
+    // console.log("Sign in:", formData);
   };
 
   return (
