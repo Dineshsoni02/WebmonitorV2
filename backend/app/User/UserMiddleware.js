@@ -15,12 +15,10 @@ export const authenticateUserMiddleware = async (req, res, next) => {
   if (token.startsWith("Bearer ")) {
     token = token.slice(7).trim();
   }
-
   try {
     const user = await UserSchema.findOne({
       "tokens.accessToken.token": token,
     });
-
     if (!user) {
       return res.status(422).json({
         status: false,

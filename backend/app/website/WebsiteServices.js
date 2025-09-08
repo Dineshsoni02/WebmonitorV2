@@ -210,8 +210,11 @@ export const guestWebsite = async (req, res) => {
 
 export const migrateGuestWebsites = async (req, res) => {
   try {
+    console.log("migrating websites backend", req);
     const { websites } = req.body;
+    console.log("websites", websites);
     const user = req.user;
+    console.log("user", user);
     if (!websites || !Array.isArray(websites)) {
       return res.status(400).json({
         status: false,
