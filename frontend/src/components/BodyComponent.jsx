@@ -25,7 +25,7 @@ import { useNavigate } from "react-router-dom";
 import Button from "../utils/Button";
 import { useAuth } from "../context/AuthContext";
 import { migrateGuestWebsites } from "../utils/Constants";
-import { getAllWebsites } from "../utils/ApiCalls";
+import { getAllWebsites, getWebsiteStats } from "../utils/ApiCalls";
 
 const UserHeader = () => {
   const { user, logout } = useAuth();
@@ -421,19 +421,21 @@ const DashboardSection = ({ setShowModal }) => {
   const loadWebsites = async () => {
     if (user) {
       const websites = await getAllWebsites(user);
-      setWebsiteList(websites);
+      // setWebsiteList(websites);
+      console.log("websites", websites);
+      for (const website of websites) {
+        const websiteStats = await getWebsiteStats(website);
+        const websiteWithId = {
+          ...websiteStats,
+          id: website._id,
+        };
 
-      const { errorMessage, isLoading, handleAddWebsite, setErrorMessage } =
-        useAddWebsite(websiteInfo, {
-          setWebsiteInfo,
-          onSuccess: () => {
-            setShowModal(false);
-            window.location.reload();
-          },
-        });
+        console.log("websiteWithId", websiteWithId);
+        setWebsiteList((prev) => [...prev, websiteWithId]);
+      }
     } else {
       const websites = getAllWebsitesFromLocalStorage();
-      setWebsiteList(websites);
+      setWebsiteList((prev) => [...prev, ...websites]);
     }
   };
 
@@ -441,7 +443,7 @@ const DashboardSection = ({ setShowModal }) => {
     loadWebsites();
   }, [user]);
 
-  console.log("websiteList", websiteList);
+  // console.log("websiteList", websiteList);
 
   const activeSites = useMemo(() => {
     return websiteList.filter(
@@ -594,7 +596,10 @@ const DashboardSection = ({ setShowModal }) => {
 
       <div className="container mx-auto px-4 max-w-7xl mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0 lg:gap-4">
         {websiteList.map((website) => (
-          <WebsiteCard key={website?.data?.url} websiteInfo={website.data} />
+          <WebsiteCard
+            key={`${user ? website?.id : website?.data?.url}`}
+            websiteInfo={website.data}
+          />
         ))}
       </div>
     </section>
