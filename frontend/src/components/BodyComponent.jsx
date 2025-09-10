@@ -25,6 +25,7 @@ import { useNavigate } from "react-router-dom";
 import Button from "../utils/Button";
 import { useAuth } from "../context/AuthContext";
 import { migrateGuestWebsites } from "../utils/Constants";
+import { getAllWebsites } from "../utils/ApiCalls";
 
 const UserHeader = () => {
   const { user, logout } = useAuth();
@@ -417,10 +418,30 @@ const DashboardSection = ({ setShowModal }) => {
 
   const { user } = useAuth();
 
+  const loadWebsites = async () => {
+    if (user) {
+      const websites = await getAllWebsites(user);
+      setWebsiteList(websites);
+
+      const { errorMessage, isLoading, handleAddWebsite, setErrorMessage } =
+        useAddWebsite(websiteInfo, {
+          setWebsiteInfo,
+          onSuccess: () => {
+            setShowModal(false);
+            window.location.reload();
+          },
+        });
+    } else {
+      const websites = getAllWebsitesFromLocalStorage();
+      setWebsiteList(websites);
+    }
+  };
+
   useEffect(() => {
-    const websites = getAllWebsitesFromLocalStorage();
-    setWebsiteList(websites);
-  }, []);
+    loadWebsites();
+  }, [user]);
+
+  console.log("websiteList", websiteList);
 
   const activeSites = useMemo(() => {
     return websiteList.filter(

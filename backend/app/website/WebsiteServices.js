@@ -225,7 +225,7 @@ export const migrateGuestWebsites = async (req, res) => {
 
     for (let i = 0; i < websites.length; i++) {
       const { url, name } = websites[i];
-
+      console.log("migrating url: ", url);
       if (!url) continue;
       const exists = await WebsiteSchema.findOne({ url, userId: user._id });
       if (exists) continue;

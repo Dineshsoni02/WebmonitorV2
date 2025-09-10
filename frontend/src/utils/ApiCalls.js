@@ -1,4 +1,3 @@
-
 export const getWebsiteStats = async (websiteInfo) => {
   if (!websiteInfo.url) {
     throw new Error("Website info is required");
@@ -15,6 +14,24 @@ export const getWebsiteStats = async (websiteInfo) => {
 
     const data = await response.json();
     return data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+export const getAllWebsites = async (user) => {
+  try {
+    const response = await fetch("http://localhost:5000/website", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${user?.tokens?.accessToken?.token}`,
+      },
+    });
+
+    const data = await response.json();
+    return data?.data;
   } catch (error) {
     console.error(error);
     throw error;
