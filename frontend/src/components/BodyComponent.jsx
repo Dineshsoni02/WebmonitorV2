@@ -439,6 +439,7 @@ const DashboardSection = ({ setShowModal }) => {
     }
   };
 
+  console.log("websiteList", websiteList);
   useEffect(() => {
     loadWebsites();
   }, [user]);
