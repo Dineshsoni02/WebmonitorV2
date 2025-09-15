@@ -6,7 +6,7 @@ import { validateEmail } from "../utils/Validation";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import axios from "axios";
-import { migrateGuestWebsites } from "../utils/Constants";
+import { migrateGuestWebsites } from "../utils/ApiCalls";
 
 const SignUp = () => {
   const { saveUser, user } = useAuth();

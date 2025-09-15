@@ -24,8 +24,11 @@ import { recheckAllWebsites } from "../utils/Constants";
 import { useNavigate } from "react-router-dom";
 import Button from "../utils/Button";
 import { useAuth } from "../context/AuthContext";
-import { migrateGuestWebsites } from "../utils/Constants";
-import { getAllWebsites, getWebsiteStats } from "../utils/ApiCalls";
+import {
+  getAllWebsites,
+  getWebsiteStats,
+  migrateGuestWebsites,
+} from "../utils/ApiCalls";
 
 const UserHeader = () => {
   const { user, logout } = useAuth();
