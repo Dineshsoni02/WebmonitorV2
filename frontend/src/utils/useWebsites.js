@@ -12,7 +12,16 @@ const saveWebsitesToLocal = (websites) =>
 // Example DB helpers (you already have these)
 
 const saveWebsiteToDB = async (user, website) => {
-  // call your API: POST /websites
+  const websiteMigrateResponse = await fetch("http://localhost:5000/migrate", {
+    method: "POST",
+    headers: {
+      "Content-type": "application/json",
+      Authorization: `Bearer ${user?.tokens?.accessToken?.token}`,
+    },
+    body: JSON.stringify({ websites: website }),
+  }).catch((err) => {
+    console.log(err.message);
+  });
 };
 const deleteWebsiteFromDB = async (user, id) => {
   // call your API: DELETE /websites/:id
