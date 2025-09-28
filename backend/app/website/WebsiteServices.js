@@ -228,13 +228,14 @@ export const migrateGuestWebsites = async (req, res) => {
     const results = [];
 
     for (let i = 0; i < websites.length; i++) {
-      const { url, name } = websites[i];
+      const { id, url, name } = websites[i];
       console.log("migrating url: ", url);
-      if (!url) continue;
-      const exists = await WebsiteSchema.findOne({ url, userId: user._id });
+      if (!url || !id) continue;
+      const exists = await WebsiteSchema.findOne({ _id: id, userId: user._id });
       if (exists) continue;
 
       const newWebsite = new WebsiteSchema({
+        _id: id,
         url,
         websiteName: name || new URL(url).hostname,
         userId: user._id,
@@ -258,4 +259,3 @@ export const migrateGuestWebsites = async (req, res) => {
     });
   }
 };
-

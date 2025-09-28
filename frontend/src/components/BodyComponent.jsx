@@ -421,29 +421,45 @@ const DashboardSection = ({ setShowModal }) => {
 
   const { user } = useAuth();
 
-  // const loadWebsites = async () => {
-  //   if (user) {
-  //     const websites = await getAllWebsites(user);
-  //     // setWebsiteList(websites);
-  //     console.log("websites", websites);
-  //     for (const website of websites) {
-  //       const websiteStats = await getWebsiteStats(website);
-  //       const websiteWithId = {
-  //         ...websiteStats,
-  //         id: website._id,
-  //       };
+  const loadWebsites = async () => {
+    const websites = await getAllWebsites(user);
+    // setWebsiteList(websites);
+    console.log("websites", websites);
+    for (const website of websites) {
+      const websiteStats = await getWebsiteStats(website);
+      const websiteWithId = {
+        ...websiteStats,
+        id: website._id,
+      };
 
-  //       console.log("websiteWithId", websiteWithId);
-  //       setWebsiteList((prev) => [...prev, websiteWithId]);
+      console.log("websiteWithId", websiteWithId);
+      // setWebsiteList((prev) => [...prev, websiteWithId]);
+    }
+  };
+  //  const loadWebsites = async () => {
+  //     if (user) {
+  //       const websites = await getAllWebsites(user);
+  //       // setWebsiteList(websites);
+  //       console.log("websites", websites);
+  //       for (const website of websites) {
+  //         const websiteStats = await getWebsiteStats(website);
+  //         const websiteWithId = {
+  //           ...websiteStats,
+  //           id: website._id,
+  //         };
+
+  //         console.log("websiteWithId", websiteWithId);
+  //         setWebsiteList((prev) => [...prev, websiteWithId]);
+  //       }
+  //     } else {
+  //       const websites = getAllWebsitesFromLocalStorage();
+  //       setWebsiteList((prev) => [...prev, ...websites]);
   //     }
-  //   } else {
-  //     const websites = getAllWebsitesFromLocalStorage();
-  //     setWebsiteList((prev) => [...prev, ...websites]);
-  //   }
-  // };
-  // useEffect(() => {
-  //   loadWebsites();
-  // }, []);
+  //   };
+
+  useEffect(() => {
+    loadWebsites();
+  }, [user]);
 
   useEffect(() => {
     const websites = getAllWebsitesFromLocalStorage();

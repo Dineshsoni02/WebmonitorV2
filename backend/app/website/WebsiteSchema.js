@@ -4,6 +4,10 @@ const { Schema } = mongoose;
 
 const websiteSchema = new Schema(
   {
+    _id: {
+      type: String,
+      required: true,
+    },
     url: {
       type: String,
       required: true,
