@@ -8,6 +8,7 @@ import {
   checkSEO,
   checkUptime,
 } from "../utils/siteStats.js";
+import { v4 as uuidv4 } from "uuid";
 
 export const createWebsite = async (req, res) => {
   const { url, websiteName } = req.body;
@@ -117,7 +118,7 @@ export const getAllWebsite = async (req, res) => {
 
 export const guestWebsite = async (req, res) => {
   try {
-    const { url, name } = req.body;
+    const { url, name, id } = req.body;
 
     if (!url) {
       return res.status(400).json({
@@ -125,6 +126,7 @@ export const guestWebsite = async (req, res) => {
         message: "URL is required",
       });
     }
+    const uniqueId = id || uuidv4(); // generate distinct ID
 
     const isUp = await checkUptime(url);
     // if (!isUp) {
@@ -144,6 +146,7 @@ export const guestWebsite = async (req, res) => {
       ]);
 
       websiteData = {
+        id: uniqueId,
         url,
         name: name || new URL(url).hostname,
         status: "online",
@@ -178,6 +181,7 @@ export const guestWebsite = async (req, res) => {
       };
     } else {
       websiteData = {
+        id: uniqueId,
         url,
         name: name || new URL(url).hostname,
         status: "offline",

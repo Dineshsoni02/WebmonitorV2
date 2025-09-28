@@ -26,9 +26,9 @@ export const addWebsiteToLocalStorage = (data) => {
   localStorage.setItem("allWebsitesData", JSON.stringify(allWebsites));
 };
 
-export const removeWebsiteFromLocalStorage = (url) => {
+export const removeWebsiteFromLocalStorage = (id) => {
   const allWebsites = getAllWebsitesFromLocalStorage();
-  const updatedWebsites = allWebsites.filter((item) => item?.data?.url !== url);
+  const updatedWebsites = allWebsites.filter((item) => item?.data?.id !== id);
   localStorage.setItem("allWebsitesData", JSON.stringify(updatedWebsites));
   window.location.reload();
 };

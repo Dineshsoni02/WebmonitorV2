@@ -192,7 +192,7 @@ const WebsiteCard = ({ websiteInfo }) => {
       )}
 
       <Button
-        onClick={() => removeWebsiteFromLocalStorage(websiteInfo?.url)}
+        onClick={() => removeWebsiteFromLocalStorage(websiteInfo?.id)}
         className="mt-2 absolute bottom-2 right-2 text-red-500 hover:text-red-600 px-2 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 cursor-pointer outline-none"
         variant="none"
       >

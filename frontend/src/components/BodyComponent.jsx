@@ -421,33 +421,36 @@ const DashboardSection = ({ setShowModal }) => {
 
   const { user } = useAuth();
 
-  const loadWebsites = async () => {
-    if (user) {
-      const websites = await getAllWebsites(user);
-      // setWebsiteList(websites);
-      console.log("websites", websites);
-      for (const website of websites) {
-        const websiteStats = await getWebsiteStats(website);
-        const websiteWithId = {
-          ...websiteStats,
-          id: website._id,
-        };
+  // const loadWebsites = async () => {
+  //   if (user) {
+  //     const websites = await getAllWebsites(user);
+  //     // setWebsiteList(websites);
+  //     console.log("websites", websites);
+  //     for (const website of websites) {
+  //       const websiteStats = await getWebsiteStats(website);
+  //       const websiteWithId = {
+  //         ...websiteStats,
+  //         id: website._id,
+  //       };
 
-        console.log("websiteWithId", websiteWithId);
-        setWebsiteList((prev) => [...prev, websiteWithId]);
-      }
-    } else {
-      const websites = getAllWebsitesFromLocalStorage();
-      setWebsiteList((prev) => [...prev, ...websites]);
-    }
-  };
+  //       console.log("websiteWithId", websiteWithId);
+  //       setWebsiteList((prev) => [...prev, websiteWithId]);
+  //     }
+  //   } else {
+  //     const websites = getAllWebsitesFromLocalStorage();
+  //     setWebsiteList((prev) => [...prev, ...websites]);
+  //   }
+  // };
+  // useEffect(() => {
+  //   loadWebsites();
+  // }, []);
+
+  useEffect(() => {
+    const websites = getAllWebsitesFromLocalStorage();
+    setWebsiteList(websites);
+  }, []);
 
   console.log("websiteList", websiteList);
-  useEffect(() => {
-    loadWebsites();
-  }, [user]);
-
-  // console.log("websiteList", websiteList);
 
   const activeSites = useMemo(() => {
     return websiteList.filter(
@@ -457,30 +460,30 @@ const DashboardSection = ({ setShowModal }) => {
     );
   }, [websiteList]);
 
-  const manualMigrateGuestWebsites = () => {
-    const filteredWebsites = websiteList.map((website) => {
-      return {
-        name: website?.data?.name,
-        url: website?.data?.url,
-        isActive: website?.data?.status === "online",
-      };
-    });
-    const token = user?.tokens?.accessToken?.token;
-    migrateGuestWebsites(filteredWebsites, token);
-  };
+  // const manualMigrateGuestWebsites = () => {
+  //   const filteredWebsites = websiteList.map((website) => {
+  //     return {
+  //       name: website?.data?.name,
+  //       url: website?.data?.url,
+  //       isActive: website?.data?.status === "online",
+  //     };
+  //   });
+  //   const token = user?.tokens?.accessToken?.token;
+  //   migrateGuestWebsites(filteredWebsites, token);
+  // };
 
   return (
     <section
       id="dashboard"
       className="py-20 bg-gradient-to-br from-[#0c0e14] via-[#0f1419] to-[#0c0e14] text-white"
     >
-      <Button
+      {/* <Button
         onClick={() => manualMigrateGuestWebsites()}
         variant="none"
         className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-6 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/25 cursor-pointer"
       >
         Migrate to DB
-      </Button>
+      </Button> */}
       <div>
         <div className="container mx-auto px-4 flex justify-between items-center max-w-7xl flex-col gap-5 text-center lg:text-left lg:flex-row lg:items-start">
           <div>
@@ -601,7 +604,7 @@ const DashboardSection = ({ setShowModal }) => {
       <div className="container mx-auto px-4 max-w-7xl mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0 lg:gap-4">
         {websiteList.map((website) => (
           <WebsiteCard
-            key={`${user ? website?.id : website?.data?.url}`}
+            key={`${user ? website?.id : website?.data?.id}`}
             websiteInfo={website.data}
           />
         ))}
