@@ -422,20 +422,25 @@ const DashboardSection = ({ setShowModal }) => {
   const { user } = useAuth();
 
   const loadWebsites = async () => {
-    const websites = await getAllWebsites(user);
+    const websites = (await getAllWebsites(user)) || []; // ensure array
     // setWebsiteList(websites);
     console.log("websites", websites);
-    for (const website of websites) {
-      const websiteStats = await getWebsiteStats(website);
-      const websiteWithId = {
-        ...websiteStats,
-        id: website._id,
-      };
+    const statsPromises =
+     
+      websites?.map(async (website) => {
+        const websiteStats = await getWebsiteStats(website);
+        return {
+          ...websiteStats,
+          id: website._id,
+        };
+      });
 
-      console.log("websiteWithId", websiteWithId);
-      // setWebsiteList((prev) => [...prev, websiteWithId]);
-    }
+    const websitesWithStats = await Promise.all(statsPromises);
+
+    console.log("websiteWithId", websitesWithStats);
+    // setWebsiteList((prev) => [...prev, websiteWithId]);
   };
+
   //  const loadWebsites = async () => {
   //     if (user) {
   //       const websites = await getAllWebsites(user);
