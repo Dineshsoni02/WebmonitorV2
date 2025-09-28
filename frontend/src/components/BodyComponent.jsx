@@ -450,7 +450,7 @@ const DashboardSection = ({ setShowModal }) => {
     setWebsiteList(websites);
   }, []);
 
-  console.log("websiteList", websiteList);
+  // console.log("websiteList", websiteList);
 
   const activeSites = useMemo(() => {
     return websiteList.filter(
@@ -604,7 +604,8 @@ const DashboardSection = ({ setShowModal }) => {
       <div className="container mx-auto px-4 max-w-7xl mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0 lg:gap-4">
         {websiteList.map((website) => (
           <WebsiteCard
-            key={`${user ? website?.id : website?.data?.id}`}
+            // key={`${user ? website?.id : website?.data?.id}`}
+            key={website?.data?.id}
             websiteInfo={website.data}
           />
         ))}
