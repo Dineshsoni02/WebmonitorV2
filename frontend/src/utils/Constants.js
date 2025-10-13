@@ -1,5 +1,6 @@
-import { getWebsiteStats } from "./ApiCalls";
+import { getWebsiteStats, getAllWebsites } from "./ApiCalls";
 import pLimit from "p-limit";
+
 export const scrollToSection = (sectionId) => {
   const element = document.getElementById(sectionId);
   if (element) {
@@ -38,7 +39,7 @@ export const addOrUpdateWebsiteInLocalStorage = (data) => {
 
   let allWebsites = getAllWebsitesFromLocalStorage();
 
-  const index = allWebsites.findIndex((w) => w?.data?.url === data?.data?.url);
+  const index = allWebsites.findIndex((w) => w?.data?.id === data?.data?.id);
   if (index > -1) {
     allWebsites[index] = data;
   } else {
@@ -114,3 +115,50 @@ export const recheckAllWebsites = async (setWebsiteList, setIsRechecking) => {
   }
 };
 
+export const syncWebsites = async (user, token, setErrorMessage) => {
+  try {
+    // Step 1: Get local + DB websites
+    const localWebsites = getAllWebsitesFromLocalStorage() || [];
+    const dbWebsites = (await getAllWebsites(user)) || [];
+
+    // Step 2: Merge both sources — prioritize DB entries
+    const allWebsitesMap = new Map();
+
+    // Add DB websites first
+    dbWebsites.forEach((item) => {
+      const key = item?.id || item?.data?.url;
+      if (key) allWebsitesMap.set(key, item);
+    });
+
+    // Add local websites if not already in DB
+    localWebsites.forEach((item) => {
+      const key = item?.id || item?.data?.url;
+      if (key && !allWebsitesMap.has(key)) {
+        allWebsitesMap.set(key, item);
+      }
+    });
+
+    const mergedWebsites = Array.from(allWebsitesMap.values());
+
+    // Step 3: Find which local websites are not yet in DB (need to migrate)
+    const newWebsites = localWebsites.filter(
+      (localItem) => !dbWebsites.some((dbItem) => dbItem?.id === localItem?.id)
+    );
+
+    // Step 4: Migrate new local websites to DB
+    if (newWebsites.length > 0) {
+      console.log("🆕 Migrating new websites:", newWebsites);
+      await migrateGuestWebsites(newWebsites, token, setErrorMessage);
+    }
+
+    // Step 5: Update localStorage to ensure it matches merged state
+    localStorage.setItem("allWebsitesData", JSON.stringify(mergedWebsites));
+
+    console.log("✅ Sync complete — merged websites:", mergedWebsites);
+    return mergedWebsites;
+  } catch (err) {
+    console.error("❌ Error syncing websites:", err);
+    setErrorMessage?.(err.message || "Failed to sync websites");
+    return [];
+  }
+};

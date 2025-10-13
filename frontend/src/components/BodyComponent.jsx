@@ -19,8 +19,11 @@ import DialogBox from "./DialogBox";
 import WebsiteCard from "./WebsiteCard";
 import { getAllWebsitesFromLocalStorage } from "../utils/Constants";
 import useAddWebsite from "../utils/useAddWebsite";
-import { scrollToSection } from "../utils/Constants";
-import { recheckAllWebsites } from "../utils/Constants";
+import {
+  scrollToSection,
+  syncWebsites,
+  recheckAllWebsites,
+} from "../utils/Constants";
 import { useNavigate } from "react-router-dom";
 import Button from "../utils/Button";
 import { useAuth } from "../context/AuthContext";
@@ -421,24 +424,32 @@ const DashboardSection = ({ setShowModal }) => {
 
   const { user } = useAuth();
 
-  const loadWebsites = async () => {
-    const websites = (await getAllWebsites(user)) || []; // ensure array
-    // setWebsiteList(websites);
-    console.log("websites", websites);
-    const statsPromises =
-     
-      websites?.map(async (website) => {
-        const websiteStats = await getWebsiteStats(website);
-        return {
-          ...websiteStats,
-          id: website._id,
-        };
-      });
+  // const loadWebsites = async () => {
+  //   const websites = (await getAllWebsites(user)) || []; // ensure array
+  //   // setWebsiteList(websites);
+  //   // console.log("websites", websites);
+  //   const statsPromises = websites?.map(async (website) => {
+  //     const websiteStats = await getWebsiteStats(website);
+  //     return websiteStats;
+  //   });
 
-    const websitesWithStats = await Promise.all(statsPromises);
+  //   const websitesWithStats = await Promise.all(statsPromises);
 
-    console.log("websiteWithId", websitesWithStats);
-    // setWebsiteList((prev) => [...prev, websiteWithId]);
+  //   console.log("websiteWithStats", websitesWithStats);
+
+  //   // setWebsiteList((prev) => [...prev, websiteWithId]);
+  // };
+
+
+
+  const loadWebsites = async (user, token) => {
+    console.log("user", user);
+    if (user) {
+      const mergedWebsites = await syncWebsites(user, token);
+      return mergedWebsites;
+    } else {
+      return getAllWebsitesFromLocalStorage() || [];
+    }
   };
 
   //  const loadWebsites = async () => {
@@ -463,7 +474,7 @@ const DashboardSection = ({ setShowModal }) => {
   //   };
 
   useEffect(() => {
-    loadWebsites();
+    loadWebsites(user, user?.tokens?.accessToken?.token);
   }, [user]);
 
   useEffect(() => {
