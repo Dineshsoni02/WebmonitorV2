@@ -120,14 +120,16 @@ export const syncWebsites = async (user, token, setErrorMessage) => {
     // Step 1: Get local + DB websites
     const localWebsites = getAllWebsitesFromLocalStorage() || [];
     const dbWebsites = (await getAllWebsites(user)) || [];
+// console.log("dbWebsites", dbWebsites);
 
-    // Step 2: Merge both sources — prioritize DB entries
-    const allWebsitesMap = new Map();
+const allWebsitesMap = new Map();
 
     // Add DB websites first
-    dbWebsites.forEach((item) => {
-      const key = item?.id || item?.data?.url;
-      if (key) allWebsitesMap.set(key, item);
+    dbWebsites.forEach(async (item) => {
+      const websiteStats = await getWebsiteStats(item);
+      console.log("websiteStats", websiteStats);
+      const key = item?._id || item?.url;
+      if (key) allWebsitesMap.set(key, websiteStats);
     });
 
     // Add local websites if not already in DB
@@ -140,6 +142,7 @@ export const syncWebsites = async (user, token, setErrorMessage) => {
 
     const mergedWebsites = Array.from(allWebsitesMap.values());
 
+    console.log("mergedWebsites", mergedWebsites);
     // Step 3: Find which local websites are not yet in DB (need to migrate)
     const newWebsites = localWebsites.filter(
       (localItem) => !dbWebsites.some((dbItem) => dbItem?.id === localItem?.id)
