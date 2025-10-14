@@ -120,16 +120,27 @@ export const syncWebsites = async (user, token, setErrorMessage) => {
     // Step 1: Get local + DB websites
     const localWebsites = getAllWebsitesFromLocalStorage() || [];
     const dbWebsites = (await getAllWebsites(user)) || [];
-// console.log("dbWebsites", dbWebsites);
+    // console.log("dbWebsites", dbWebsites);
 
-const allWebsitesMap = new Map();
+    const dbWebsiteStats = await Promise.all(
+      dbWebsites.map(async (item) => {
+        try {
+          const stats = await getWebsiteStats(item);
+          return stats;
+        } catch (error) {
+          console.warn("Error fetching stats for website:", item?.url, err);
+          return item;
+        }
+      })
+    );
+
+    const allWebsitesMap = new Map();
 
     // Add DB websites first
-    dbWebsites.forEach(async (item) => {
-      const websiteStats = await getWebsiteStats(item);
-      console.log("websiteStats", websiteStats);
-      const key = item?._id || item?.url;
-      if (key) allWebsitesMap.set(key, websiteStats);
+    dbWebsiteStats.forEach( (item) => {
+      console.log("item", item);
+      const key = item?.data?.id || item?.data?.url;
+      if (key) allWebsitesMap.set(key, item);
     });
 
     // Add local websites if not already in DB
