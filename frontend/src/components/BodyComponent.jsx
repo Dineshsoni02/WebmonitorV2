@@ -443,7 +443,7 @@ const DashboardSection = ({ setShowModal }) => {
 
 
   const loadWebsites = async (user, token) => {
-    console.log("user", user);
+    // console.log("user", user);
     if (user) {
       const mergedWebsites = await syncWebsites(user, token);
       return mergedWebsites;

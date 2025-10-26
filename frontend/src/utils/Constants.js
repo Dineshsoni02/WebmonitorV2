@@ -159,6 +159,7 @@ export const syncWebsites = async (user, token, setErrorMessage) => {
       (localItem) => !dbWebsites.some((dbItem) => dbItem?.id === localItem?.id)
     );
 
+    console.log("newWebsites", newWebsites);
     // Step 4: Migrate new local websites to DB
     if (newWebsites.length > 0) {
       console.log("🆕 Migrating new websites:", newWebsites);

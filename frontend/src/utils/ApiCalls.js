@@ -1,5 +1,5 @@
 export const getWebsiteStats = async (websiteInfo) => {
-  console.log("websiteInfo", websiteInfo);
+  // console.log("websiteInfo", websiteInfo);
   if (!websiteInfo.url) {
     throw new Error("Website info is required");
   }
