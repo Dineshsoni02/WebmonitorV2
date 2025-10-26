@@ -1,4 +1,4 @@
-import { getWebsiteStats, getAllWebsites } from "./ApiCalls";
+import { getWebsiteStats, getAllWebsites, migrateGuestWebsites } from "./ApiCalls";
 import pLimit from "p-limit";
 
 export const scrollToSection = (sectionId) => {
@@ -128,7 +128,7 @@ export const syncWebsites = async (user, token, setErrorMessage) => {
           const stats = await getWebsiteStats(item);
           return stats;
         } catch (error) {
-          console.warn("Error fetching stats for website:", item?.url, err);
+          console.warn("Error fetching stats for website:", item?.url, error);
           return item;
         }
       })
