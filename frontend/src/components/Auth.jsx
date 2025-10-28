@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import axios from "axios";
 import { migrateGuestWebsites } from "../utils/ApiCalls";
+import { syncWebsites } from "../utils/Constants";
 
 const SignUp = () => {
   const { saveUser, user } = useAuth();
@@ -204,7 +205,6 @@ const SignIn = () => {
       if (data?.status) {
         console.log(data?.data);
         saveUser(data?.data);
-
         navigate("/");
 
         // const guestWebsites = JSON.parse(

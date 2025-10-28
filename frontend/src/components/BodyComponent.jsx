@@ -440,12 +440,11 @@ const DashboardSection = ({ setShowModal }) => {
   //   // setWebsiteList((prev) => [...prev, websiteWithId]);
   // };
 
-
-
   const loadWebsites = async (user, token) => {
     // console.log("user", user);
     if (user) {
       const mergedWebsites = await syncWebsites(user, token);
+      localStorage.setItem("allWebsitesData", JSON.stringify(mergedWebsites));
       return mergedWebsites;
     } else {
       return getAllWebsitesFromLocalStorage() || [];
@@ -474,13 +473,15 @@ const DashboardSection = ({ setShowModal }) => {
   //   };
 
   useEffect(() => {
-    loadWebsites(user, user?.tokens?.accessToken?.token);
+    const fetchWebsites = async () => {
+      const mergedWebsites = await loadWebsites(
+        user,
+        user?.tokens?.accessToken?.token
+      );
+      setWebsiteList(mergedWebsites);
+    };
+    fetchWebsites();
   }, [user]);
-
-  useEffect(() => {
-    const websites = getAllWebsitesFromLocalStorage();
-    setWebsiteList(websites);
-  }, []);
 
   // console.log("websiteList", websiteList);
 
