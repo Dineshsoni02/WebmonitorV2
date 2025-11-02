@@ -111,6 +111,13 @@ export const NavigationBar = () => {
               + Add Site
             </Button>
 
+            <Button
+              onClick={() => localStorage.clear()}
+              variant="none"
+              className="text-gray-300 hover:text-white transition-colors duration-200 font-medium px-4 py-2 rounded-lg hover:bg-gray-700/50 cursor-pointer"
+            >
+              <del>delete</del>
+            </Button>
             {user ? (
               <UserHeader />
             ) : (
@@ -421,24 +428,8 @@ export const FooterSection = () => {
 const DashboardSection = ({ setShowModal }) => {
   const [websiteList, setWebsiteList] = useState([]);
   const [isRechecking, setIsRechecking] = useState(false);
-
+  const [loading, setLoading] = useState(false);
   const { user } = useAuth();
-
-  // const loadWebsites = async () => {
-  //   const websites = (await getAllWebsites(user)) || []; // ensure array
-  //   // setWebsiteList(websites);
-  //   // console.log("websites", websites);
-  //   const statsPromises = websites?.map(async (website) => {
-  //     const websiteStats = await getWebsiteStats(website);
-  //     return websiteStats;
-  //   });
-
-  //   const websitesWithStats = await Promise.all(statsPromises);
-
-  //   console.log("websiteWithStats", websitesWithStats);
-
-  //   // setWebsiteList((prev) => [...prev, websiteWithId]);
-  // };
 
   const loadWebsites = async (user, token) => {
     // console.log("user", user);
@@ -451,35 +442,19 @@ const DashboardSection = ({ setShowModal }) => {
     }
   };
 
-  //  const loadWebsites = async () => {
-  //     if (user) {
-  //       const websites = await getAllWebsites(user);
-  //       // setWebsiteList(websites);
-  //       console.log("websites", websites);
-  //       for (const website of websites) {
-  //         const websiteStats = await getWebsiteStats(website);
-  //         const websiteWithId = {
-  //           ...websiteStats,
-  //           id: website._id,
-  //         };
-
-  //         console.log("websiteWithId", websiteWithId);
-  //         setWebsiteList((prev) => [...prev, websiteWithId]);
-  //       }
-  //     } else {
-  //       const websites = getAllWebsitesFromLocalStorage();
-  //       setWebsiteList((prev) => [...prev, ...websites]);
-  //     }
-  //   };
-
   useEffect(() => {
+    const localSites = getAllWebsitesFromLocalStorage();
+    setWebsiteList(localSites);
     const fetchWebsites = async () => {
+      setLoading(true);
       const mergedWebsites = await loadWebsites(
         user,
         user?.tokens?.accessToken?.token
       );
       setWebsiteList(mergedWebsites);
+      setLoading(false);
     };
+
     fetchWebsites();
   }, [user]);
 
@@ -635,13 +610,24 @@ const DashboardSection = ({ setShowModal }) => {
       </div>
 
       <div className="container mx-auto px-4 max-w-7xl mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0 lg:gap-4">
-        {websiteList.map((website) => (
-          <WebsiteCard
-            // key={`${user ? website?.id : website?.data?.id}`}
-            key={website?.data?.id}
-            websiteInfo={website.data}
-          />
-        ))}
+        {!loading
+          ? Array(8)
+              .fill(null)
+              .map((_, i) => (
+                <div
+                  key={i}
+                  className="relative bg-gray-900/50 border border-gray-700/50 rounded-xl shadow-lg p-6 h-[250px]  overflow-hidden"
+                >
+                  <div className="absolute inset-0 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 animate-shimmer" />
+                </div>
+              ))
+          : websiteList.map((website) => (
+              <WebsiteCard
+                // key={`${user ? website?.id : website?.data?.id}`}
+                key={website?.data?.id}
+                websiteInfo={website.data}
+              />
+            ))}
       </div>
     </section>
   );
