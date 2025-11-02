@@ -616,9 +616,11 @@ const DashboardSection = ({ setShowModal }) => {
               .map((_, i) => (
                 <div
                   key={i}
-                  className="relative bg-gray-900/50 border border-gray-700/50 rounded-xl shadow-lg p-6 h-[250px]  overflow-hidden"
+                  className="bg-gray-900/50 border border-gray-700/50 rounded-xl shadow-lg p-6 h-[300px] flex flex-col gap-4 relative overflow-hidden"
                 >
-                  <div className="absolute inset-0 bg-gradient-to-r from-gray-800 via-gray-700 to-gray-800 animate-shimmer" />
+                  <div className="w-3/4 h-6 bg-gray-700/60 rounded animate-pulse" />
+                  <div className="w-1/2 h-4 bg-gray-700/50 rounded animate-pulse" />
+                  <div className="flex-1 bg-gray-800/40 rounded animate-pulse" />
                 </div>
               ))
           : websiteList.map((website) => (
