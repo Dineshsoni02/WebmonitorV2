@@ -27,11 +27,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import Button from "../utils/Button";
 import { useAuth } from "../context/AuthContext";
-import {
-  getAllWebsites,
-  getWebsiteStats,
-  migrateGuestWebsites,
-} from "../utils/ApiCalls";
+import WebsiteCardShimmer from "../utils/WebsiteCardShimmer";
 
 const UserHeader = () => {
   const { user, logout } = useAuth();
@@ -610,19 +606,10 @@ const DashboardSection = ({ setShowModal }) => {
       </div>
 
       <div className="container mx-auto px-4 max-w-7xl mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0 lg:gap-4">
-        {!loading
+        {loading
           ? Array(8)
               .fill(null)
-              .map((_, i) => (
-                <div
-                  key={i}
-                  className="bg-gray-900/50 border border-gray-700/50 rounded-xl shadow-lg p-6 h-[300px] flex flex-col gap-4 relative overflow-hidden"
-                >
-                  <div className="w-3/4 h-6 bg-gray-700/60 rounded animate-pulse" />
-                  <div className="w-1/2 h-4 bg-gray-700/50 rounded animate-pulse" />
-                  <div className="flex-1 bg-gray-800/40 rounded animate-pulse" />
-                </div>
-              ))
+              .map((_, i) => <WebsiteCardShimmer key={i} />)
           : websiteList.map((website) => (
               <WebsiteCard
                 // key={`${user ? website?.id : website?.data?.id}`}
