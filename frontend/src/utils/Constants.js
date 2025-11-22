@@ -156,14 +156,21 @@ export const syncWebsites = async (user, token, setErrorMessage) => {
     console.log("mergedWebsites", mergedWebsites);
     // Step 3: Find which local websites are not yet in DB (need to migrate)
     const newWebsites = localWebsites.filter(
-      (localItem) => !dbWebsites.some((dbItem) => dbItem?.id === localItem?.id)
+      (localItem) =>
+        !dbWebsites.some(
+          (dbItem) => (dbItem?._id || dbItem?.id) === localItem?.data?.id
+        )
     );
+        
+
 
     console.log("newWebsites", newWebsites);
+  
     // Step 4: Migrate new local websites to DB
     if (newWebsites.length > 0) {
-      console.log("🆕 Migrating new websites:", newWebsites);
-      await migrateGuestWebsites(newWebsites, token, setErrorMessage);
+      const websitesToMigrate = newWebsites.map((item) => item.data);
+      console.log("🆕 Migrating new websites:", websitesToMigrate);
+      await migrateGuestWebsites(websitesToMigrate, token, setErrorMessage);
     }
 
     // Step 5: Update localStorage to ensure it matches merged state

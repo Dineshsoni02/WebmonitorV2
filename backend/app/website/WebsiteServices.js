@@ -245,12 +245,13 @@ export const migrateGuestWebsites = async (req, res) => {
       await newWebsite.save();
       results.push(newWebsite);
 
-      res.status(201).json({
-        status: true,
-        message: "Guest websites migrated",
-        data: results,
-      });
     }
+
+    res.status(201).json({
+      status: true,
+      message: "Guest websites migrated",
+      data: results,
+    });
   } catch (err) {
     res.status(500).json({
       status: false,
