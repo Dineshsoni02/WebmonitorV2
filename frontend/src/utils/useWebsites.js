@@ -43,22 +43,31 @@ export function useWebsites(user) {
     try {
       const dbWebsites = await getAllWebsites(user);
       
-      // Fetch stats for DB websites to ensure they have 'status', 'ssl', etc.
+      const now = Date.now();
+      const CACHE_DURATION = 5 * 60 * 1000; // 5 minutes
+      
       const dbWebsitesWithStats = await Promise.all(
         (dbWebsites || []).map(async (site) => {
           try {
-            // getWebsiteStats returns { data: { ...stats, url, id } } or similar
-            // We need to check what getWebsiteStats returns.
-            // It calls POST /guest which returns { status: true, data: { ... } }
-            // The helper getWebsiteStats returns data (the whole response? or data.data?)
-            // Let's check ApiCalls.js. 
-            // It returns `data` which is the whole JSON. So `data.data` is the website info.
-            const response = await getWebsiteStats({ url: site.url });
-            if (response?.status && response?.data) {
-                // Merge DB ID with stats
-                return { ...response.data, _id: site._id, id: site._id }; // Ensure ID is preserved
+            // Check if we have cached stats for this URL
+            const cached = localWebsites.find(w => w.data.url === site.url);
+            const cacheAge = cached?.data?.lastChecked 
+              ? now - new Date(cached.data.lastChecked).getTime() 
+              : Infinity;
+            
+            // If cache is fresh (< 5 min), use it
+            if (cached && cacheAge < CACHE_DURATION && cached.data.status) {
+              console.log("Using cached stats for", site.url);
+              return { ...cached.data, _id: site._id, id: site._id };
             }
-            return site; // Fallback to raw DB object if stats fail (will still lack status)
+            
+            // Otherwise fetch fresh stats
+            console.log("Fetching fresh stats for", site.url);
+            const response = await getWebsiteStats({ url: site.url, id: site._id });
+            if (response?.status && response?.data) {
+                return { ...response.data, _id: site._id, id: site._id };
+            }
+            return site;
           } catch (err) {
             console.warn("Failed to fetch stats for DB site", site.url);
             return site;
@@ -68,16 +77,12 @@ export function useWebsites(user) {
 
       const merged = mergeWebsites(localWebsites, dbWebsitesWithStats);
       
-      // Identify websites to migrate (in local but not in DB)
-      // Note: mergeWebsites prefers DB items (which now have stats).
-      // We need to check if local items are NOT in DB.
-      // The comparison should be based on URL.
+      // Identify websites to migrate
       const websitesToMigrate = localWebsites.filter(
         (local) => !dbWebsites.some((db) => db.url === local.data.url)
       );
 
       if (websitesToMigrate.length > 0) {
-        // Migrate sequentially or in parallel
         await Promise.all(
           websitesToMigrate.map(async (site) => {
             try {
@@ -95,20 +100,7 @@ export function useWebsites(user) {
           })
         );
         
-        // Re-fetch after migration to get IDs
         const updatedDbWebsites = await getAllWebsites(user);
-        // Also fetch stats for these new ones? Or just re-sync?
-        // Let's just re-fetch stats for all to be safe and consistent, 
-        // or just fetch stats for the new ones. 
-        // Simpler: Just call syncWebsites recursively? No, infinite loop risk.
-        // Let's just use the stats we have for local ones (which are already in localWebsites)
-        // and merge with updated DB IDs.
-        
-        // Actually, simpler approach:
-        // We already have `merged` which contains DB sites (with stats) + Local sites (with stats).
-        // We just migrated the local ones. 
-        // We just need to update the IDs of the local ones in `merged` with the new DB IDs.
-        
         const idMap = new Map();
         updatedDbWebsites.forEach(w => idMap.set(w.url, w._id));
         
@@ -127,7 +119,6 @@ export function useWebsites(user) {
       }
     } catch (err) {
       console.error("Sync failed", err);
-      // Fallback to local if sync fails
       setWebsiteList(localWebsites);
     } finally {
       setLoading(false);
@@ -157,7 +148,7 @@ export function useWebsites(user) {
     // 2. If user logged in, save to DB
     if (user) {
       try {
-        await fetch("http://localhost:5000/migrate", {
+        const response = await fetch("http://localhost:5000/migrate", {
             method: "POST",
             headers: {
               "Content-type": "application/json",
@@ -165,11 +156,25 @@ export function useWebsites(user) {
             },
             body: JSON.stringify({ websites: [websiteData] }),
           });
-          // Optionally re-sync to get the ID from DB, but for now local ID is fine until next sync
-          syncWebsites(); 
+          
+          const data = await response.json();
+          if (data.status && data.data && data.data.length > 0) {
+              const savedWebsite = data.data[0];
+              console.log("Saved to DB, got ID:", savedWebsite._id);
+              
+              // Update local list with the new DB ID immediately
+              const listWithId = updatedList.map(w => {
+                  if (w.data.url === websiteData.url) {
+                      return { data: { ...w.data, id: savedWebsite._id, _id: savedWebsite._id } };
+                  }
+                  return w;
+              });
+              saveWebsitesToLocal(listWithId);
+              setWebsiteList(listWithId);
+          }
+          
       } catch (err) {
         console.error("Failed to save to DB", err);
-        // Don't revert local state, just log error. It will sync next time.
       }
     }
     return { success: true };
@@ -177,9 +182,10 @@ export function useWebsites(user) {
 
   // Remove Website
   const removeWebsite = useCallback(async (id) => {
+    console.log("Removing website with ID:", id);
     // 1. Update Local State & Storage immediately
     const currentList = getWebsitesFromLocal();
-    const websiteToRemove = currentList.find(w => w.data.id === id || w.data._id === id); // Handle both ID types if mixed
+    // const websiteToRemove = currentList.find(w => w.data.id === id || w.data._id === id); // Handle both ID types if mixed
     
     // Filter out by ID
     const updatedList = currentList.filter(w => w.data.id !== id && w.data._id !== id);
@@ -188,19 +194,18 @@ export function useWebsites(user) {
 
     // 2. If user logged in, delete from DB
     if (user) {
-        // We need the DB ID. If the local list has it (from sync), great.
-        // If it's a guest site migrated, it might have a different ID structure? 
-        // Usually sync ensures we have the DB ID.
+
         try {
-            await fetch(`http://localhost:5000/website/${id}`, {
+            console.log("Deleting from DB:", id);
+            const res = await fetch(`http://localhost:5000/website/${id}`, {
                 method: "DELETE",
                 headers: {
                     Authorization: `Bearer ${user?.tokens?.accessToken?.token}`,
                 },
             });
+            console.log("Delete response:", res.status);
         } catch (err) {
             console.error("Failed to delete from DB", err);
-            // Revert? No, just log.
         }
     }
   }, [user]);
@@ -211,8 +216,7 @@ export function useWebsites(user) {
     const currentList = getWebsitesFromLocal();
     
     try {
-      // We can use p-limit if we want, but for now Promise.all is fine or sequential
-      // Let's use Promise.all
+     
       const updatedList = await Promise.all(
         currentList.map(async (item) => {
           try {
@@ -228,12 +232,7 @@ export function useWebsites(user) {
       saveWebsitesToLocal(updatedList);
       setWebsiteList(updatedList);
       
-      // If user is logged in, maybe we should update DB? 
-      // But DB usually stores configuration, not realtime stats? 
-      // The previous implementation didn't seem to update DB with stats, only local.
-      // But wait, guestWebsite returns stats.
-      // If we want to persist stats to DB, we need an endpoint for that.
-      // For now, we just update local state which drives the UI.
+      
       
     } catch (err) {
       console.error("Recheck failed", err);

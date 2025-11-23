@@ -86,8 +86,16 @@ export const deleteWebsite = async (req, res) => {
     });
   }
 
-  WebsiteSchema.deleteOne({ _id: id })
-    .then(() => {
+  const user = req.user;
+
+  WebsiteSchema.deleteOne({ _id: id, userId: user._id })
+    .then((result) => {
+      if (result.deletedCount === 0) {
+        return res.status(404).json({
+          status: false,
+          message: "Website not found or unauthorized",
+        });
+      }
       res.status(200).json({
         status: true,
         message: messages.WEBSITE_DELETED,
@@ -97,6 +105,7 @@ export const deleteWebsite = async (req, res) => {
       res.status(500).json({
         status: false,
         message: messages.WEBSITE_DELETION_ERROR,
+        error: err.message,
       });
     });
 };
