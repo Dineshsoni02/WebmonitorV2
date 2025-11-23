@@ -11,7 +11,6 @@ const websiteSchema = new Schema(
     url: {
       type: String,
       required: true,
-      unique: true,
     },
     websiteName: {
       type: String,
@@ -27,6 +26,9 @@ const websiteSchema = new Schema(
   },
   { timestamps: true }
 );
+
+// Compound index to ensure a user can only add a specific URL once, but multiple users can add the same URL
+websiteSchema.index({ url: 1, userId: 1 }, { unique: true });
 
 const WebsiteSchema = mongoose.model("Website", websiteSchema);
 

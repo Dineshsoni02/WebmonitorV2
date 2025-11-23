@@ -44,7 +44,7 @@ const WebsiteCard = ({ websiteInfo, onDelete }) => {
               className="text-cyan-400 hover:text-cyan-300 text-xs flex items-center gap-1 w-max max-w-[250px] overflow-hidden text-ellipsis"
             >
               <Globe className="w-4 h-4" />
-              {websiteInfo?.url.replace(/^https?:\/\//, "")}
+              {websiteInfo?.url?.replace(/^https?:\/\//, "") || "No URL"}
             </a>
           </div>
         </div>
@@ -52,7 +52,7 @@ const WebsiteCard = ({ websiteInfo, onDelete }) => {
           className={`px-3 py-1 text-xs font-medium rounded-full ${statusColor} text-white`}
         >
           {websiteInfo?.status 
-            ? websiteInfo.status.charAt(0).toUpperCase() + websiteInfo.status.slice(1) 
+            ? String(websiteInfo.status).charAt(0).toUpperCase() + String(websiteInfo.status).slice(1) 
             : "Unknown"}
         </span>
       </div>
@@ -66,7 +66,7 @@ const WebsiteCard = ({ websiteInfo, onDelete }) => {
                 RESPONSE TIME
               </div>
               <div className="text-white font-bold">
-                {websiteInfo?.responseTime}
+                {websiteInfo?.responseTime || "N/A"}
               </div>
             </div>
             <div className="bg-gray-800/50 p-3 rounded-lg">

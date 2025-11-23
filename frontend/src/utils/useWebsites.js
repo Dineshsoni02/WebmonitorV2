@@ -1,5 +1,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { getAllWebsites, getWebsiteStats } from "./ApiCalls";
+import { useToast } from "../context/ToastContext";
 
 // LocalStorage helpers
 const LOCAL_KEY = "allWebsitesData";
@@ -13,6 +14,7 @@ const saveWebsitesToLocal = (websites) =>
 export function useWebsites(user) {
   const [websiteList, setWebsiteList] = useState([]);
   const [loading, setLoading] = useState(true);
+  const { addToast } = useToast();
 
   // Helper to merge local and DB websites
   const mergeWebsites = useCallback((local, db) => {
@@ -119,11 +121,13 @@ export function useWebsites(user) {
       }
     } catch (err) {
       console.error("Sync failed", err);
+      // Fallback to local if sync fails
       setWebsiteList(localWebsites);
+      addToast("Failed to sync websites", "error");
     } finally {
       setLoading(false);
     }
-  }, [user, mergeWebsites]);
+  }, [user, mergeWebsites, addToast]);
 
   // Initial load and sync
   useEffect(() => {
@@ -138,12 +142,14 @@ export function useWebsites(user) {
     
     // Check duplicates
     if (currentList.some(w => w.data.url === websiteData.url)) {
+      addToast("Website already exists", "warning");
       return { error: "Website already exists" };
     }
 
     const updatedList = [...currentList, newWebsiteObj];
     saveWebsitesToLocal(updatedList);
     setWebsiteList(updatedList);
+    addToast("Website added successfully", "success");
 
     // 2. If user logged in, save to DB
     if (user) {
@@ -172,29 +178,28 @@ export function useWebsites(user) {
               saveWebsitesToLocal(listWithId);
               setWebsiteList(listWithId);
           }
-          
       } catch (err) {
         console.error("Failed to save to DB", err);
+        addToast("Failed to sync to server", "error");
       }
     }
     return { success: true };
-  }, [user, syncWebsites]);
+  }, [user, addToast]);
 
   // Remove Website
   const removeWebsite = useCallback(async (id) => {
     console.log("Removing website with ID:", id);
     // 1. Update Local State & Storage immediately
     const currentList = getWebsitesFromLocal();
-    // const websiteToRemove = currentList.find(w => w.data.id === id || w.data._id === id); // Handle both ID types if mixed
     
     // Filter out by ID
     const updatedList = currentList.filter(w => w.data.id !== id && w.data._id !== id);
     saveWebsitesToLocal(updatedList);
     setWebsiteList(updatedList);
+    addToast("Website removed", "info");
 
     // 2. If user logged in, delete from DB
     if (user) {
-
         try {
             console.log("Deleting from DB:", id);
             const res = await fetch(`http://localhost:5000/website/${id}`, {
@@ -204,11 +209,15 @@ export function useWebsites(user) {
                 },
             });
             console.log("Delete response:", res.status);
+            if (!res.ok) {
+                throw new Error("Failed to delete");
+            }
         } catch (err) {
             console.error("Failed to delete from DB", err);
+            addToast("Failed to delete from server", "error");
         }
     }
-  }, [user]);
+  }, [user, addToast]);
 
   // Recheck all websites (uptime, stats)
   const recheckWebsites = useCallback(async () => {
@@ -216,7 +225,6 @@ export function useWebsites(user) {
     const currentList = getWebsitesFromLocal();
     
     try {
-     
       const updatedList = await Promise.all(
         currentList.map(async (item) => {
           try {
@@ -231,15 +239,15 @@ export function useWebsites(user) {
       
       saveWebsitesToLocal(updatedList);
       setWebsiteList(updatedList);
-      
-      
+      addToast("Websites rechecked", "success");
       
     } catch (err) {
       console.error("Recheck failed", err);
+      addToast("Failed to recheck websites", "error");
     } finally {
       setLoading(false);
     }
-  }, []);
+  }, [addToast]);
 
   return { websiteList, loading, addWebsite, removeWebsite, syncWebsites, recheckWebsites };
 }

@@ -5,6 +5,7 @@ import { createBrowserRouter, Outlet, RouterProvider } from "react-router-dom";
 import Auth from "./components/Auth";
 import { NavigationBar, FooterSection } from "./components/BodyComponent";
 import { AuthProvider } from "./context/AuthContext";
+import { ToastProvider } from "./context/ToastContext";
 
 function Layout() {
   return (
@@ -35,9 +36,11 @@ function App() {
 
   return (
     <AuthProvider>
-      <div className="bg-light-gray">
-        <RouterProvider router={router} />
-      </div>
+      <ToastProvider>
+        <div className="bg-light-gray">
+          <RouterProvider router={router} />
+        </div>
+      </ToastProvider>
     </AuthProvider>
   );
 }

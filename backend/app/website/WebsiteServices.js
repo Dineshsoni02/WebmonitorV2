@@ -240,20 +240,39 @@ export const migrateGuestWebsites = async (req, res) => {
       const { id, url, name } = websites[i];
       console.log("migrating url: ", url);
       if (!url || !id) continue;
-      const exists = await WebsiteSchema.findOne({ _id: id, userId: user._id });
-      if (exists) continue;
+      
+      // Check if this URL already exists for this user
+      const exists = await WebsiteSchema.findOne({ url: url, userId: user._id });
+      
+      if (exists) {
+        // If it exists, we return the existing one so frontend can update its ID
+        results.push(exists);
+        continue;
+      }
 
+      // If not, create new
       const newWebsite = new WebsiteSchema({
-        _id: id,
+        _id: id, // Use the client-generated ID if possible, or let Mongo generate? 
+                 // Schema says _id is String and required. So we must provide it.
+                 // But if we use client ID, we must ensure it's unique globally if _id is unique (it is by default).
+                 // Client uses UUID, so collision is unlikely.
         url,
         websiteName: name || new URL(url).hostname,
         userId: user._id,
         isActive: true,
       });
 
-      await newWebsite.save();
-      results.push(newWebsite);
-
+      try {
+        await newWebsite.save();
+        results.push(newWebsite);
+      } catch (err) {
+        // Handle potential duplicate key error if race condition or _id collision
+        if (err.code === 11000) {
+            // Try finding it again
+            const retryExists = await WebsiteSchema.findOne({ url: url, userId: user._id });
+            if (retryExists) results.push(retryExists);
+        }
+      }
     }
 
     res.status(201).json({
