@@ -1,6 +1,3 @@
-import { getWebsiteStats, getAllWebsites, migrateGuestWebsites } from "./ApiCalls";
-import pLimit from "p-limit";
-
 export const scrollToSection = (sectionId) => {
   const element = document.getElementById(sectionId);
   if (element) {
@@ -8,13 +5,8 @@ export const scrollToSection = (sectionId) => {
   }
 };
 
-export const getAllWebsitesFromLocalStorage = () => {
-  return JSON.parse(localStorage.getItem("allWebsitesData")) || [];
-};
-
-const allWebsites = getAllWebsitesFromLocalStorage() || [];
-
 export const alreadyExists = (url) => {
+  const allWebsites = JSON.parse(localStorage.getItem("allWebsitesData")) || [];
   return allWebsites.some((item) => item?.data?.url === url);
 };
 
@@ -22,31 +14,16 @@ export const addWebsiteToLocalStorage = (data) => {
   if (!data || !data?.data?.url) {
     return;
   }
-
+  const allWebsites = JSON.parse(localStorage.getItem("allWebsitesData")) || [];
   allWebsites.push(data);
   localStorage.setItem("allWebsitesData", JSON.stringify(allWebsites));
 };
 
 export const removeWebsiteFromLocalStorage = (id) => {
-  const allWebsites = getAllWebsitesFromLocalStorage();
+  const allWebsites = JSON.parse(localStorage.getItem("allWebsitesData")) || [];
   const updatedWebsites = allWebsites.filter((item) => item?.data?.id !== id);
   localStorage.setItem("allWebsitesData", JSON.stringify(updatedWebsites));
-  window.location.reload();
-};
-
-export const addOrUpdateWebsiteInLocalStorage = (data) => {
-  if (!data || !data?.data?.url) return;
-
-  let allWebsites = getAllWebsitesFromLocalStorage();
-
-  const index = allWebsites.findIndex((w) => w?.data?.id === data?.data?.id);
-  if (index > -1) {
-    allWebsites[index] = data;
-  } else {
-    allWebsites.push(data);
-  }
-
-  localStorage.setItem("allWebsitesData", JSON.stringify(allWebsites));
+  // window.location.reload(); // Removed reload
 };
 
 // export const recheckAllWebsites = async (setWebsiteList, setIsRechecking) => {

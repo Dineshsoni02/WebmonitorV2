@@ -17,17 +17,15 @@ import {
 } from "lucide-react";
 import DialogBox from "./DialogBox";
 import WebsiteCard from "./WebsiteCard";
-import { getAllWebsitesFromLocalStorage } from "../utils/Constants";
 import useAddWebsite from "../utils/useAddWebsite";
 import {
   scrollToSection,
-  syncWebsites,
-  recheckAllWebsites,
 } from "../utils/Constants";
 import { useNavigate } from "react-router-dom";
 import Button from "../utils/Button";
 import { useAuth } from "../context/AuthContext";
 import WebsiteCardShimmer from "../utils/WebsiteCardShimmer";
+import { useWebsites } from "../utils/useWebsites";
 
 const UserHeader = () => {
   const { user, logout } = useAuth();
@@ -204,16 +202,17 @@ export const NavigationBar = () => {
   );
 };
 
-const HeaderTextComponent = () => {
+const HeaderTextComponent = ({ addWebsite }) => {
   const [websiteUrl, setWebsiteUrl] = useState("");
 
   const { errorMessage, isLoading, handleAddWebsite, setErrorMessage } =
     useAddWebsite(
       { url: websiteUrl },
       {
-        onSuccess: () => {
+        onSuccess: async (data) => {
+          await addWebsite(data);
           window.location.href = "#dashboard";
-          window.location.reload();
+          // window.location.reload(); // Removed reload
         },
       }
     );
@@ -421,40 +420,9 @@ export const FooterSection = () => {
   );
 };
 
-const DashboardSection = ({ setShowModal }) => {
-  const [websiteList, setWebsiteList] = useState([]);
+const DashboardSection = ({ setShowModal, websiteList, removeWebsite, loading, syncWebsites, recheckWebsites }) => {
   const [isRechecking, setIsRechecking] = useState(false);
-  const [loading, setLoading] = useState(false);
   const { user } = useAuth();
-
-  const loadWebsites = async (user, token) => {
-    // console.log("user", user);
-    if (user) {
-      const mergedWebsites = await syncWebsites(user, token);
-      localStorage.setItem("allWebsitesData", JSON.stringify(mergedWebsites));
-      return mergedWebsites;
-    } else {
-      return getAllWebsitesFromLocalStorage() || [];
-    }
-  };
-
-  useEffect(() => {
-    const localSites = getAllWebsitesFromLocalStorage();
-    setWebsiteList(localSites);
-    const fetchWebsites = async () => {
-      setLoading(true);
-      const mergedWebsites = await loadWebsites(
-        user,
-        user?.tokens?.accessToken?.token
-      );
-      setWebsiteList(mergedWebsites);
-      setLoading(false);
-    };
-
-    fetchWebsites();
-  }, [user]);
-
-  // console.log("websiteList", websiteList);
 
   const activeSites = useMemo(() => {
     return websiteList.filter(
@@ -464,30 +432,11 @@ const DashboardSection = ({ setShowModal }) => {
     );
   }, [websiteList]);
 
-  // const manualMigrateGuestWebsites = () => {
-  //   const filteredWebsites = websiteList.map((website) => {
-  //     return {
-  //       name: website?.data?.name,
-  //       url: website?.data?.url,
-  //       isActive: website?.data?.status === "online",
-  //     };
-  //   });
-  //   const token = user?.tokens?.accessToken?.token;
-  //   migrateGuestWebsites(filteredWebsites, token);
-  // };
-
   return (
     <section
       id="dashboard"
       className="py-20 bg-gradient-to-br from-[#0c0e14] via-[#0f1419] to-[#0c0e14] text-white"
     >
-      {/* <Button
-        onClick={() => manualMigrateGuestWebsites()}
-        variant="none"
-        className="bg-gradient-to-r from-blue-600 to-cyan-600 hover:from-blue-700 hover:to-cyan-700 text-white px-6 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 hover:shadow-lg hover:shadow-cyan-500/25 cursor-pointer"
-      >
-        Migrate to DB
-      </Button> */}
       <div>
         <div className="container mx-auto px-4 flex justify-between items-center max-w-7xl flex-col gap-5 text-center lg:text-left lg:flex-row lg:items-start">
           <div>
@@ -588,35 +537,35 @@ const DashboardSection = ({ setShowModal }) => {
           {websiteList.length > 0 && (
             <Button
               onClick={() =>
-                recheckAllWebsites(setWebsiteList, setIsRechecking)
+                recheckWebsites() 
               }
-              disabled={isRechecking}
+              disabled={loading}
               variant="none"
               className="flex items-center gap-2 mb-4 text-white cursor-pointer mt-4 ml-auto"
             >
               <RefreshCw
                 className={`w-5 h-5 text-cyan-400 ${
-                  isRechecking ? "animate-spin" : ""
+                  loading ? "animate-spin" : ""
                 }`}
               />
-              {isRechecking ? "Rechecking..." : "Recheck"}
+              {loading ? "Rechecking..." : "Recheck"}
             </Button>
           )}
         </div>
-      </div>
 
-      <div className="container mx-auto px-4 max-w-7xl mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0 lg:gap-4">
-        {loading
-          ? Array(8)
-              .fill(null)
-              .map((_, i) => <WebsiteCardShimmer key={i} />)
-          : websiteList.map((website) => (
-              <WebsiteCard
-                // key={`${user ? website?.id : website?.data?.id}`}
-                key={website?.data?.id}
-                websiteInfo={website.data}
-              />
-            ))}
+        <div className="container mx-auto px-4 max-w-7xl mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0 lg:gap-4">
+          {loading
+            ? Array(8)
+                .fill(null)
+                .map((_, i) => <WebsiteCardShimmer key={i} />)
+            : websiteList.map((website) => (
+                <WebsiteCard
+                  key={website?.data?.id || website?.data?._id}
+                  websiteInfo={website.data}
+                  onDelete={() => removeWebsite(website.data.id || website.data._id)}
+                />
+              ))}
+        </div>
       </div>
     </section>
   );
@@ -624,13 +573,22 @@ const DashboardSection = ({ setShowModal }) => {
 
 export const BodyComponent = () => {
   const [showModal, setShowModal] = useState(false);
+  const { user } = useAuth();
+  const { websiteList, addWebsite, removeWebsite, loading, syncWebsites, recheckWebsites } = useWebsites(user);
 
   return (
     <div>
-      <HeaderTextComponent />
+      <HeaderTextComponent addWebsite={addWebsite} />
       <FeaturesSection />
-      <DashboardSection setShowModal={setShowModal} />
-      <DialogBox setShowModal={setShowModal} showModal={showModal} />
+      <DashboardSection 
+        setShowModal={setShowModal} 
+        websiteList={websiteList} 
+        removeWebsite={removeWebsite} 
+        loading={loading} 
+        syncWebsites={syncWebsites}
+        recheckWebsites={recheckWebsites}
+      />
+      <DialogBox setShowModal={setShowModal} showModal={showModal} addWebsite={addWebsite} />
     </div>
   );
 };

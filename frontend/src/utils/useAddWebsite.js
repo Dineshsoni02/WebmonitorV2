@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { validateUrl } from "./Validation";
 import { getWebsiteStats } from "./ApiCalls";
-import { addWebsiteToLocalStorage, alreadyExists } from "./Constants";
+import { alreadyExists } from "./Constants";
 
 const useAddWebsite = (websiteInfo, options = {}) => {
   const [errorMessage, setErrorMessage] = useState("");
@@ -38,7 +38,7 @@ const useAddWebsite = (websiteInfo, options = {}) => {
         return { error: data?.error || data?.message };
       }
 
-      addWebsiteToLocalStorage(data);
+      // addWebsiteToLocalStorage(data); // Removed side effect
       return { success: true, data };
     } catch (error) {
       return { error: error?.message || "Something went wrong" };

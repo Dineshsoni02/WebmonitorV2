@@ -4,7 +4,7 @@ import { Globe, X } from "lucide-react";
 import useAddWebsite from "../utils/useAddWebsite";
 import Button from "../utils/Button";
 
-export const DialogBox = ({ showModal, setShowModal }) => {
+export const DialogBox = ({ showModal, setShowModal, addWebsite }) => {
   const [websiteInfo, setWebsiteInfo] = useState({
     url: "",
     name: "",
@@ -13,9 +13,10 @@ export const DialogBox = ({ showModal, setShowModal }) => {
   const { errorMessage, isLoading, handleAddWebsite, setErrorMessage } =
     useAddWebsite(websiteInfo, {
       setWebsiteInfo,
-      onSuccess: () => {
+      onSuccess: async (data) => {
+        await addWebsite(data);
         setShowModal(false);
-        window.location.reload();
+        // window.location.reload(); // Removed reload
       },
     });
 

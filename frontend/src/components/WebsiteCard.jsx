@@ -1,13 +1,12 @@
 import React from "react";
 
 import { Globe, Lock, TriangleAlert, Search, Trash2 } from "lucide-react";
-import { removeWebsiteFromLocalStorage } from "../utils/Constants";
 import Button from "../utils/Button";
 
-const WebsiteCard = ({ websiteInfo }) => {
+const WebsiteCard = ({ websiteInfo, onDelete }) => {
   // console.log(websiteInfo);
   const statusColor =
-    websiteInfo?.status === "online" ? "bg-green-500" : "bg-red-500";
+    websiteInfo?.status === "online" ? "bg-green-500" : (websiteInfo?.status === "offline" ? "bg-red-500" : "bg-gray-500");
   const sslStatusColor = websiteInfo?.ssl?.isValid
     ? "bg-green-500"
     : "bg-red-500";
@@ -52,8 +51,9 @@ const WebsiteCard = ({ websiteInfo }) => {
         <span
           className={`px-3 py-1 text-xs font-medium rounded-full ${statusColor} text-white`}
         >
-          {websiteInfo?.status.charAt(0).toUpperCase() +
-            websiteInfo?.status.slice(1)}
+          {websiteInfo?.status 
+            ? websiteInfo.status.charAt(0).toUpperCase() + websiteInfo.status.slice(1) 
+            : "Unknown"}
         </span>
       </div>
 
@@ -192,7 +192,7 @@ const WebsiteCard = ({ websiteInfo }) => {
       )}
 
       <Button
-        onClick={() => removeWebsiteFromLocalStorage(websiteInfo?.id)}
+        onClick={onDelete}
         className="mt-2 absolute bottom-2 right-2 text-red-500 hover:text-red-600 px-2 py-2 rounded-lg font-medium transition-all duration-300 transform hover:scale-105 cursor-pointer outline-none"
         variant="none"
       >
