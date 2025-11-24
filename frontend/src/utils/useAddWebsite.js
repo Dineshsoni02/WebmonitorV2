@@ -39,7 +39,7 @@ const useAddWebsite = (websiteInfo, options = {}) => {
       }
 
       // addWebsiteToLocalStorage(data); // Removed side effect
-      return { success: true, data };
+      return { success: true, data: data.data };
     } catch (error) {
       return { error: error?.message || "Something went wrong" };
     }

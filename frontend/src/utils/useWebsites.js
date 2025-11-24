@@ -229,7 +229,7 @@ export function useWebsites(user) {
         currentList.map(async (item) => {
           try {
             const data = await getWebsiteStats(item.data);
-            return { data };
+            return { data: data.data };
           } catch (err) {
             console.error("Failed to recheck", item.data.url, err);
             return item;
