@@ -252,10 +252,7 @@ export const migrateGuestWebsites = async (req, res) => {
 
       // If not, create new
       const newWebsite = new WebsiteSchema({
-        _id: id, // Use the client-generated ID if possible, or let Mongo generate? 
-                 // Schema says _id is String and required. So we must provide it.
-                 // But if we use client ID, we must ensure it's unique globally if _id is unique (it is by default).
-                 // Client uses UUID, so collision is unlikely.
+        _id: id, 
         url,
         websiteName: name || new URL(url).hostname,
         userId: user._id,
@@ -266,9 +263,9 @@ export const migrateGuestWebsites = async (req, res) => {
         await newWebsite.save();
         results.push(newWebsite);
       } catch (err) {
-        // Handle potential duplicate key error if race condition or _id collision
+        
         if (err.code === 11000) {
-            // Try finding it again
+         
             const retryExists = await WebsiteSchema.findOne({ url: url, userId: user._id });
             if (retryExists) results.push(retryExists);
         }
