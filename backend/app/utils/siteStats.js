@@ -42,8 +42,8 @@ export const checkSSL = (siteUrl) => {
       const options = {
         host: hostname,
         port: tlsPort,
-        servername: hostname, // IMPORTANT for SNI!
-        rejectUnauthorized: false, // still allow expired/invalid certs to inspect them
+        servername: hostname, 
+        rejectUnauthorized: false, 
       };
 
       const socket = tls.connect(options, () => {
