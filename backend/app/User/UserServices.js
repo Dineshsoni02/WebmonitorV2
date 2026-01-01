@@ -3,9 +3,10 @@ import UserSchema from "./UserSchema.js";
 import { validateEmail } from "../utils/validation.js";
 import { generateToken, getExpiry } from "../utils/token.js";
 import { messages } from "../constants/responseMessages.js";
+import { claimVisitorToken } from "../VisitorToken/VisitorTokenServices.js";
 
 export const signupUser = async (req, res) => {
-  const { name, email, password } = req.body;
+  const { name, email, password, visitorToken } = req.body;
   if (!name || !email || !password)
     return res
       .status(400)
@@ -42,11 +43,23 @@ export const signupUser = async (req, res) => {
 
   try {
     const user = await newUser.save();
+    
+    // Claim visitor token if provided (seamless guest → user transition)
+    let claimResult = null;
+    if (visitorToken) {
+      claimResult = await claimVisitorToken(visitorToken, user._id);
+      console.log("Token claim result:", claimResult);
+    }
+    
     const userObj = user.toObject();
     delete userObj.password;
-    res
-      .status(201)
-      .json({ status: true, message: messages.SIGNUP_SUCCESS, data: userObj });
+    
+    res.status(201).json({ 
+      status: true, 
+      message: messages.SIGNUP_SUCCESS, 
+      data: userObj,
+      tokenClaim: claimResult 
+    });
   } catch (err) {
     res
       .status(400)
@@ -55,7 +68,7 @@ export const signupUser = async (req, res) => {
 };
 
 export const loginUser = async (req, res) => {
-  const { email, password } = req.body;
+  const { email, password, visitorToken } = req.body;
   if (!email || !password)
     return res
       .status(400)
@@ -87,10 +100,21 @@ export const loginUser = async (req, res) => {
 
   await user.save();
 
+  // Claim visitor token if provided (seamless guest → user transition)
+  let claimResult = null;
+  if (visitorToken) {
+    claimResult = await claimVisitorToken(visitorToken, user._id);
+    console.log("Token claim result:", claimResult);
+  }
+
   const userObj = user.toObject();
   delete userObj.password;
 
-  res
-    .status(200)
-    .json({ status: true, message: messages.LOGIN_SUCCESS, data: userObj });
+  res.status(200).json({ 
+    status: true, 
+    message: messages.LOGIN_SUCCESS, 
+    data: userObj,
+    tokenClaim: claimResult 
+  });
 };
+

@@ -6,6 +6,7 @@ import Auth from "./components/Auth";
 import { NavigationBar, FooterSection } from "./components/BodyComponent";
 import { AuthProvider } from "./context/AuthContext";
 import { ToastProvider } from "./context/ToastContext";
+import { VisitorTokenProvider } from "./context/VisitorTokenContext";
 
 function Layout() {
   return (
@@ -35,14 +36,17 @@ function App() {
   ]);
 
   return (
-    <AuthProvider>
-      <ToastProvider>
-        <div className="bg-light-gray">
-          <RouterProvider router={router} />
-        </div>
-      </ToastProvider>
-    </AuthProvider>
+    <VisitorTokenProvider>
+      <AuthProvider>
+        <ToastProvider>
+          <div className="bg-light-gray">
+            <RouterProvider router={router} />
+          </div>
+        </ToastProvider>
+      </AuthProvider>
+    </VisitorTokenProvider>
   );
 }
 
 export default App;
+

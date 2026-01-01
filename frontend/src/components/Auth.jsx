@@ -5,9 +5,7 @@ import Button from "../utils/Button";
 import { validateEmail } from "../utils/Validation";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
-import axios from "axios";
-import { migrateGuestWebsites } from "../utils/ApiCalls";
-import { syncWebsites } from "../utils/Constants";
+import { getVisitorToken } from "../utils/useVisitorToken";
 
 const SignUp = () => {
   const { saveUser, user } = useAuth();
@@ -49,12 +47,17 @@ const SignUp = () => {
     setErrorMessage("");
     try {
       setIsLoading(true);
+      // Include visitor token for seamless guest → user transition
+      const visitorToken = getVisitorToken();
       const response = await fetch("http://localhost:5000/user/signup", {
         method: "POST",
         headers: {
           "Content-type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          visitorToken,
+        }),
       }).catch((err) => {
         setErrorMessage(err.message);
       });
@@ -62,33 +65,20 @@ const SignUp = () => {
       const data = await response.json();
 
       if (data?.status) {
-        console.log(data?.data);
-
+        console.log("Signup successful:", data?.data);
+        
+        // Log token claim result if present
+        if (data?.tokenClaim) {
+          console.log("Token claim result:", data.tokenClaim);
+          if (data.tokenClaim.websitesTransferred > 0) {
+            console.log(`Transferred ${data.tokenClaim.websitesTransferred} websites from guest account`);
+          }
+        }
+        
+        // Clear local cache since data is now in user's account
+        localStorage.removeItem("allWebsitesData");
+        
         saveUser(data?.data);
-        // const guestWebsites = JSON.parse(
-        //   localStorage.getItem("allWebsitesData") || "[]"
-        // );
-        // console.log("gw", guestWebsites);
-
-        // console.log("tokennnnn", user?.tokens?.accessToken?.token);
-        // const websiteMigrateResponse = await fetch(
-        //   "http://localhost:5000/user/migrate",
-        //   {
-        //     method: "POST",
-        //     headers: {
-        //       "Content-type": "application/json",
-        //       Authorization: `Bearer ${user?.tokens?.accessToken?.token}`,
-        //     },
-        //     body: JSON.stringify({ websites: guestWebsites }),
-        //   }
-        // ).catch((err) => {
-        //   setErrorMessage(err.message);
-        // });
-
-        // if (websiteMigrateResponse?.status) {
-        //   console.log("Website migrated successfully");
-        //   // localStorage.removeItem("allWebsitesData");
-        // }
         navigate("/");
       } else {
         setErrorMessage(data?.message);
@@ -189,12 +179,17 @@ const SignIn = () => {
 
     try {
       setIsLoading(true);
+      // Include visitor token for seamless guest → user transition
+      const visitorToken = getVisitorToken();
       const response = await fetch("http://localhost:5000/user/login", {
         method: "POST",
         headers: {
           "Content-type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          ...formData,
+          visitorToken,
+        }),
       }).catch((err) => {
         setErrorMessage(err.message);
       });
@@ -203,31 +198,21 @@ const SignIn = () => {
       // console.log(data);
 
       if (data?.status) {
-        console.log(data?.data);
+        console.log("Login successful:", data?.data);
+        
+        // Log token claim result if present
+        if (data?.tokenClaim) {
+          console.log("Token claim result:", data.tokenClaim);
+          if (data.tokenClaim.websitesTransferred > 0) {
+            console.log(`Transferred ${data.tokenClaim.websitesTransferred} websites from guest account`);
+          }
+        }
+        
+        // Clear local cache since data is now in user's account
+        localStorage.removeItem("allWebsitesData");
+        
         saveUser(data?.data);
         navigate("/");
-
-        // const guestWebsites = JSON.parse(
-        //   localStorage.getItem("allWebsitesData") || "[]"
-        // );
-        // const filteredWebsites = guestWebsites.map(
-        //   ({ name, url, status }) => (console.log(name, url, status))
-        // );
-
-        // // console.log("gw", guestWebsites);
-        // const token = data?.data?.tokens?.accessToken?.token;
-        // const websiteMigrateResponse = await migrateGuestWebsites(
-        //   filteredWebsites,
-        //   token,
-        //   setErrorMessage
-        // );
-
-        // if (websiteMigrateResponse?.status) {
-        //   console.log("Website migrated successfully");
-        //   // localStorage.removeItem("allWebsitesData");
-        // }
-
-        // navigate("/");
       } else {
         setErrorMessage(data?.message);
       }

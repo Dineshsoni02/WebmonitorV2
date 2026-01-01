@@ -51,8 +51,8 @@ const WebsiteCard = ({ websiteInfo, onDelete }) => {
         <span
           className={`px-3 py-1 text-xs font-medium rounded-full ${statusColor} text-white`}
         >
-          {websiteInfo?.status 
-            ? String(websiteInfo.status).charAt(0).toUpperCase() + String(websiteInfo.status).slice(1) 
+          {websiteInfo?.status
+            ? String(websiteInfo.status).charAt(0).toUpperCase() + String(websiteInfo.status).slice(1)
             : "Unknown"}
         </span>
       </div>

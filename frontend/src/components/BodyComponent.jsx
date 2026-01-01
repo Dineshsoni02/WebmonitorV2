@@ -49,6 +49,7 @@ const UserHeader = () => {
   );
 };
 
+
 export const NavigationBar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const navigate = useNavigate();
@@ -479,18 +480,20 @@ const DashboardSection = ({ setShowModal, websiteList, removeWebsite, loading, s
                   Avg Response
                 </h3>
               </div>
+
+
               <p className="text-white text-xl font-bold">
                 {activeSites.length > 0
                   ? Math.round(
-                      activeSites.reduce((total, website) => {
-                        return (
-                          total +
-                            parseInt(
-                              website?.data?.responseTime.replace("ms", "")
-                            ) || 0
-                        );
-                      }, 0) / activeSites.length
-                    )
+                    activeSites.reduce((total, website) => {
+                      return (
+                        total +
+                        parseInt(
+                          website?.data?.responseTime
+                        ) || 0
+                      );
+                    }, 0) / activeSites.length
+                  )
                   : 0}{" "}
                 ms
               </p>
@@ -507,10 +510,10 @@ const DashboardSection = ({ setShowModal, websiteList, removeWebsite, loading, s
               <p className="text-white text-xl font-bold  ">
                 {activeSites.length > 0
                   ? Math.min(
-                      ...activeSites.map(
-                        (website) => website?.data?.ssl?.daysRemaining
-                      )
+                    ...activeSites.map(
+                      (website) => website?.data?.ssl?.daysRemaining
                     )
+                  )
                   : 0}
                 days
               </p>
@@ -537,16 +540,15 @@ const DashboardSection = ({ setShowModal, websiteList, removeWebsite, loading, s
           {websiteList.length > 0 && (
             <Button
               onClick={() =>
-                recheckWebsites() 
+                recheckWebsites()
               }
               disabled={loading}
               variant="none"
               className="flex items-center gap-2 mb-4 text-white cursor-pointer mt-4 ml-auto"
             >
               <RefreshCw
-                className={`w-5 h-5 text-cyan-400 ${
-                  loading ? "animate-spin" : ""
-                }`}
+                className={`w-5 h-5 text-cyan-400 ${loading ? "animate-spin" : ""
+                  }`}
               />
               {loading ? "Rechecking..." : "Recheck"}
             </Button>
@@ -556,15 +558,15 @@ const DashboardSection = ({ setShowModal, websiteList, removeWebsite, loading, s
         <div className="container mx-auto px-4 max-w-7xl mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-0 lg:gap-4">
           {loading
             ? Array(8)
-                .fill(null)
-                .map((_, i) => <WebsiteCardShimmer key={i} />)
+              .fill(null)
+              .map((_, i) => <WebsiteCardShimmer key={i} />)
             : websiteList.map((website) => (
-                <WebsiteCard
-                  key={website?.data?.id || website?.data?._id}
-                  websiteInfo={website.data}
-                  onDelete={() => removeWebsite(website.data.id || website.data._id)}
-                />
-              ))}
+              <WebsiteCard
+                key={website?.data?.id || website?.data?._id}
+                websiteInfo={website.data}
+                onDelete={() => removeWebsite(website.data.id || website.data._id)}
+              />
+            ))}
         </div>
       </div>
     </section>
@@ -580,11 +582,11 @@ export const BodyComponent = () => {
     <div>
       <HeaderTextComponent addWebsite={addWebsite} />
       <FeaturesSection />
-      <DashboardSection 
-        setShowModal={setShowModal} 
-        websiteList={websiteList} 
-        removeWebsite={removeWebsite} 
-        loading={loading} 
+      <DashboardSection
+        setShowModal={setShowModal}
+        websiteList={websiteList}
+        removeWebsite={removeWebsite}
+        loading={loading}
         syncWebsites={syncWebsites}
         recheckWebsites={recheckWebsites}
       />
