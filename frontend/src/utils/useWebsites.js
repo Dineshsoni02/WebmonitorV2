@@ -12,7 +12,7 @@ const getWebsitesFromLocal = () =>
 const saveWebsitesToLocal = (websites) =>
   localStorage.setItem(LOCAL_KEY, JSON.stringify(websites));
 
-export function useWebsites(user) {
+export function useWebsites(user, isTokenLoading = false) {
   const [websiteList, setWebsiteList] = useState([]);
   const [loading, setLoading] = useState(true);
   const { addToast } = useToast();
@@ -32,10 +32,9 @@ export function useWebsites(user) {
     return Array.from(map.values());
   }, []);
 
-  // Sync function - now DB is source of truth for both guests and users
+  // Sync function - DB is the sole source of truth for both guests and users
   const syncWebsites = useCallback(async () => {
     setLoading(true);
-    const localCache = getWebsitesFromLocal();
     
     try {
       let dbWebsites = [];
@@ -51,41 +50,46 @@ export function useWebsites(user) {
         }
       }
 
-      // DB websites already have stored SSL/SEO data - no need to fetch fresh stats
-      // This implements the "fast reads" pattern from the roadmap
+      // DB is the sole source of truth - no merge with localStorage
+      // This ensures data is always consistent across tabs/windows
       const websitesWithStats = dbWebsites.map(site => ({
-        ...site,
-        id: site._id || site.id,
-        _id: site._id || site.id,
+        data: {
+          ...site,
+          id: site._id || site.id,
+          _id: site._id || site.id,
+        }
       }));
-
-      const merged = mergeWebsites(localCache, websitesWithStats);
       
-      setWebsiteList(merged);
-      saveWebsitesToLocal(merged);
+      setWebsiteList(websitesWithStats);
       
     } catch (err) {
       console.error("Sync failed", err);
-      // Fallback to local cache if sync fails
-      setWebsiteList(localCache);
+      // Fallback to local cache only if API fails
+      const localCache = getWebsitesFromLocal();
+      if (localCache.length > 0) {
+        setWebsiteList(localCache);
+      }
       addToast("Failed to sync websites", "error");
     } finally {
       setLoading(false);
     }
-  }, [user, mergeWebsites, addToast]);
+  }, [user, addToast]);
 
-  // Initial load and sync
+  // Initial load and sync - wait for token to be ready before syncing
   useEffect(() => {
+    // If token is still loading as guest, wait
+    if (!user && isTokenLoading) {
+      console.log("Waiting for visitor token to initialize...");
+      return;
+    }
     syncWebsites();
-  }, [syncWebsites]);
+  }, [syncWebsites, user, isTokenLoading]);
 
   // Add Website - now saved to DB for both guests and users
   const addWebsite = useCallback(async (websiteData) => {
-    const currentList = getWebsitesFromLocal();
-    
-    // Check duplicates
+    // Check duplicates using current state (not localStorage)
     const existingUrl = websiteData.url;
-    if (currentList.some(w => (w.data?.url || w.url) === existingUrl)) {
+    if (websiteList.some(w => (w.data?.url || w.url) === existingUrl)) {
       addToast("Website already exists", "warning");
       return { error: "Website already exists" };
     }
@@ -93,9 +97,9 @@ export function useWebsites(user) {
     // For guests: The guestWebsite endpoint already saves to DB with visitor token
     // For users: We need to migrate to user's account
     const newWebsiteObj = { data: websiteData };
-    const updatedList = [...currentList, newWebsiteObj];
+    const updatedList = [...websiteList, newWebsiteObj];
     
-    saveWebsitesToLocal(updatedList);
+    // Update state immediately for UI responsiveness
     setWebsiteList(updatedList);
     addToast("Website added successfully", "success");
 
@@ -116,15 +120,13 @@ export function useWebsites(user) {
           const savedWebsite = data.data[0];
           console.log("Saved to DB, got ID:", savedWebsite._id);
           
-          // Update local list with the new DB ID
-          const listWithId = updatedList.map(w => {
+          // Update state with the new DB ID
+          setWebsiteList(prev => prev.map(w => {
             if ((w.data?.url || w.url) === websiteData.url) {
               return { data: { ...w.data, id: savedWebsite._id, _id: savedWebsite._id } };
             }
             return w;
-          });
-          saveWebsitesToLocal(listWithId);
-          setWebsiteList(listWithId);
+          }));
         }
       } catch (err) {
         console.error("Failed to save to DB", err);
@@ -133,19 +135,17 @@ export function useWebsites(user) {
     }
     
     return { success: true };
-  }, [user, addToast]);
+  }, [user, addToast, websiteList]);
 
   // Remove Website - works for both guests and users
   const removeWebsite = useCallback(async (id) => {
     console.log("Removing website with ID:", id);
-    const currentList = getWebsitesFromLocal();
     
-    // Filter out by ID
-    const updatedList = currentList.filter(w => {
+    // Filter out by ID using current state (not localStorage)
+    const updatedList = websiteList.filter(w => {
       const itemId = w.data?.id || w.data?._id || w.id || w._id;
       return itemId !== id;
     });
-    saveWebsitesToLocal(updatedList);
     setWebsiteList(updatedList);
     addToast("Website removed", "info");
 
@@ -164,16 +164,16 @@ export function useWebsites(user) {
       console.error("Failed to delete from DB", err);
       addToast("Failed to delete from server", "error");
     }
-  }, [user, addToast]);
+  }, [user, addToast, websiteList]);
 
   // Recheck all websites (manual refresh)
   const recheckWebsites = useCallback(async () => {
     setLoading(true);
-    const currentList = getWebsitesFromLocal();
     
     try {
+      // Use current state (not localStorage)
       const updatedList = await Promise.all(
-        currentList.map(async (item) => {
+        websiteList.map(async (item) => {
           try {
             const websiteData = item.data || item;
             const response = await getWebsiteStats({
@@ -192,7 +192,6 @@ export function useWebsites(user) {
         })
       );
       
-      saveWebsitesToLocal(updatedList);
       setWebsiteList(updatedList);
       addToast("Websites rechecked", "success");
       
@@ -202,7 +201,7 @@ export function useWebsites(user) {
     } finally {
       setLoading(false);
     }
-  }, [addToast]);
+  }, [addToast, websiteList]);
 
   return { websiteList, loading, addWebsite, removeWebsite, syncWebsites, recheckWebsites };
 }

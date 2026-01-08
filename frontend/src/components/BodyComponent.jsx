@@ -24,6 +24,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import Button from "../utils/Button";
 import { useAuth } from "../context/AuthContext";
+import { useVisitorTokenContext } from "../context/VisitorTokenContext";
 import WebsiteCardShimmer from "../utils/WebsiteCardShimmer";
 import { useWebsites } from "../utils/useWebsites";
 
@@ -106,13 +107,6 @@ export const NavigationBar = () => {
               + Add Site
             </Button>
 
-            <Button
-              onClick={() => localStorage.clear()}
-              variant="none"
-              className="text-gray-300 hover:text-white transition-colors duration-200 font-medium px-4 py-2 rounded-lg hover:bg-gray-700/50 cursor-pointer"
-            >
-              <del>delete</del>
-            </Button>
             {user ? (
               <UserHeader />
             ) : (
@@ -576,7 +570,8 @@ const DashboardSection = ({ setShowModal, websiteList, removeWebsite, loading, s
 export const BodyComponent = () => {
   const [showModal, setShowModal] = useState(false);
   const { user } = useAuth();
-  const { websiteList, addWebsite, removeWebsite, loading, syncWebsites, recheckWebsites } = useWebsites(user);
+  const { isLoading: isTokenLoading, visitorToken } = useVisitorTokenContext();
+  const { websiteList, addWebsite, removeWebsite, loading, syncWebsites, recheckWebsites } = useWebsites(user, isTokenLoading);
 
   return (
     <div>

@@ -23,4 +23,6 @@ dist-ssr
 *.sln
 *.sw?
 
-todos.txt
+todos.md
+*.notes.md
+*.todo.md
