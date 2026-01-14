@@ -40,6 +40,14 @@ export const getAllWebsites = async (user) => {
     });
 
     const data = await response.json();
+    
+    // Check for invalid token response
+    if (data?.status === false && data?.message === "Invalid token") {
+      const error = new Error("SESSION_INVALID");
+      error.isSessionInvalid = true;
+      throw error;
+    }
+    
     return data?.data;
   } catch (error) {
     console.error(error);

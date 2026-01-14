@@ -48,6 +48,43 @@ export const AuthProvider = ({ children }) => {
     }
   }, []);
 
+  // Cross-tab session synchronization
+  // When user logs in/out from another tab, this tab gets notified instantly
+  useEffect(() => {
+    const handleStorageChange = (event) => {
+      if (event.key === "user") {
+        if (event.newValue === null) {
+          // User logged out from another tab
+          console.log("Session ended from another tab - logging out");
+          setUser(null);
+        } else {
+          // User logged in from another tab - check if it's a different session
+          try {
+            const newUserData = JSON.parse(event.newValue);
+            const currentToken = user?.tokens?.accessToken?.token;
+            const newToken = newUserData?.tokens?.accessToken?.token;
+
+            if (currentToken && newToken && currentToken !== newToken) {
+              // Different token means this session is invalidated
+              console.log("New session started from another tab - this session is invalidated");
+              setUser(null);
+              // Show a message to the user
+              alert("You have been logged out because you logged in from another window.");
+            } else if (!currentToken && newToken) {
+              // No current session, update with new one
+              setUser(newUserData);
+            }
+          } catch (e) {
+            console.error("Error parsing user data from storage event:", e);
+          }
+        }
+      }
+    };
+
+    window.addEventListener("storage", handleStorageChange);
+    return () => window.removeEventListener("storage", handleStorageChange);
+  }, [user]);
+
   useEffect(() => {
     if (!user?.tokens?.accessToken?.expireAt) return;
 
@@ -75,8 +112,51 @@ export const AuthProvider = ({ children }) => {
     setUser(null);
   };
 
+  // Handle session invalidation from API calls (for cross-browser/profile detection)
+  const handleSessionInvalid = useCallback((message = "Your session has expired or been invalidated.") => {
+    console.log("Session invalidated:", message);
+    localStorage.removeItem("user");
+    setUser(null);
+    alert(message);
+  }, []);
+
+  // Validate session with server when window regains focus (catches cross-browser invalidation)
+  useEffect(() => {
+    const validateSession = async () => {
+      const storedUser = JSON.parse(localStorage.getItem("user"));
+      if (!storedUser?.tokens?.accessToken?.token) return;
+
+      try {
+        // Make a lightweight request to validate token
+        const response = await fetch("http://localhost:5000/website", {
+          method: "GET",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${storedUser.tokens.accessToken.token}`,
+          },
+        });
+
+        const data = await response.json();
+        if (data?.status === false && data?.message === "Invalid token") {
+          handleSessionInvalid("You have been logged out because you logged in from another browser/device.");
+        }
+      } catch (err) {
+        console.error("Session validation error:", err);
+      }
+    };
+
+    const handleFocus = () => {
+      if (user) {
+        validateSession();
+      }
+    };
+
+    window.addEventListener("focus", handleFocus);
+    return () => window.removeEventListener("focus", handleFocus);
+  }, [user, handleSessionInvalid]);
+
   return (
-    <AuthContext.Provider value={{ user, saveUser, logout, refreshToken }}>
+    <AuthContext.Provider value={{ user, saveUser, logout, refreshToken, handleSessionInvalid }}>
       {children}
     </AuthContext.Provider>
   );

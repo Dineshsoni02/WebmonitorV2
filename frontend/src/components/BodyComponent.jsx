@@ -569,9 +569,9 @@ const DashboardSection = ({ setShowModal, websiteList, removeWebsite, loading, s
 
 export const BodyComponent = () => {
   const [showModal, setShowModal] = useState(false);
-  const { user } = useAuth();
+  const { user, handleSessionInvalid } = useAuth();
   const { isLoading: isTokenLoading, visitorToken } = useVisitorTokenContext();
-  const { websiteList, addWebsite, removeWebsite, loading, syncWebsites, recheckWebsites } = useWebsites(user, isTokenLoading);
+  const { websiteList, addWebsite, removeWebsite, loading, syncWebsites, recheckWebsites } = useWebsites(user, isTokenLoading, handleSessionInvalid);
 
   return (
     <div>

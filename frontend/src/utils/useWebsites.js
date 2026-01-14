@@ -12,7 +12,7 @@ const getWebsitesFromLocal = () =>
 const saveWebsitesToLocal = (websites) =>
   localStorage.setItem(LOCAL_KEY, JSON.stringify(websites));
 
-export function useWebsites(user, isTokenLoading = false) {
+export function useWebsites(user, isTokenLoading = false, handleSessionInvalid = null) {
   const [websiteList, setWebsiteList] = useState([]);
   const [loading, setLoading] = useState(true);
   const { addToast } = useToast();
@@ -64,6 +64,13 @@ export function useWebsites(user, isTokenLoading = false) {
       
     } catch (err) {
       console.error("Sync failed", err);
+      
+      // Handle session invalidation (logged in from another browser/device)
+      if (err.isSessionInvalid && handleSessionInvalid) {
+        handleSessionInvalid("You have been logged out because you logged in from another browser/device.");
+        return;
+      }
+      
       // Fallback to local cache only if API fails
       const localCache = getWebsitesFromLocal();
       if (localCache.length > 0) {
@@ -73,7 +80,7 @@ export function useWebsites(user, isTokenLoading = false) {
     } finally {
       setLoading(false);
     }
-  }, [user, addToast]);
+  }, [user, addToast, handleSessionInvalid]);
 
   // Initial load and sync - wait for token to be ready before syncing
   useEffect(() => {
@@ -106,13 +113,20 @@ export function useWebsites(user, isTokenLoading = false) {
     // If user is logged in, also save to their account
     if (user) {
       try {
+        // Ensure we have the required properties for migration
+        const websiteToMigrate = {
+          id: websiteData.id || websiteData._id || crypto.randomUUID(),
+          url: websiteData.url,
+          name: websiteData.name || websiteData.websiteName || new URL(websiteData.url).hostname,
+        };
+        
         const response = await fetch("http://localhost:5000/migrate", {
           method: "POST",
           headers: {
             "Content-type": "application/json",
             Authorization: `Bearer ${user?.tokens?.accessToken?.token}`,
           },
-          body: JSON.stringify({ websites: [websiteData] }),
+          body: JSON.stringify({ websites: [websiteToMigrate] }),
         });
         
         const data = await response.json();

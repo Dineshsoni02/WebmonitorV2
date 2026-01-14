@@ -53,6 +53,7 @@ export const createWebsite = async (req, res) => {
   }
 
   const newWebsite = new WebsiteSchema({
+    _id: uuidv4(),
     url,
     websiteName,
     userId: user._id,
@@ -323,19 +324,40 @@ export const migrateGuestWebsites = async (req, res) => {
 
     for (let i = 0; i < websites.length; i++) {
       const { id, url, name } = websites[i];
-      console.log("migrating url: ", url);
+      console.log("migrating url: ", url, "with id:", id);
       if (!url || !id) continue;
       
       // Check if this URL already exists for this user
-      const exists = await WebsiteSchema.findOne({ url: url, userId: user._id });
+      const existsByUserUrl = await WebsiteSchema.findOne({ url: url, userId: user._id });
       
-      if (exists) {
+      if (existsByUserUrl) {
         // If it exists, we return the existing one so frontend can update its ID
-        results.push(exists);
+        console.log("Website already exists for user:", existsByUserUrl._id);
+        results.push(existsByUserUrl);
         continue;
       }
 
-      // If not, create new
+      // Check if website exists by _id (created via /guest endpoint)
+      const existsById = await WebsiteSchema.findById(id);
+      
+      if (existsById) {
+        // Update the existing website to assign it to this user
+        console.log("Found existing website by ID, updating with userId:", id);
+        const updatedWebsite = await WebsiteSchema.findByIdAndUpdate(
+          id,
+          { 
+            userId: user._id, 
+            ownerStatus: "active",
+            websiteName: name || existsById.websiteName,
+          },
+          { new: true }
+        );
+        results.push(updatedWebsite);
+        continue;
+      }
+
+      // If not found by either method, create new
+      console.log("Creating new website for user:", url);
       const newWebsite = new WebsiteSchema({
         _id: id, 
         url,
@@ -349,9 +371,8 @@ export const migrateGuestWebsites = async (req, res) => {
         await newWebsite.save();
         results.push(newWebsite);
       } catch (err) {
-        
+        console.error("Error saving website:", err.message);
         if (err.code === 11000) {
-         
             const retryExists = await WebsiteSchema.findOne({ url: url, userId: user._id });
             if (retryExists) results.push(retryExists);
         }
