@@ -1,6 +1,8 @@
 import { getVisitorToken, getVisitorHeaders } from "./useVisitorToken";
 
-const API_BASE_URL = "http://localhost:5000";
+import { serverUrl } from "../services/ServerUrl";
+
+const API_BASE_URL = serverUrl;
 
 /**
  * Get website stats (analyze a website)

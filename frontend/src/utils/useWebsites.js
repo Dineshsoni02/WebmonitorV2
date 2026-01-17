@@ -2,6 +2,7 @@ import { useEffect, useState, useCallback } from "react";
 import { getAllWebsites, getWebsiteStats, getGuestWebsites, deleteGuestWebsite, deleteWebsite } from "./ApiCalls";
 import { useToast } from "../context/ToastContext";
 import { getVisitorToken } from "./useVisitorToken";
+import { serverUrl } from "../services/ServerUrl";
 
 // LocalStorage helpers (for caching purposes only now)
 const LOCAL_KEY = "allWebsitesData";
@@ -123,7 +124,7 @@ export function useWebsites(user, isTokenLoading = false, handleSessionInvalid =
         console.log("Website to migrate:", websiteToMigrate);
         console.log("Token:", user?.tokens?.accessToken?.token?.substring(0, 20) + "...");
         
-        const response = await fetch("http://localhost:5000/migrate", {
+        const response = await fetch(`${serverUrl}/migrate`, {
           method: "POST",
           headers: {
             "Content-type": "application/json",

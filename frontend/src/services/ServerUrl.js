@@ -1,0 +1,1 @@
+export const serverUrl = "https://webmonitorv2.onrender.com";

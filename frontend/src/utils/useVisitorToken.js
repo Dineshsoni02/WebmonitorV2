@@ -1,7 +1,9 @@
 import { useState, useEffect, useCallback } from "react";
 
 const VISITOR_TOKEN_KEY = "visitorToken";
-const API_BASE_URL = "http://localhost:5000";
+import { serverUrl } from "../services/ServerUrl";
+
+const API_BASE_URL = serverUrl;
 
 /**
  * Custom hook for managing visitor token

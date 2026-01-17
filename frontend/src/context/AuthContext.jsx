@@ -5,6 +5,7 @@ import {
   useEffect,
   useCallback,
 } from "react";
+import { serverUrl } from "../services/ServerUrl";
 
 const AuthContext = createContext();
 
@@ -16,7 +17,7 @@ export const AuthProvider = ({ children }) => {
       const storedUser = JSON.parse(localStorage.getItem("user"));
       if (!storedUser?.tokens?.refreshToken?.token) return;
 
-      const response = await fetch("http://localhost:5000/user/refresh-token", {
+      const response = await fetch(`${serverUrl}/user/refresh-token`, {
         method: "POST",
         headers: {
           "Content-type": "application/json",
@@ -124,7 +125,7 @@ export const AuthProvider = ({ children }) => {
 
       try {
         // Make a lightweight request to validate token
-        const response = await fetch("http://localhost:5000/website", {
+        const response = await fetch(`${serverUrl}/website`, {
           method: "GET",
           headers: {
             "Content-Type": "application/json",

@@ -6,6 +6,7 @@ import { validateEmail } from "../utils/Validation";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { getVisitorToken } from "../utils/useVisitorToken";
+import { serverUrl } from "../services/ServerUrl";
 
 const SignUp = () => {
   const { saveUser, user } = useAuth();
@@ -49,7 +50,7 @@ const SignUp = () => {
       setIsLoading(true);
       // Include visitor token for seamless guest → user transition
       const visitorToken = getVisitorToken();
-      const response = await fetch("http://localhost:5000/user/signup", {
+      const response = await fetch(`${serverUrl}/user/signup`, {
         method: "POST",
         headers: {
           "Content-type": "application/json",
@@ -172,7 +173,7 @@ const SignIn = () => {
       setIsLoading(true);
       // Include visitor token for seamless guest → user transition
       const visitorToken = getVisitorToken();
-      const response = await fetch("http://localhost:5000/user/login", {
+      const response = await fetch(`${serverUrl}/user/login`, {
         method: "POST",
         headers: {
           "Content-type": "application/json",
