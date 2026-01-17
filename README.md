@@ -1,43 +1,45 @@
-
 # 🌐 WebMonitor
 
-**WebMonitor** is a simple and lightweight website uptime checker. Just provide a URL, and WebMonitor will continuously monitor whether your website is **up or down**. It's perfect for developers, businesses, and individuals who want to stay informed about the availability of their web services.
+**WebMonitor** is a comprehensive website monitoring solution that tracks uptime, SSL certificates, SEO health, and performance metrics. Perfect for developers, businesses, and individuals who want complete visibility into their web services.
 
 ## 🔍 Features
 
-* ✅ Track the up/down status of any public website
-* ⏱️ Periodic uptime checks
-* 📊 Dashboard-style view 
-* 💾 Database support
-* 🔔 Notifications support for registered users
-* 🕵️ Anonymous access available
+### Core Monitoring
+* ✅ **Uptime Tracking** - Real-time up/down status monitoring for any public website
+* ⚡ **Response Time** - Measure and track website response times
+* 🔄 **Automated Daily Checks** - Scheduled cron job checks all websites at 9 AM daily
 
-## 🚀 Getting Started
+### SSL Certificate Monitoring
+* � **SSL Validation** - Verify if SSL certificates are valid and properly configured
+* 📅 **Expiry Tracking** - Monitor SSL certificate expiration dates
+* ⏰ **Days Remaining** - See how many days until certificate expires
+* 🏢 **Issuer Information** - View certificate issuer details
 
-### 1. Clone the repository
+### SEO Health Analysis
+* � **Title Tag Analysis** - Check page titles and character length
+* � **Meta Description** - Analyze meta descriptions for SEO optimization
+* 🏷️ **Heading Structure** - Count H1 and H2 tags for proper hierarchy
+* 🖼️ **Image Alt Tags** - Detect images missing alt text
+* ⚠️ **SEO Issues** - Automated detection of common SEO problems
 
-```bash
-git clone https://github.com/Dineshsoni02/WebmonitorV2.git
-cd webmonitor
-```
-
-### 2. Install dependencies
-
-```bash
-npm install
-```
-
-### 3. Start the development server
-
-```bash
-npm run dev
-```
+### User Features
+* 📊 **Dashboard View** - Clean, modern interface with all metrics at a glance
+* 🔔 **Email Notifications** - Get alerted when your websites go down
+* 🕵️ **Anonymous Access** - Try without registration (visitor token system)
+* 👤 **User Accounts** - Register to save websites & receive notifications
+* 🔄 **Cross-tab Sync** - Session sync across browser tabs/windows
 
 ## 🛠 Tech Stack
 
-* [React 19](https://reactjs.org/)
-* [Vite 7](https://vitejs.dev/)
-* [Tailwind CSS 4](https://tailwindcss.com/)
-* [PostCSS](https://postcss.org/)
-* [ESLint](https://eslint.org/)
-* [MongoDB](https://mongodb.com/)
+### Frontend
+* [React 19](https://reactjs.org/) - UI library
+* [Vite 7](https://vitejs.dev/) - Build tool
+* [Tailwind CSS 4](https://tailwindcss.com/) - Styling
+
+### Backend
+* [Node.js](https://nodejs.org/) + [Express](https://expressjs.com/) - Server
+* [MongoDB](https://mongodb.com/) + [Mongoose](https://mongoosejs.com/) - Database
+* [node-cron](https://www.npmjs.com/package/node-cron) - Scheduled tasks
+* [Nodemailer](https://nodemailer.com/) - Email notifications
+* [JWT](https://jwt.io/) - Authentication
+
