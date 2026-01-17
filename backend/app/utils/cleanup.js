@@ -56,13 +56,13 @@ export const cleanupExpiredTokens = async () => {
 
 /**
  * Clean up very old expired tokens from the database
- * Tokens that have been expired for more than 30 days can be permanently deleted
+ * Tokens that have been expired for more than 10 days can be permanently deleted
  */
 export const purgeOldExpiredTokens = async () => {
   console.log("🗑️ Purging old expired tokens...");
 
   try {
-    const thirtyDaysAgo = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
+    const thirtyDaysAgo = new Date(Date.now() - 10 * 24 * 60 * 60 * 1000);
 
     const result = await VisitorTokenSchema.deleteMany({
       status: "expired",
