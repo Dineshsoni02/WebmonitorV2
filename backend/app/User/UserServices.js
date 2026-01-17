@@ -104,7 +104,6 @@ export const loginUser = async (req, res) => {
   let claimResult = null;
   if (visitorToken) {
     claimResult = await claimVisitorToken(visitorToken, user._id);
-    console.log("Token claim result:", claimResult);
   }
 
   const userObj = user.toObject();

@@ -131,49 +131,44 @@ export const claimVisitorToken = async (token, userId) => {
       return { success: false, message: "Token and userId are required" };
     }
 
-    // Find and validate token
-    const visitorToken = await VisitorTokenSchema.findOne({
-      token,
-      status: "anonymous",
-    });
-
-    if (!visitorToken) {
-      return { success: false, message: "Valid anonymous token not found" };
-    }
-
-    // Check if already expired
-    if (visitorToken.expiresAt && new Date() > visitorToken.expiresAt) {
-      await VisitorTokenSchema.findByIdAndUpdate(visitorToken._id, {
-        status: "expired",
-      });
-      return { success: false, message: "Token has expired" };
-    }
-
-    // Update token to claimed status
-    await VisitorTokenSchema.findByIdAndUpdate(visitorToken._id, {
-      status: "claimed",
-      userId: userId,
-      claimedAt: new Date(),
-      expiresAt: null, // No longer expires once claimed
-    });
-
-    // Transfer all websites from this visitor token to the user
+    // First, always try to transfer any guest websites from this visitor token to the user
+    // This works even for returning users with claimed/expired tokens
     const transferResult = await WebsiteSchema.updateMany(
       { visitorToken: token, userId: null },
       { userId: userId, ownerStatus: "claimed" }
     );
 
-    console.log(
-      `Claimed token ${token} for user ${userId}. Transferred ${transferResult.modifiedCount} websites.`
-    );
+    // Then try to update token status if it's still anonymous
+    const visitorToken = await VisitorTokenSchema.findOne({
+      token,
+      status: "anonymous",
+    });
+
+    if (visitorToken) {
+      // Check if already expired
+      if (visitorToken.expiresAt && new Date() > visitorToken.expiresAt) {
+        await VisitorTokenSchema.findByIdAndUpdate(visitorToken._id, {
+          status: "expired",
+        });
+      } else {
+        // Update token to claimed status
+        await VisitorTokenSchema.findByIdAndUpdate(visitorToken._id, {
+          status: "claimed",
+          userId: userId,
+          claimedAt: new Date(),
+          expiresAt: null, // No longer expires once claimed
+        });
+      }
+    }
 
     return {
       success: true,
-      message: "Token claimed successfully",
+      message: transferResult.modifiedCount > 0 
+        ? "Websites migrated successfully" 
+        : "No guest websites to migrate",
       websitesTransferred: transferResult.modifiedCount,
     };
   } catch (error) {
-    console.error("Error claiming visitor token:", error);
     return { success: false, message: error.message };
   }
 };

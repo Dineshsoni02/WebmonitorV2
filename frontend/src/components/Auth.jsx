@@ -65,31 +65,22 @@ const SignUp = () => {
       const data = await response.json();
 
       if (data?.status) {
-        console.log("Signup successful:", data?.data);
-        
-        // Log token claim result if present
-        if (data?.tokenClaim) {
-          console.log("Token claim result:", data.tokenClaim);
-          if (data.tokenClaim.websitesTransferred > 0) {
-            console.log(`Transferred ${data.tokenClaim.websitesTransferred} websites from guest account`);
-          }
-        }
-        
+        // Token claim handled by backend - websites transferred automatically
+
         // Clear local cache since data is now in user's account
         localStorage.removeItem("allWebsitesData");
-        
+
         saveUser(data?.data);
         navigate("/");
       } else {
         setErrorMessage(data?.message);
       }
     } catch (error) {
-      console.log(error);
+      // Error handled above
     } finally {
       setIsLoading(false);
     }
 
-    console.log("Sign up:", formData);
   };
 
   return (
@@ -198,26 +189,18 @@ const SignIn = () => {
       // console.log(data);
 
       if (data?.status) {
-        console.log("Login successful:", data?.data);
-        
-        // Log token claim result if present
-        if (data?.tokenClaim) {
-          console.log("Token claim result:", data.tokenClaim);
-          if (data.tokenClaim.websitesTransferred > 0) {
-            console.log(`Transferred ${data.tokenClaim.websitesTransferred} websites from guest account`);
-          }
-        }
-        
+        // Token claim handled by backend - websites transferred automatically
+
         // Clear local cache since data is now in user's account
         localStorage.removeItem("allWebsitesData");
-        
+
         saveUser(data?.data);
         navigate("/");
       } else {
         setErrorMessage(data?.message);
       }
     } catch (error) {
-      console.log(error);
+      // Error handled above
     } finally {
       setIsLoading(false);
     }

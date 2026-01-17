@@ -23,6 +23,8 @@ app.set("trust proxy", 1);
 app.use(userRoutes);
 app.use(webRoutes);
 app.use(visitorTokenRoutes);
+
+
 const PORT = process.env.PORT || 5000;
 
 // ============================================
@@ -30,6 +32,7 @@ const PORT = process.env.PORT || 5000;
 // ============================================
 
 // Daily website check - runs at 9:00 AM every day
+// cron.schedule("*/30 * * * * *", async () => {
 cron.schedule("0 9 * * *", async () => {
   console.log("🔄 Running daily website check...");
   
@@ -104,7 +107,7 @@ cron.schedule("0 9 * * *", async () => {
           const { name, email } = website.userId;
           await sendEmail(
             email,
-            "Website is down",
+            "Website is down ⚠️🚨",
             `Hi ${name}, the website ${url} is down as we checked on ${new Date().toLocaleString()}`
           );
         }

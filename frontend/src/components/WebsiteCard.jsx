@@ -15,7 +15,9 @@ const WebsiteCard = ({ websiteInfo, onDelete }) => {
     : "bg-green-500";
 
   const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
     const date = new Date(dateString);
+    if (isNaN(date.getTime())) return "N/A";
     return date.toLocaleDateString("en-US", {
       year: "numeric",
       month: "short",
@@ -74,9 +76,12 @@ const WebsiteCard = ({ websiteInfo, onDelete }) => {
                 LAST CHECKED
               </div>
               <div className="text-white font-mono text-sm">
-                {formatDate(websiteInfo?.lastChecked).split(",")[0] +
-                  " " +
-                  formatDate(websiteInfo?.lastChecked).split(",")[2]}
+                {(() => {
+                  const formatted = formatDate(websiteInfo?.lastChecked);
+                  if (formatted === "N/A") return formatted;
+                  const parts = formatted.split(",");
+                  return (parts[0] || "") + " " + (parts[2] || "").trim();
+                })()}
               </div>
             </div>
             <div className="bg-gray-800/50 p-3 rounded-lg">
@@ -172,9 +177,12 @@ const WebsiteCard = ({ websiteInfo, onDelete }) => {
                   LAST CHECKED
                 </div>
                 <div className="text-white font-mono text-sm">
-                  {formatDate(websiteInfo?.lastChecked).split(",")[0] +
-                    " " +
-                    formatDate(websiteInfo?.lastChecked).split(",")[2]}
+                  {(() => {
+                    const formatted = formatDate(websiteInfo?.lastChecked);
+                    if (formatted === "N/A") return formatted;
+                    const parts = formatted.split(",");
+                    return (parts[0] || "") + " " + (parts[2] || "").trim();
+                  })()}
                 </div>
               </div>
 

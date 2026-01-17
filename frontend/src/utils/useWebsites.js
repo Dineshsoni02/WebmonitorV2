@@ -63,7 +63,6 @@ export function useWebsites(user, isTokenLoading = false, handleSessionInvalid =
       setWebsiteList(websitesWithStats);
       
     } catch (err) {
-      console.error("Sync failed", err);
       
       // Handle session invalidation (logged in from another browser/device)
       if (err.isSessionInvalid && handleSessionInvalid) {
@@ -86,7 +85,6 @@ export function useWebsites(user, isTokenLoading = false, handleSessionInvalid =
   useEffect(() => {
     // If token is still loading as guest, wait
     if (!user && isTokenLoading) {
-      console.log("Waiting for visitor token to initialize...");
       return;
     }
     syncWebsites();
@@ -112,6 +110,8 @@ export function useWebsites(user, isTokenLoading = false, handleSessionInvalid =
 
     // If user is logged in, also save to their account
     if (user) {
+      console.log("=== FRONTEND MIGRATE DEBUG ===");
+      console.log("User detected, calling /migrate");
       try {
         // Ensure we have the required properties for migration
         const websiteToMigrate = {
@@ -119,6 +119,9 @@ export function useWebsites(user, isTokenLoading = false, handleSessionInvalid =
           url: websiteData.url,
           name: websiteData.name || websiteData.websiteName || new URL(websiteData.url).hostname,
         };
+        
+        console.log("Website to migrate:", websiteToMigrate);
+        console.log("Token:", user?.tokens?.accessToken?.token?.substring(0, 20) + "...");
         
         const response = await fetch("http://localhost:5000/migrate", {
           method: "POST",
@@ -130,9 +133,9 @@ export function useWebsites(user, isTokenLoading = false, handleSessionInvalid =
         });
         
         const data = await response.json();
+        console.log("Migrate response:", data);
         if (data.status && data.data && data.data.length > 0) {
           const savedWebsite = data.data[0];
-          console.log("Saved to DB, got ID:", savedWebsite._id);
           
           // Update state with the new DB ID
           setWebsiteList(prev => prev.map(w => {
@@ -143,7 +146,6 @@ export function useWebsites(user, isTokenLoading = false, handleSessionInvalid =
           }));
         }
       } catch (err) {
-        console.error("Failed to save to DB", err);
         addToast("Failed to sync to server", "error");
       }
     }
@@ -153,8 +155,6 @@ export function useWebsites(user, isTokenLoading = false, handleSessionInvalid =
 
   // Remove Website - works for both guests and users
   const removeWebsite = useCallback(async (id) => {
-    console.log("Removing website with ID:", id);
-    
     // Filter out by ID using current state (not localStorage)
     const updatedList = websiteList.filter(w => {
       const itemId = w.data?.id || w.data?._id || w.id || w._id;
@@ -167,15 +167,12 @@ export function useWebsites(user, isTokenLoading = false, handleSessionInvalid =
     try {
       if (user) {
         // Authenticated user
-        console.log("Deleting from user DB:", id);
         await deleteWebsite(id, user);
       } else {
         // Guest user
-        console.log("Deleting from guest DB:", id);
         await deleteGuestWebsite(id);
       }
     } catch (err) {
-      console.error("Failed to delete from DB", err);
       addToast("Failed to delete from server", "error");
     }
   }, [user, addToast, websiteList]);
@@ -200,7 +197,6 @@ export function useWebsites(user, isTokenLoading = false, handleSessionInvalid =
             }
             return item;
           } catch (err) {
-            console.error("Failed to recheck", item.data?.url || item.url, err);
             return item;
           }
         })
@@ -210,7 +206,6 @@ export function useWebsites(user, isTokenLoading = false, handleSessionInvalid =
       addToast("Websites rechecked", "success");
       
     } catch (err) {
-      console.error("Recheck failed", err);
       addToast("Failed to recheck websites", "error");
     } finally {
       setLoading(false);

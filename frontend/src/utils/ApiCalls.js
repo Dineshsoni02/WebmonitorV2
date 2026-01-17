@@ -21,7 +21,6 @@ export const getWebsiteStats = async (websiteInfo) => {
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error(error);
     throw error;
   }
 };
@@ -50,7 +49,6 @@ export const getAllWebsites = async (user) => {
     
     return data?.data;
   } catch (error) {
-    console.error(error);
     throw error;
   }
 };
@@ -73,7 +71,6 @@ export const getGuestWebsites = async () => {
     const data = await response.json();
     return data?.data || [];
   } catch (error) {
-    console.error(error);
     return [];
   }
 };
@@ -91,7 +88,6 @@ export const deleteGuestWebsite = async (id) => {
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error(error);
     throw error;
   }
 };
@@ -104,7 +100,6 @@ export const migrateGuestWebsites = async (
   token,
   setErrorMessage
 ) => {
-  console.log("migrating websites");
   const websiteMigrateResponse = await fetch(`${API_BASE_URL}/migrate`, {
     method: "POST",
     headers: {
@@ -139,7 +134,6 @@ export const recheckWebsite = async (id, user = null) => {
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error(error);
     throw error;
   }
 };
@@ -160,7 +154,6 @@ export const deleteWebsite = async (id, user) => {
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error(error);
     throw error;
   }
 };

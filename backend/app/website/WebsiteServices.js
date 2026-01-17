@@ -114,15 +114,40 @@ export const deleteWebsite = async (req, res) => {
 export const getAllWebsite = async (req, res) => {
   const user = req.user;
 
-  const websites = await WebsiteSchema.find({ userId: user._id }).populate({
-    path: "userId",
-    select: ["name", "email"],
+  const websites = await WebsiteSchema.find({ userId: user._id }).lean();
+
+  // Transform to match frontend expected format (same as getGuestWebsites)
+  const transformedWebsites = websites.map((site) => {
+    // Handle date conversion - lean() returns plain JS Date objects
+    let lastChecked = null;
+    if (site.lastCheckedAt) {
+      lastChecked = site.lastCheckedAt instanceof Date 
+        ? site.lastCheckedAt.toISOString() 
+        : site.lastCheckedAt;
+    } else if (site.updatedAt) {
+      lastChecked = site.updatedAt instanceof Date 
+        ? site.updatedAt.toISOString() 
+        : site.updatedAt;
+    }
+    
+    return {
+      id: site._id,
+      _id: site._id,
+      url: site.url,
+      name: site.websiteName,
+      websiteName: site.websiteName,
+      status: site.status,
+      lastChecked,
+      responseTime: site.responseTime ? `${site.responseTime}ms` : "N/A",
+      ssl: site.ssl,
+      seo: site.seo,
+    };
   });
 
   res.status(200).json({
     status: true,
     message: messages.WEBSITE_FETCHED,
-    data: websites,
+    data: transformedWebsites,
   });
 };
 
@@ -289,7 +314,6 @@ export const guestWebsite = async (req, res) => {
         await newWebsite.save();
       }
     } catch (dbError) {
-      console.error("Error saving guest website to DB:", dbError);
       // Still return success - we have the data even if DB save failed
     }
 
@@ -299,7 +323,6 @@ export const guestWebsite = async (req, res) => {
       data: websiteData,
     });
   } catch (error) {
-    console.error("Error in guestWebsite:", error);
     res.status(500).json({
       status: false,
       message: "An error occurred while analyzing the website",
@@ -310,9 +333,12 @@ export const guestWebsite = async (req, res) => {
 
 export const migrateGuestWebsites = async (req, res) => {
   try {
-    console.log("migrating websites backend");
     const { websites } = req.body;
     const user = req.user;
+    
+    console.log("=== MIGRATE DEBUG ===");
+    console.log("User:", user?._id);
+    console.log("Websites to migrate:", JSON.stringify(websites));
     
     if (!websites || !Array.isArray(websites)) {
       return res.status(400).json({
@@ -324,25 +350,29 @@ export const migrateGuestWebsites = async (req, res) => {
 
     for (let i = 0; i < websites.length; i++) {
       const { id, url, name } = websites[i];
-      console.log("migrating url: ", url, "with id:", id);
-      if (!url || !id) continue;
+      console.log(`Processing website ${i}: id=${id}, url=${url}`);
+      if (!url || !id) {
+        console.log("Skipping - missing url or id");
+        continue;
+      }
       
       // Check if this URL already exists for this user
       const existsByUserUrl = await WebsiteSchema.findOne({ url: url, userId: user._id });
       
       if (existsByUserUrl) {
+        console.log("Already exists for this user:", existsByUserUrl._id);
         // If it exists, we return the existing one so frontend can update its ID
-        console.log("Website already exists for user:", existsByUserUrl._id);
         results.push(existsByUserUrl);
         continue;
       }
 
       // Check if website exists by _id (created via /guest endpoint)
       const existsById = await WebsiteSchema.findById(id);
+      console.log("Found by ID:", existsById ? "YES" : "NO");
       
       if (existsById) {
+        console.log("Updating website to assign userId:", user._id);
         // Update the existing website to assign it to this user
-        console.log("Found existing website by ID, updating with userId:", id);
         const updatedWebsite = await WebsiteSchema.findByIdAndUpdate(
           id,
           { 
@@ -352,12 +382,12 @@ export const migrateGuestWebsites = async (req, res) => {
           },
           { new: true }
         );
+        console.log("Updated website:", updatedWebsite?._id, "userId:", updatedWebsite?.userId);
         results.push(updatedWebsite);
         continue;
       }
 
-      // If not found by either method, create new
-      console.log("Creating new website for user:", url);
+      console.log("Creating new website with userId:", user._id);
       const newWebsite = new WebsiteSchema({
         _id: id, 
         url,
@@ -371,7 +401,6 @@ export const migrateGuestWebsites = async (req, res) => {
         await newWebsite.save();
         results.push(newWebsite);
       } catch (err) {
-        console.error("Error saving website:", err.message);
         if (err.code === 11000) {
             const retryExists = await WebsiteSchema.findOne({ url: url, userId: user._id });
             if (retryExists) results.push(retryExists);
@@ -415,16 +444,30 @@ export const getGuestWebsites = async (req, res) => {
     }).lean();
 
     // Transform to match frontend expected format
-    const transformedWebsites = websites.map((site) => ({
-      id: site._id,
-      url: site.url,
-      name: site.websiteName,
-      status: site.status,
-      lastChecked: site.lastCheckedAt?.toISOString() || site.updatedAt?.toISOString(),
-      responseTime: site.responseTime ? `${site.responseTime}ms` : "N/A",
-      ssl: site.ssl,
-      seo: site.seo,
-    }));
+    const transformedWebsites = websites.map((site) => {
+      // Handle date conversion - lean() returns plain JS Date objects
+      let lastChecked = null;
+      if (site.lastCheckedAt) {
+        lastChecked = site.lastCheckedAt instanceof Date 
+          ? site.lastCheckedAt.toISOString() 
+          : site.lastCheckedAt;
+      } else if (site.updatedAt) {
+        lastChecked = site.updatedAt instanceof Date 
+          ? site.updatedAt.toISOString() 
+          : site.updatedAt;
+      }
+      
+      return {
+        id: site._id,
+        url: site.url,
+        name: site.websiteName,
+        status: site.status,
+        lastChecked,
+        responseTime: site.responseTime ? `${site.responseTime}ms` : "N/A",
+        ssl: site.ssl,
+        seo: site.seo,
+      };
+    });
 
     res.status(200).json({
       status: true,
@@ -432,7 +475,6 @@ export const getGuestWebsites = async (req, res) => {
       data: transformedWebsites,
     });
   } catch (error) {
-    console.error("Error fetching guest websites:", error);
     res.status(500).json({
       status: false,
       message: "Failed to fetch guest websites",
@@ -481,7 +523,6 @@ export const deleteGuestWebsite = async (req, res) => {
       message: "Website deleted successfully",
     });
   } catch (error) {
-    console.error("Error deleting guest website:", error);
     res.status(500).json({
       status: false,
       message: "Failed to delete website",
@@ -590,7 +631,6 @@ export const recheckWebsite = async (req, res) => {
       },
     });
   } catch (error) {
-    console.error("Error rechecking website:", error);
     res.status(500).json({
       status: false,
       message: "Failed to recheck website",

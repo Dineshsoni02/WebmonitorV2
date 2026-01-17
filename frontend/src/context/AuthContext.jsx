@@ -35,7 +35,6 @@ export const AuthProvider = ({ children }) => {
         return false;
       }
     } catch (err) {
-      console.error("Refresh token error:", err);
       logout();
       return false;
     }
@@ -55,7 +54,6 @@ export const AuthProvider = ({ children }) => {
       if (event.key === "user") {
         if (event.newValue === null) {
           // User logged out from another tab
-          console.log("Session ended from another tab - logging out");
           setUser(null);
         } else {
           // User logged in from another tab - check if it's a different session
@@ -66,7 +64,6 @@ export const AuthProvider = ({ children }) => {
 
             if (currentToken && newToken && currentToken !== newToken) {
               // Different token means this session is invalidated
-              console.log("New session started from another tab - this session is invalidated");
               setUser(null);
               // Show a message to the user
               alert("You have been logged out because you logged in from another window.");
@@ -75,7 +72,7 @@ export const AuthProvider = ({ children }) => {
               setUser(newUserData);
             }
           } catch (e) {
-            console.error("Error parsing user data from storage event:", e);
+            // Silently ignore parsing errors
           }
         }
       }
@@ -114,7 +111,6 @@ export const AuthProvider = ({ children }) => {
 
   // Handle session invalidation from API calls (for cross-browser/profile detection)
   const handleSessionInvalid = useCallback((message = "Your session has expired or been invalidated.") => {
-    console.log("Session invalidated:", message);
     localStorage.removeItem("user");
     setUser(null);
     alert(message);
@@ -141,7 +137,7 @@ export const AuthProvider = ({ children }) => {
           handleSessionInvalid("You have been logged out because you logged in from another browser/device.");
         }
       } catch (err) {
-        console.error("Session validation error:", err);
+        // Silently ignore validation errors
       }
     };
 
