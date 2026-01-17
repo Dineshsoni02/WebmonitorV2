@@ -6,9 +6,9 @@
 ## 🔍 Features
 
 * ✅ Track the up/down status of any public website
-* ⏱️ Periodic uptime checks (configurable)
+* ⏱️ Periodic uptime checks
 * 📊 Dashboard-style view 
-* 💾 Optional localStorage or database support
+* 💾 Database support
 * 🔔 Notifications support for registered users
 * 🕵️ Anonymous access available
 
@@ -41,32 +41,3 @@ npm run dev
 * [PostCSS](https://postcss.org/)
 * [ESLint](https://eslint.org/)
 * [MongoDB](https://mongodb.com/)
-
-## 📦 Project Structure
-
-```
-webmonitor/
-├── src/
-│   ├── components/
-│   ├── hooks/
-│   ├── utils/
-│   ├── App.jsx
-│   └── main.jsx
-├── public/
-├── index.html
-├── tailwind.config.js
-├── postcss.config.js
-└── package.json
-```
-
-## ✨ Future Improvements
-
-* Add email or push notifications on status change
-* Historical uptime analytics
-* Authentication for private tracking
-* API monitoring support
-
-## 🤝 Contributing
-
-Pull requests and feature ideas are welcome! Feel free to fork and improve.
-
