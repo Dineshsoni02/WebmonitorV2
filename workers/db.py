@@ -2,6 +2,7 @@
 MongoDB connection module for Python workers.
 Provides database access matching the Node.js schema.
 """
+
 from pymongo import MongoClient
 from config import MONGO_URI
 
@@ -22,9 +23,19 @@ def get_db():
     """Get the database instance."""
     global _db
     if _db is None:
+        import os
+
         client = get_client()
-        # Extract database name from URI or use default
-        _db = client.get_default_database()
+        # Try to get database name from URI, env var, or use default
+        db_name = os.getenv("DB_NAME")
+        if db_name:
+            _db = client[db_name]
+        else:
+            try:
+                _db = client.get_default_database()
+            except Exception:
+                # Fallback to 'test' if no database in URI
+                _db = client["test"]
     return _db
 
 
