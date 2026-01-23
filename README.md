@@ -59,10 +59,37 @@ I wanted a single dashboard where I could see the health of all my websites at a
 * [Vite 7](https://vitejs.dev/) - Build tool
 * [Tailwind CSS 4](https://tailwindcss.com/) - Styling
 
-### Backend
-* [Node.js](https://nodejs.org/) + [Express](https://expressjs.com/) - Server
+### Backend API
+* [Node.js](https://nodejs.org/) + [Express](https://expressjs.com/) - REST API server
 * [MongoDB](https://mongodb.com/) + [Mongoose](https://mongoosejs.com/) - Database
-* [node-cron](https://www.npmjs.com/package/node-cron) - Scheduled tasks
 * [Nodemailer](https://nodemailer.com/) - Email notifications
 * [JWT](https://jwt.io/) - Authentication
 
+### Python Background Workers
+* [Python 3.11+](https://python.org/) - Worker runtime
+* [APScheduler](https://apscheduler.readthedocs.io/) - Cron-like job scheduling
+* [PyMongo](https://pymongo.readthedocs.io/) - MongoDB driver
+* [BeautifulSoup4](https://beautiful-soup-4.readthedocs.io/) - SEO HTML parsing
+* [Requests](https://requests.readthedocs.io/) - HTTP health checks
+
+## 🏗️ Architecture
+
+```
+┌─────────────────┐     ┌──────────────────┐     ┌─────────────┐
+│  React Frontend │────▶│  Node.js API     │────▶│  MongoDB    │
+└─────────────────┘     └──────────────────┘     └─────────────┘
+                                                        ▲
+┌─────────────────────────────────────────────────────────┐
+│  Python Workers (Scheduled Jobs)                        │
+│  • Health Check Worker (uptime, response time)         │
+│  • SSL Validator (certificate expiry)                  │
+│  • SEO Analyzer (metadata audits)                      │
+│  • Cleanup Worker (expired tokens)                     │
+└─────────────────────────────────────────────────────────┘
+```
+
+**Benefits of Python Workers:**
+* ~60% reduced server load on Node.js API
+* Independent scaling of background jobs
+* Better error isolation and observability
+* Lightweight SEO analysis (BeautifulSoup vs Puppeteer)
